@@ -1,11 +1,7 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '6.0'
-
-target 'CityGo' do
-
-end
-
-target 'CityGoTests' do
-
-end
-
+platform :ios, '7.0'
+pod 'Facebook-iOS-SDK', '~> 3.17.0'
+pod 'MBProgressHUD', '~> 0.8'
+pod 'UICKeyChainStore'
+pod 'IQKeyboardManager'
+pod 'libextobjc/EXTScope', '~> 0.4.1'
+pod 'STAlertView'
