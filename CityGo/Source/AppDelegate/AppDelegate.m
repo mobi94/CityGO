@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "CGParseAppDelegate.h"
 #import "CGLoginViewController.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface AppDelegate ()
 
@@ -18,7 +19,30 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
+    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication fallbackHandler:^(FBAppCall *call)
+                       {
+                           if ([[call appLinkData] targetURL] != nil)
+                           {
+                               // get the object ID string from the deep link URL
+                               // we use the substringFromIndex so that we can delete the leading '/' from the targetURL
+                               NSString *objectId = [[[call appLinkData] targetURL].path substringFromIndex:1];
+                               
+                               // now handle the deep link
+                               // write whatever code you need to show a view controller that displays the object, etc.
+                               [[[UIAlertView alloc] initWithTitle:@"Directed from Facebook"
+                                                           message:[NSString stringWithFormat:@"Deep link to %@", objectId]
+                                                          delegate:self
+                                                 cancelButtonTitle:@"OK!"
+                                                 otherButtonTitles:nil] show];
+                           }
+                           else
+                           {
+                               //
+                               NSLog(@"Unhandled deep link: %@", [[call appLinkData] targetURL]);
+                           }
+                       }];
+    
+    return wasHandled;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -36,7 +60,6 @@
 
 - (void)showLoginScreen:(BOOL)animated
 {
-    
     // Get login screen from storyboard and present it
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     CGLoginViewController *viewController = (CGLoginViewController *)[storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
@@ -74,16 +97,6 @@
     }
 }
 
-///////////////////////////////////////////////////////////
-// Uncomment this method if you want to use Push Notifications with Background App Refresh
-///////////////////////////////////////////////////////////
-/*
- - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
- if (application.applicationState == UIApplicationStateInactive) {
- [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
- }
- }
- */
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -99,13 +112,14 @@
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    [FBAppEvents activateApp];
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    [FBAppCall handleDidBecomeActive];
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    [[FBSession activeSession] close];
 }
 
 #pragma mark - ()

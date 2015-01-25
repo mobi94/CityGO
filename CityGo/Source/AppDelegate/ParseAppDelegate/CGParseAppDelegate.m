@@ -21,13 +21,6 @@
     // [ParseCrashReporting enable];
 
     [Parse setApplicationId:@"OZYscvQi1cKHCP0vo6hPbbGAPvWs6M6vuMvrMRHi" clientKey:@"CTt2KMlNavNfboR5Tt0f8bA0I0h38ZgCFPtE6I5s"];
-    //
-    // If you are using Facebook, uncomment and add your FacebookAppID to your bundle's plist as
-    // described here: https://developers.facebook.com/docs/getting-started/facebook-sdk-for-ios/
-    [PFFacebookUtils initializeFacebook];
-    [PFTwitterUtils initializeWithConsumerKey:@"eXKaeLGJCFPT9lf4utwx4o1Fy" consumerSecret:@"t1P8tRlP4UaUjS5D8w4a5QPLlA8zRY5VuQhKMaml9ySiEb8HQ8"];
-    
-    // [PFUser enableAutomaticUser];
     
     if (application.applicationState != UIApplicationStateBackground)
     {

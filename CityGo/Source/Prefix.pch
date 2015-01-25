@@ -22,7 +22,5 @@
     #import <STAlertView/STAlertView.h>
     #import "EXTScope.h"
     #import <Parse/Parse.h>
-    #import <ParseUI/ParseUI.h>
-    #import <ParseFacebookUtils/PFFacebookUtils.h>
     #import <IQKeyboardManager/IQKeyboardManager.h>
 #endif

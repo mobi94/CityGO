@@ -7,10 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44349B6C1A74456F00DF86CE /* CGSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44349B6B1A74456F00DF86CE /* CGSignUpViewController.m */; };
+		44349B711A74538900DF86CE /* CGRootGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44349B701A74538900DF86CE /* CGRootGateway.m */; };
+		44349B781A7454E200DF86CE /* CGSignInGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44349B771A7454E200DF86CE /* CGSignInGateway.m */; };
+		44349B7C1A74553400DF86CE /* CGFacebookGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44349B7B1A74553400DF86CE /* CGFacebookGateway.m */; };
 		447CDC401A6EF3CC00CA9A07 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 447CDC251A6EF3CC00CA9A07 /* AppDelegate.m */; };
 		447CDC431A6EF3CC00CA9A07 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 447CDC2F1A6EF3CC00CA9A07 /* main.m */; };
 		447CDC441A6EF3CC00CA9A07 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC331A6EF3CC00CA9A07 /* Images.xcassets */; };
 		447CDC471A6EF3CC00CA9A07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC391A6EF3CC00CA9A07 /* Main.storyboard */; };
+		44B7BEEB1A746C8C002AC33D /* CGConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B7BEEA1A746C8C002AC33D /* CGConversationsViewController.m */; };
 		44DCF34A1A71861700D0DE89 /* CGMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF3491A71861700D0DE89 /* CGMainViewController.m */; };
 		44DCF3511A718A7B00D0DE89 /* CGViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF3501A718A7B00D0DE89 /* CGViewController.m */; };
 		44DCF3551A71919400D0DE89 /* CGNotifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF3541A71919400D0DE89 /* CGNotifier.m */; };
@@ -42,6 +47,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		44349B6A1A74456F00DF86CE /* CGSignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGSignUpViewController.h; path = SignUp/CGSignUpViewController.h; sourceTree = "<group>"; };
+		44349B6B1A74456F00DF86CE /* CGSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGSignUpViewController.m; path = SignUp/CGSignUpViewController.m; sourceTree = "<group>"; };
+		44349B6F1A74538900DF86CE /* CGRootGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGRootGateway.h; sourceTree = "<group>"; };
+		44349B701A74538900DF86CE /* CGRootGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGRootGateway.m; sourceTree = "<group>"; };
+		44349B731A74545300DF86CE /* CGSignUpProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CGSignUpProtocol.h; path = Protocols/CGSignUpProtocol.h; sourceTree = "<group>"; };
+		44349B741A74546200DF86CE /* CGSignInProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CGSignInProtocol.h; sourceTree = "<group>"; };
+		44349B761A7454E200DF86CE /* CGSignInGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGSignInGateway.h; path = SignIn/CGSignInGateway.h; sourceTree = "<group>"; };
+		44349B771A7454E200DF86CE /* CGSignInGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGSignInGateway.m; path = SignIn/CGSignInGateway.m; sourceTree = "<group>"; };
+		44349B7A1A74553400DF86CE /* CGFacebookGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGFacebookGateway.h; path = Facebook/CGFacebookGateway.h; sourceTree = "<group>"; };
+		44349B7B1A74553400DF86CE /* CGFacebookGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGFacebookGateway.m; path = Facebook/CGFacebookGateway.m; sourceTree = "<group>"; };
 		447CDBF91A6EF10E00CA9A07 /* CityGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CityGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		447CDC121A6EF10E00CA9A07 /* CityGoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CityGoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		447CDC241A6EF3CC00CA9A07 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -50,6 +65,8 @@
 		447CDC331A6EF3CC00CA9A07 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		447CDC351A6EF3CC00CA9A07 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		447CDC3A1A6EF3CC00CA9A07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		44B7BEE91A746C8C002AC33D /* CGConversationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGConversationsViewController.h; path = Conversations/CGConversationsViewController.h; sourceTree = "<group>"; };
+		44B7BEEA1A746C8C002AC33D /* CGConversationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGConversationsViewController.m; path = Conversations/CGConversationsViewController.m; sourceTree = "<group>"; };
 		44DCF3481A71861700D0DE89 /* CGMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGMainViewController.h; sourceTree = "<group>"; };
 		44DCF3491A71861700D0DE89 /* CGMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGMainViewController.m; sourceTree = "<group>"; };
 		44DCF34B1A71866F00D0DE89 /* CGGlobalSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CGGlobalSettings.h; sourceTree = "<group>"; };
@@ -111,6 +128,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		44349B691A74455200DF86CE /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				44349B6A1A74456F00DF86CE /* CGSignUpViewController.h */,
+				44349B6B1A74456F00DF86CE /* CGSignUpViewController.m */,
+			);
+			name = SignUp;
+			sourceTree = "<group>";
+		};
+		44349B721A74540A00DF86CE /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				44349B731A74545300DF86CE /* CGSignUpProtocol.h */,
+				44349B741A74546200DF86CE /* CGSignInProtocol.h */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		44349B751A7454B300DF86CE /* SignIn */ = {
+			isa = PBXGroup;
+			children = (
+				44349B761A7454E200DF86CE /* CGSignInGateway.h */,
+				44349B771A7454E200DF86CE /* CGSignInGateway.m */,
+			);
+			name = SignIn;
+			sourceTree = "<group>";
+		};
+		44349B791A74551B00DF86CE /* Facebook */ = {
+			isa = PBXGroup;
+			children = (
+				44349B7A1A74553400DF86CE /* CGFacebookGateway.h */,
+				44349B7B1A74553400DF86CE /* CGFacebookGateway.m */,
+			);
+			name = Facebook;
+			sourceTree = "<group>";
+		};
 		447CDBF01A6EF10E00CA9A07 = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +194,7 @@
 		447CDC221A6EF3CC00CA9A07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				44349B721A74540A00DF86CE /* Protocols */,
 				447CDC2B1A6EF3CC00CA9A07 /* Logic */,
 				447CDC301A6EF3CC00CA9A07 /* Models */,
 				447CDC2E1A6EF3CC00CA9A07 /* Main */,
@@ -186,6 +240,8 @@
 		447CDC2C1A6EF3CC00CA9A07 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				44349B791A74551B00DF86CE /* Facebook */,
+				44349B751A7454B300DF86CE /* SignIn */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -193,6 +249,8 @@
 		447CDC2D1A6EF3CC00CA9A07 /* Root */ = {
 			isa = PBXGroup;
 			children = (
+				44349B6F1A74538900DF86CE /* CGRootGateway.h */,
+				44349B701A74538900DF86CE /* CGRootGateway.m */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -261,9 +319,20 @@
 			path = Vendor;
 			sourceTree = "<group>";
 		};
+		44B7BEE81A746C5F002AC33D /* Conversations */ = {
+			isa = PBXGroup;
+			children = (
+				44B7BEE91A746C8C002AC33D /* CGConversationsViewController.h */,
+				44B7BEEA1A746C8C002AC33D /* CGConversationsViewController.m */,
+			);
+			name = Conversations;
+			sourceTree = "<group>";
+		};
 		44DCF3461A71861700D0DE89 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				44B7BEE81A746C5F002AC33D /* Conversations */,
+				44349B691A74455200DF86CE /* SignUp */,
 				44DCF3761A719A5100D0DE89 /* Login */,
 				44DCF34D1A7188F300D0DE89 /* Base */,
 				44DCF3471A71861700D0DE89 /* Main */,
@@ -493,10 +562,15 @@
 				44DCF34A1A71861700D0DE89 /* CGMainViewController.m in Sources */,
 				447CDC431A6EF3CC00CA9A07 /* main.m in Sources */,
 				44DCF3751A71953900D0DE89 /* CGParseAppDelegate.m in Sources */,
+				44349B7C1A74553400DF86CE /* CGFacebookGateway.m in Sources */,
+				44B7BEEB1A746C8C002AC33D /* CGConversationsViewController.m in Sources */,
 				44DCF3511A718A7B00D0DE89 /* CGViewController.m in Sources */,
 				447CDC401A6EF3CC00CA9A07 /* AppDelegate.m in Sources */,
+				44349B781A7454E200DF86CE /* CGSignInGateway.m in Sources */,
 				44DCF3791A719A7600D0DE89 /* CGLoginViewController.m in Sources */,
 				44DCF3551A71919400D0DE89 /* CGNotifier.m in Sources */,
+				44349B711A74538900DF86CE /* CGRootGateway.m in Sources */,
+				44349B6C1A74456F00DF86CE /* CGSignUpViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
