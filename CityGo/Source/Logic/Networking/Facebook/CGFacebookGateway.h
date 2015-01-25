@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Ruslan Moskalenko. All rights reserved.
 //
 
-typedef void (^FBLoginSuccessBlock)(NSMutableDictionary *fbUser);
+typedef void (^FBLoginSuccessBlock)(NSDictionary *fbUser);
 typedef void (^FBLoginFailureBlock)(NSError *error);
 
 @interface CGFacebookGateway : NSObject

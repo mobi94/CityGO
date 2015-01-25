@@ -9,8 +9,10 @@
 #import "CGLoginViewController.h"
 #import "CGViewControllerProtected.h"
 #import "CGSignInProtocol.h"
+#import "AppDelegate.h"
+#import "FHSTwitterEngine.h"
 
-@interface CGLoginViewController ()
+@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate>
 
 @property(weak, nonatomic) IBOutlet id<CGSignInProtocol> loginner;
 
@@ -36,6 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[FHSTwitterEngine sharedEngine] setDelegate:self];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,6 +63,9 @@
         if (!error)
         {
             NSLog(@"SuccesLogin");
+            
+            AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
+            appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
         }
         else
         {
@@ -69,6 +75,39 @@
         }
         [self hideHUD];
     }];
+}
+
+- (IBAction)signInViaTwitter:(id)sender
+{
+    [self showHUD];
+    
+    [self.loginner signInUsingTwitter:self WithBlock:^(NSError *error)
+    {
+        if (!error)
+        {
+            NSLog(@"SuccesLogin");
+            
+            AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
+            appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+        }
+        else
+        {
+            [self handleError:error];
+            
+            NSLog(@"%@", [error description]);
+        }
+        [self hideHUD];
+    }];
+}
+
+- (void)storeAccessToken:(NSString *)accessToken
+{
+    [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"SavedAccessHTTPBody"];
+}
+
+- (NSString *)loadAccessToken
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"SavedAccessHTTPBody"];
 }
 
 @end

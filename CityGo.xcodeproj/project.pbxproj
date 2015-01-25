@@ -15,6 +15,10 @@
 		447CDC431A6EF3CC00CA9A07 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 447CDC2F1A6EF3CC00CA9A07 /* main.m */; };
 		447CDC441A6EF3CC00CA9A07 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC331A6EF3CC00CA9A07 /* Images.xcassets */; };
 		447CDC471A6EF3CC00CA9A07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC391A6EF3CC00CA9A07 /* Main.storyboard */; };
+		44A3B44F1A756F8B0064938B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */; };
+		44A3B4551A756FC90064938B /* FHSStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A3B4521A756FC90064938B /* FHSStream.m */; };
+		44A3B4561A756FC90064938B /* FHSTwitterEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A3B4541A756FC90064938B /* FHSTwitterEngine.m */; };
+		44A3B45A1A757F1D0064938B /* CGTwitterGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A3B4591A757F1D0064938B /* CGTwitterGateway.m */; };
 		44B7BEEB1A746C8C002AC33D /* CGConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B7BEEA1A746C8C002AC33D /* CGConversationsViewController.m */; };
 		44DCF34A1A71861700D0DE89 /* CGMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF3491A71861700D0DE89 /* CGMainViewController.m */; };
 		44DCF3511A718A7B00D0DE89 /* CGViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF3501A718A7B00D0DE89 /* CGViewController.m */; };
@@ -31,8 +35,6 @@
 		44DCF3751A71953900D0DE89 /* CGParseAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF3741A71953900D0DE89 /* CGParseAppDelegate.m */; };
 		44DCF3791A719A7600D0DE89 /* CGLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF3781A719A7600D0DE89 /* CGLoginViewController.m */; };
 		44DCF37D1A71A18000D0DE89 /* OLGhostAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 44DCF37C1A71A18000D0DE89 /* OLGhostAlertView.m */; };
-		44DCF37F1A71B31500D0DE89 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44DCF37E1A71B31500D0DE89 /* Social.framework */; };
-		44DCF3811A71B38500D0DE89 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44DCF3801A71B38500D0DE89 /* Accounts.framework */; };
 		6F3F8FCB6F14301DCC1A5332 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6B045530F1F7F594029510 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +67,13 @@
 		447CDC331A6EF3CC00CA9A07 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		447CDC351A6EF3CC00CA9A07 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		447CDC3A1A6EF3CC00CA9A07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		44A3B4511A756FC90064938B /* FHSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHSStream.h; sourceTree = "<group>"; };
+		44A3B4521A756FC90064938B /* FHSStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHSStream.m; sourceTree = "<group>"; };
+		44A3B4531A756FC90064938B /* FHSTwitterEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHSTwitterEngine.h; sourceTree = "<group>"; };
+		44A3B4541A756FC90064938B /* FHSTwitterEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHSTwitterEngine.m; sourceTree = "<group>"; };
+		44A3B4581A757F1D0064938B /* CGTwitterGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGTwitterGateway.h; path = Twitter/CGTwitterGateway.h; sourceTree = "<group>"; };
+		44A3B4591A757F1D0064938B /* CGTwitterGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGTwitterGateway.m; path = Twitter/CGTwitterGateway.m; sourceTree = "<group>"; };
 		44B7BEE91A746C8C002AC33D /* CGConversationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGConversationsViewController.h; path = Conversations/CGConversationsViewController.h; sourceTree = "<group>"; };
 		44B7BEEA1A746C8C002AC33D /* CGConversationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGConversationsViewController.m; path = Conversations/CGConversationsViewController.m; sourceTree = "<group>"; };
 		44DCF3481A71861700D0DE89 /* CGMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGMainViewController.h; sourceTree = "<group>"; };
@@ -103,8 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44DCF3811A71B38500D0DE89 /* Accounts.framework in Frameworks */,
-				44DCF37F1A71B31500D0DE89 /* Social.framework in Frameworks */,
+				44A3B44F1A756F8B0064938B /* SystemConfiguration.framework in Frameworks */,
 				44DCF3691A71945900D0DE89 /* StoreKit.framework in Frameworks */,
 				44DCF3671A71944E00D0DE89 /* libz.1.1.3.dylib in Frameworks */,
 				44DCF3711A71948200D0DE89 /* ParseUI.framework in Frameworks */,
@@ -240,6 +248,7 @@
 		447CDC2C1A6EF3CC00CA9A07 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				44A3B4571A757F000064938B /* Twitter */,
 				44349B791A74551B00DF86CE /* Facebook */,
 				44349B751A7454B300DF86CE /* SignIn */,
 			);
@@ -314,9 +323,30 @@
 		447CDC3C1A6EF3CC00CA9A07 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				44A3B4501A756FC90064938B /* FHSTwitterEngine */,
 				44DCF37A1A71A18000D0DE89 /* GostAlertView */,
 			);
 			path = Vendor;
+			sourceTree = "<group>";
+		};
+		44A3B4501A756FC90064938B /* FHSTwitterEngine */ = {
+			isa = PBXGroup;
+			children = (
+				44A3B4511A756FC90064938B /* FHSStream.h */,
+				44A3B4521A756FC90064938B /* FHSStream.m */,
+				44A3B4531A756FC90064938B /* FHSTwitterEngine.h */,
+				44A3B4541A756FC90064938B /* FHSTwitterEngine.m */,
+			);
+			path = FHSTwitterEngine;
+			sourceTree = "<group>";
+		};
+		44A3B4571A757F000064938B /* Twitter */ = {
+			isa = PBXGroup;
+			children = (
+				44A3B4581A757F1D0064938B /* CGTwitterGateway.h */,
+				44A3B4591A757F1D0064938B /* CGTwitterGateway.m */,
+			);
+			name = Twitter;
 			sourceTree = "<group>";
 		};
 		44B7BEE81A746C5F002AC33D /* Conversations */ = {
@@ -407,6 +437,7 @@
 		810DA55FEEFB201A381CEC21 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */,
 				44DCF3801A71B38500D0DE89 /* Accounts.framework */,
 				44DCF37E1A71B31500D0DE89 /* Social.framework */,
 				44DCF36A1A71948200D0DE89 /* Parse.framework */,
@@ -566,9 +597,12 @@
 				44B7BEEB1A746C8C002AC33D /* CGConversationsViewController.m in Sources */,
 				44DCF3511A718A7B00D0DE89 /* CGViewController.m in Sources */,
 				447CDC401A6EF3CC00CA9A07 /* AppDelegate.m in Sources */,
+				44A3B4561A756FC90064938B /* FHSTwitterEngine.m in Sources */,
 				44349B781A7454E200DF86CE /* CGSignInGateway.m in Sources */,
 				44DCF3791A719A7600D0DE89 /* CGLoginViewController.m in Sources */,
 				44DCF3551A71919400D0DE89 /* CGNotifier.m in Sources */,
+				44A3B45A1A757F1D0064938B /* CGTwitterGateway.m in Sources */,
+				44A3B4551A756FC90064938B /* FHSStream.m in Sources */,
 				44349B711A74538900DF86CE /* CGRootGateway.m in Sources */,
 				44349B6C1A74456F00DF86CE /* CGSignUpViewController.m in Sources */,
 			);

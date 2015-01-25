@@ -30,11 +30,26 @@
 }
 
 #pragma mark -
-#pragma mark Sign In
+#pragma mark Sign In Facebook
 
 - (void)signInUsingFbWithBlock:(SignInHandler)completitionHandler
 {
     [self.signInGateway signInUsingFBWithSuccess:^(BOOL success)
+    {
+        completitionHandler(nil);
+    }
+    failure:^(NSError *error)
+    {
+        completitionHandler(error);
+    }];
+}
+
+#pragma mark -
+#pragma mark Sign In Facebook
+
+- (void)signInUsingTwitter:(UIViewController *)controller WithBlock:(SignInHandler)completitionHandler
+{
+    [self.signInGateway signInUsingTwitter:controller WithSuccess:^(BOOL success)
     {
         completitionHandler(nil);
     }

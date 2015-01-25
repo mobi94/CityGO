@@ -8,6 +8,7 @@
 
 #import "CGSignInGateway.h"
 #import "CGFacebookGateway.h"
+#import "CGTwitterGateway.h"
 
 @implementation CGSignInGateway
 
@@ -23,8 +24,7 @@
         user.email = fbUser[@"email"];
         
         user[@"gender"] = fbUser[@"gender"];
-        user[@"avatarFB"] = fbUser[@"avatarLink"];
-//        user[@"age"] = fbUser[@"birthday"];
+        user[@"avatarURL"] = fbUser[@"avatarLink"];
         
         [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
         {
@@ -53,6 +53,53 @@
         }];
         
     }
+    failure:^(NSError *error)
+    {
+        failureBlock(error);
+    }];
+}
+
+- (void)signInUsingTwitter:(UIViewController *)controller WithSuccess:(SignInSuccessBlock)successBlock failure:(SignInFailureBlock)failureBlock
+{
+    CGTwitterGateway *twitterGateway = [CGTwitterGateway new];
+    [twitterGateway login:controller WithSuccess:^(NSDictionary *twitterUser)
+    {
+        PFUser *user = [PFUser user];
+        user.username = twitterUser[@"screen_name"];
+        user.password = twitterUser[@"id_str"];
+        
+        NSString *strAvatar = twitterUser[@"profile_image_url"];
+        strAvatar = [strAvatar stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
+        
+        user[@"avatarURL"] = strAvatar;
+        
+        [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+         {
+             if (!error)
+             {
+                 // Hooray! Let them use the app now.
+                 successBlock(succeeded);
+             }
+             else
+             {
+                 if (error.code == 202)
+                 {
+                     [PFUser logInWithUsernameInBackground:user.username password:user.password block:^(PFUser *user, NSError *error)
+                      {
+                          if(!error)
+                          {
+                              successBlock(YES);
+                          }
+                          else
+                          {
+                              failureBlock(error);
+                          }
+                      }];
+                 }
+             }
+         }];
+    }
+    
     failure:^(NSError *error)
     {
         failureBlock(error);

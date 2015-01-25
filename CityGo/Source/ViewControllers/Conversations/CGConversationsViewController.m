@@ -22,6 +22,7 @@
     PFUser *userAgain = (PFUser *)[query getObjectWithId:@"TZSYovHFc0"];
     
     NSLog(@"%@", userAgain);
+    NSLog(@"%@", [PFUser currentUser]);
     
 }
 

@@ -46,7 +46,6 @@
                       fbUser[@"gender"] = [user objectForKey:@"gender"];
                       fbUser[@"email"] = [user objectForKey:@"email"];
                       fbUser[@"avatarLink"] = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", user.objectID];
-//                      fbUser[@"birthday"] = [user objectForKey:@"birthday"];
                       
                       successBlock(fbUser);
                   }

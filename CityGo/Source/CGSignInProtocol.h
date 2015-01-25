@@ -11,5 +11,6 @@ typedef void (^SignInHandler)(NSError *error);
 @protocol CGSignInProtocol <NSObject>
 
 - (void)signInUsingFbWithBlock:(SignInHandler)completitionHandler;
+- (void)signInUsingTwitter:(UIViewController *)controller WithBlock:(SignInHandler)completitionHandler;
 
 @end
