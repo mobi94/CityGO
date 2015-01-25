@@ -15,6 +15,7 @@
 		447CDC431A6EF3CC00CA9A07 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 447CDC2F1A6EF3CC00CA9A07 /* main.m */; };
 		447CDC441A6EF3CC00CA9A07 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC331A6EF3CC00CA9A07 /* Images.xcassets */; };
 		447CDC471A6EF3CC00CA9A07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC391A6EF3CC00CA9A07 /* Main.storyboard */; };
+		449B76DC1A759F5F0091CEB7 /* CGVkGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 449B76DB1A759F5F0091CEB7 /* CGVkGateway.m */; };
 		44A3B44F1A756F8B0064938B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */; };
 		44A3B4551A756FC90064938B /* FHSStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A3B4521A756FC90064938B /* FHSStream.m */; };
 		44A3B4561A756FC90064938B /* FHSTwitterEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A3B4541A756FC90064938B /* FHSTwitterEngine.m */; };
@@ -67,6 +68,8 @@
 		447CDC331A6EF3CC00CA9A07 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		447CDC351A6EF3CC00CA9A07 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		447CDC3A1A6EF3CC00CA9A07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		449B76DA1A759F5F0091CEB7 /* CGVkGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGVkGateway.h; path = VK/CGVkGateway.h; sourceTree = "<group>"; };
+		449B76DB1A759F5F0091CEB7 /* CGVkGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGVkGateway.m; path = VK/CGVkGateway.m; sourceTree = "<group>"; };
 		44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		44A3B4511A756FC90064938B /* FHSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FHSStream.h; sourceTree = "<group>"; };
 		44A3B4521A756FC90064938B /* FHSStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FHSStream.m; sourceTree = "<group>"; };
@@ -248,6 +251,7 @@
 		447CDC2C1A6EF3CC00CA9A07 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				449B76D91A759F2E0091CEB7 /* VK */,
 				44A3B4571A757F000064938B /* Twitter */,
 				44349B791A74551B00DF86CE /* Facebook */,
 				44349B751A7454B300DF86CE /* SignIn */,
@@ -327,6 +331,15 @@
 				44DCF37A1A71A18000D0DE89 /* GostAlertView */,
 			);
 			path = Vendor;
+			sourceTree = "<group>";
+		};
+		449B76D91A759F2E0091CEB7 /* VK */ = {
+			isa = PBXGroup;
+			children = (
+				449B76DA1A759F5F0091CEB7 /* CGVkGateway.h */,
+				449B76DB1A759F5F0091CEB7 /* CGVkGateway.m */,
+			);
+			name = VK;
 			sourceTree = "<group>";
 		};
 		44A3B4501A756FC90064938B /* FHSTwitterEngine */ = {
@@ -604,6 +617,7 @@
 				44A3B45A1A757F1D0064938B /* CGTwitterGateway.m in Sources */,
 				44A3B4551A756FC90064938B /* FHSStream.m in Sources */,
 				44349B711A74538900DF86CE /* CGRootGateway.m in Sources */,
+				449B76DC1A759F5F0091CEB7 /* CGVkGateway.m in Sources */,
 				44349B6C1A74456F00DF86CE /* CGSignUpViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

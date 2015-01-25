@@ -34,6 +34,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-VK-ios-sdk.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-libextobjc.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -52,47 +57,52 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1D1002CA98C1ADB862FA0E66</key>
+		<key>040EB53DBB237E8DF2591E59</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3CAF27E99E35F6EB6095562A</key>
+		<key>365A05BDB6905FE4F8810151</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4DBCAD1696CCEDD990E60BCC</key>
+		<key>3A4BB4135CF746A988B68748</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>656053C96127BE0DFA1F3CB7</key>
+		<key>494864B7DE31221604D34633</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B6A3838D311881FB46A683B3</key>
+		<key>53259D868B2325E35A30E30C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BBA965095E655703560117DF</key>
+		<key>54D23B1C38F61D11AC8EDAB6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C4D98096DCB6D65393A88A80</key>
+		<key>7E7E77CF1FF9A1F0ED94AEA1</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D991D0224FEB639F4E600673</key>
+		<key>89198B9D03EE9146B29C9EC6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DBA184D901EAF74079AB713F</key>
+		<key>AC781B0A89635CAA9FCE7E7D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F0C191AAED6AD84DFC27B98E</key>
 		<dict>
 			<key>primary</key>
 			<true/>

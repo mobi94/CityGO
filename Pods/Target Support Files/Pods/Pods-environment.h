@@ -43,6 +43,13 @@
 #define COCOAPODS_VERSION_MINOR_UICKeyChainStore 0
 #define COCOAPODS_VERSION_PATCH_UICKeyChainStore 1
 
+// VK-ios-sdk
+#define COCOAPODS_POD_AVAILABLE_VK_ios_sdk
+// This library does not follow semantic-versioning,
+// so we were not able to define version macros.
+// Please contact the author.
+// Version: 1.0.9.3.
+
 // libextobjc/EXTScope
 #define COCOAPODS_POD_AVAILABLE_libextobjc_EXTScope
 #define COCOAPODS_VERSION_MAJOR_libextobjc_EXTScope 0

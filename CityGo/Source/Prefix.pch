@@ -23,4 +23,5 @@
     #import "EXTScope.h"
     #import <Parse/Parse.h>
     #import <IQKeyboardManager/IQKeyboardManager.h>
+    #import "VKSdk.h"
 #endif

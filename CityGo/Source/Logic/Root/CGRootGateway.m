@@ -59,4 +59,19 @@
     }];
 }
 
+#pragma mark -
+#pragma mark Sign In VK
+
+- (void)signInUsingVkWithBlock:(SignInHandler)completitionHandler
+{
+    [self.signInGateway signInUsingVkWithSuccess:^(BOOL success)
+    {
+        completitionHandler(nil);
+    }
+    failure:^(NSError *error)
+    {
+        completitionHandler(error);
+    }];
+}
+
 @end

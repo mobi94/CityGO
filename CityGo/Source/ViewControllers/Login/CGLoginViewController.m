@@ -12,7 +12,9 @@
 #import "AppDelegate.h"
 #import "FHSTwitterEngine.h"
 
-@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate>
+static NSArray  *SCOPE = nil;
+
+@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate, VKSdkDelegate>
 
 @property(weak, nonatomic) IBOutlet id<CGSignInProtocol> loginner;
 
@@ -39,6 +41,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [[FHSTwitterEngine sharedEngine] setDelegate:self];
+    
+    [VKSdk initializeWithDelegate:self andAppId:@"4749201"];
+    SCOPE = @[VK_PER_WALL, VK_PER_PHOTOS, VK_PER_NOHTTPS];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -100,6 +105,37 @@
     }];
 }
 
+- (IBAction)signInViaVk:(id)sender
+{
+    [VKSdk authorize:SCOPE revokeAccess:YES forceOAuth:YES];
+}
+
+- (void)signInViaVk
+{
+    [self showHUD];
+    
+    [self.loginner signInUsingVkWithBlock:^(NSError *error)
+    {
+        if (!error)
+        {
+            NSLog(@"SuccesLogin");
+            
+            AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
+            appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+        }
+        else
+        {
+            [self handleError:error];
+            
+            NSLog(@"%@", [error description]);
+        }
+        [self hideHUD];
+    }];
+}
+
+#pragma mark -
+#pragma mark Twitter Engine Delegates
+
 - (void)storeAccessToken:(NSString *)accessToken
 {
     [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"SavedAccessHTTPBody"];
@@ -108,6 +144,40 @@
 - (NSString *)loadAccessToken
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"SavedAccessHTTPBody"];
+}
+
+#pragma mark -
+#pragma mark VK Delegates
+
+- (void)vkSdkNeedCaptchaEnter:(VKError *)captchaError
+{
+    VKCaptchaViewController *vc = [VKCaptchaViewController captchaControllerWithError:captchaError];
+    [vc presentIn:self];
+}
+
+- (void)vkSdkTokenHasExpired:(VKAccessToken *)expiredToken
+{
+    [VKSdk authorize:SCOPE revokeAccess:NO];
+}
+
+- (void)vkSdkReceivedNewToken:(VKAccessToken *)newToken
+{
+    [self signInViaVk];
+}
+
+- (void)vkSdkShouldPresentViewController:(UIViewController *)controller
+{
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (void)vkSdkAcceptedUserToken:(VKAccessToken *)token
+{
+    [self signInViaVk];
+}
+
+- (void)vkSdkUserDeniedAccess:(VKError *)authorizationError
+{
+    NSLog(@"Access denied");
 }
 
 @end

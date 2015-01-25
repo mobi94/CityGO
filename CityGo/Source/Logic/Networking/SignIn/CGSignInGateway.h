@@ -15,5 +15,7 @@ typedef void (^SignInFailureBlock)(NSError *error);
                          failure:(SignInFailureBlock)failureBlock;
 - (void)signInUsingTwitter:(UIViewController *)controller WithSuccess:(SignInSuccessBlock)successBlock
                          failure:(SignInFailureBlock)failureBlock;
+- (void)signInUsingVkWithSuccess:(SignInSuccessBlock)successBlock
+                         failure:(SignInFailureBlock)failureBlock;
 
 @end

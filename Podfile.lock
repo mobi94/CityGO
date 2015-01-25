@@ -9,6 +9,7 @@ PODS:
   - MBProgressHUD (0.9)
   - STAlertView (1.0.0)
   - UICKeyChainStore (2.0.1)
+  - VK-ios-sdk (1.0.9.3)
 
 DEPENDENCIES:
   - Facebook-iOS-SDK (~> 3.17.0)
@@ -17,6 +18,7 @@ DEPENDENCIES:
   - MBProgressHUD (~> 0.8)
   - STAlertView
   - UICKeyChainStore
+  - VK-ios-sdk
 
 SPEC CHECKSUMS:
   Bolts: 3db0a875235e0c9042b013af13af0f00f79b102c
@@ -26,5 +28,6 @@ SPEC CHECKSUMS:
   MBProgressHUD: 2038dbcf3dce73215abed6001657043d53aa79a8
   STAlertView: 86cbeeb53550374d0ec1b33045669b6f56a1a777
   UICKeyChainStore: 779de9c089920a79d8755e7ba887e51c745819a8
+  VK-ios-sdk: 9e15e985926988c9eeb6a3eb9cdd6e03e2520e88
 
 COCOAPODS: 0.35.0

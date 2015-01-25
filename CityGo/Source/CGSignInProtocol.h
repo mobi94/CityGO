@@ -12,5 +12,6 @@ typedef void (^SignInHandler)(NSError *error);
 
 - (void)signInUsingFbWithBlock:(SignInHandler)completitionHandler;
 - (void)signInUsingTwitter:(UIViewController *)controller WithBlock:(SignInHandler)completitionHandler;
+- (void)signInUsingVkWithBlock:(SignInHandler)completitionHandler;
 
 @end

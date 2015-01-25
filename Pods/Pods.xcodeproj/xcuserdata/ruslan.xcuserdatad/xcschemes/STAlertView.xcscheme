@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DBA184D901EAF74079AB713F"
+               BlueprintIdentifier = "040EB53DBB237E8DF2591E59"
                BuildableName = "STAlertView.bundle"
                BlueprintName = "STAlertView"
                ReferencedContainer = "container:Pods.xcodeproj">

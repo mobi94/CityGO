@@ -9,6 +9,7 @@
 #import "CGSignInGateway.h"
 #import "CGFacebookGateway.h"
 #import "CGTwitterGateway.h"
+#import "CGVkGateway.h"
 
 @implementation CGSignInGateway
 
@@ -100,6 +101,51 @@
          }];
     }
     
+    failure:^(NSError *error)
+    {
+        failureBlock(error);
+    }];
+}
+
+- (void)signInUsingVkWithSuccess:(SignInSuccessBlock)successBlock failure:(SignInFailureBlock)failureBlock
+{
+    CGVkGateway *vkGateway = [CGVkGateway new];
+    
+    [vkGateway loginWithSuccess:^(NSDictionary *vkUser)
+    {
+        PFUser *user = [PFUser user];
+        user.username = [NSString stringWithFormat:@"%@%@", vkUser[@"last_name"], vkUser[@"first_name"]];
+        user.password = [vkUser[@"id"] stringValue];
+        
+        user[@"gender"] = [vkUser[@"sex"] integerValue] == 1 ? @"female" : @"male";
+        user[@"avatarURL"] = vkUser[@"photo_400_orig"];
+        
+        [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+         {
+             if (!error)
+             {
+                 // Hooray! Let them use the app now.
+                 successBlock(succeeded);
+             }
+             else
+             {
+                 if (error.code == 202)
+                 {
+                     [PFUser logInWithUsernameInBackground:user.username password:user.password block:^(PFUser *user, NSError *error)
+                      {
+                          if(!error)
+                          {
+                              successBlock(YES);
+                          }
+                          else
+                          {
+                              failureBlock(error);
+                          }
+                      }];
+                 }
+             }
+         }];
+    }
     failure:^(NSError *error)
     {
         failureBlock(error);

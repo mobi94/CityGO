@@ -163,6 +163,9 @@
                                 <state key="normal" title="VK">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="signInViaVk:" destination="b47-BI-fjx" eventType="touchUpInside" id="pWf-9k-xlF"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vkw-hQ-gOm">
                                 <rect key="frame" x="61" y="629" width="252" height="30"/>
