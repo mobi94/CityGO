@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Ruslan Moskalenko. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "CGViewController.h"
 
-@interface CGSignUpViewController : UIViewController
+@interface CGSignUpViewController : CGViewController
 
 @end

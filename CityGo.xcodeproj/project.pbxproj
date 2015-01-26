@@ -15,6 +15,22 @@
 		447CDC431A6EF3CC00CA9A07 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 447CDC2F1A6EF3CC00CA9A07 /* main.m */; };
 		447CDC441A6EF3CC00CA9A07 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC331A6EF3CC00CA9A07 /* Images.xcassets */; };
 		447CDC471A6EF3CC00CA9A07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC391A6EF3CC00CA9A07 /* Main.storyboard */; };
+		448430F51A76CD180037AD8B /* GFSignUpTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430CF1A76CD180037AD8B /* GFSignUpTextField.m */; };
+		448430F61A76CD180037AD8B /* GFDateTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430D31A76CD180037AD8B /* GFDateTextField.m */; };
+		448430F71A76CD180037AD8B /* GFEmailTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430D71A76CD180037AD8B /* GFEmailTextField.m */; };
+		448430F91A76CD180037AD8B /* GFLastNameTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430DF1A76CD180037AD8B /* GFLastNameTextField.m */; };
+		448430FA1A76CD180037AD8B /* GFLimitedInputTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430E31A76CD180037AD8B /* GFLimitedInputTextField.m */; };
+		448430FB1A76CD180037AD8B /* GFConfirmPasswordTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430E81A76CD180037AD8B /* GFConfirmPasswordTextField.m */; };
+		448430FC1A76CD180037AD8B /* GFPasswordTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430EB1A76CD180037AD8B /* GFPasswordTextField.m */; };
+		448430FD1A76CD180037AD8B /* GFRequiredSignUpTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448430EF1A76CD180037AD8B /* GFRequiredSignUpTextField.m */; };
+		448431071A76CD2F0037AD8B /* GFAuthTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448431021A76CD2F0037AD8B /* GFAuthTextField.m */; };
+		448431081A76CD2F0037AD8B /* GFTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 448431061A76CD2F0037AD8B /* GFTextField.m */; };
+		4484311E1A76CFB10037AD8B /* NSDate+CompareDateOnly.m in Sources */ = {isa = PBXBuildFile; fileRef = 4484310C1A76CFB10037AD8B /* NSDate+CompareDateOnly.m */; };
+		4484311F1A76CFB10037AD8B /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 448431101A76CFB10037AD8B /* UIImage+Alpha.m */; };
+		448431201A76CFB10037AD8B /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 448431131A76CFB10037AD8B /* UIImage+Resize.m */; };
+		448431211A76CFB10037AD8B /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 448431161A76CFB10037AD8B /* UIImage+RoundedCorner.m */; };
+		448431221A76CFB10037AD8B /* UITextField+NextTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4484311A1A76CFB10037AD8B /* UITextField+NextTextField.m */; };
+		448431231A76CFB10037AD8B /* UIViewController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4484311D1A76CFB10037AD8B /* UIViewController+Additions.m */; };
 		449B76DC1A759F5F0091CEB7 /* CGVkGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 449B76DB1A759F5F0091CEB7 /* CGVkGateway.m */; };
 		44A3B44F1A756F8B0064938B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */; };
 		44A3B4551A756FC90064938B /* FHSStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A3B4521A756FC90064938B /* FHSStream.m */; };
@@ -55,7 +71,6 @@
 		44349B6F1A74538900DF86CE /* CGRootGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGRootGateway.h; sourceTree = "<group>"; };
 		44349B701A74538900DF86CE /* CGRootGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGRootGateway.m; sourceTree = "<group>"; };
 		44349B731A74545300DF86CE /* CGSignUpProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CGSignUpProtocol.h; path = Protocols/CGSignUpProtocol.h; sourceTree = "<group>"; };
-		44349B741A74546200DF86CE /* CGSignInProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CGSignInProtocol.h; sourceTree = "<group>"; };
 		44349B761A7454E200DF86CE /* CGSignInGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGSignInGateway.h; path = SignIn/CGSignInGateway.h; sourceTree = "<group>"; };
 		44349B771A7454E200DF86CE /* CGSignInGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGSignInGateway.m; path = SignIn/CGSignInGateway.m; sourceTree = "<group>"; };
 		44349B7A1A74553400DF86CE /* CGFacebookGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGFacebookGateway.h; path = Facebook/CGFacebookGateway.h; sourceTree = "<group>"; };
@@ -68,6 +83,41 @@
 		447CDC331A6EF3CC00CA9A07 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		447CDC351A6EF3CC00CA9A07 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		447CDC3A1A6EF3CC00CA9A07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		448430C91A76CD010037AD8B /* CGSignInProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CGSignInProtocol.h; path = Protocols/CGSignInProtocol.h; sourceTree = "<group>"; };
+		448430CE1A76CD180037AD8B /* GFSignUpTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFSignUpTextField.h; sourceTree = "<group>"; };
+		448430CF1A76CD180037AD8B /* GFSignUpTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFSignUpTextField.m; sourceTree = "<group>"; };
+		448430D21A76CD180037AD8B /* GFDateTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFDateTextField.h; sourceTree = "<group>"; };
+		448430D31A76CD180037AD8B /* GFDateTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFDateTextField.m; sourceTree = "<group>"; };
+		448430D61A76CD180037AD8B /* GFEmailTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFEmailTextField.h; sourceTree = "<group>"; };
+		448430D71A76CD180037AD8B /* GFEmailTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFEmailTextField.m; sourceTree = "<group>"; };
+		448430DE1A76CD180037AD8B /* GFLastNameTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFLastNameTextField.h; sourceTree = "<group>"; };
+		448430DF1A76CD180037AD8B /* GFLastNameTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFLastNameTextField.m; sourceTree = "<group>"; };
+		448430E21A76CD180037AD8B /* GFLimitedInputTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFLimitedInputTextField.h; sourceTree = "<group>"; };
+		448430E31A76CD180037AD8B /* GFLimitedInputTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFLimitedInputTextField.m; sourceTree = "<group>"; };
+		448430E41A76CD180037AD8B /* GFLimitedInputTextFieldProtected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFLimitedInputTextFieldProtected.h; sourceTree = "<group>"; };
+		448430E71A76CD180037AD8B /* GFConfirmPasswordTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFConfirmPasswordTextField.h; sourceTree = "<group>"; };
+		448430E81A76CD180037AD8B /* GFConfirmPasswordTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFConfirmPasswordTextField.m; sourceTree = "<group>"; };
+		448430EA1A76CD180037AD8B /* GFPasswordTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFPasswordTextField.h; sourceTree = "<group>"; };
+		448430EB1A76CD180037AD8B /* GFPasswordTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFPasswordTextField.m; sourceTree = "<group>"; };
+		448430EE1A76CD180037AD8B /* GFRequiredSignUpTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFRequiredSignUpTextField.h; sourceTree = "<group>"; };
+		448430EF1A76CD180037AD8B /* GFRequiredSignUpTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFRequiredSignUpTextField.m; sourceTree = "<group>"; };
+		448430F01A76CD180037AD8B /* GFRequiredSignUpTextFieldProtected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFRequiredSignUpTextFieldProtected.h; sourceTree = "<group>"; };
+		448431011A76CD2F0037AD8B /* GFAuthTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFAuthTextField.h; sourceTree = "<group>"; };
+		448431021A76CD2F0037AD8B /* GFAuthTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFAuthTextField.m; sourceTree = "<group>"; };
+		448431051A76CD2F0037AD8B /* GFTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFTextField.h; sourceTree = "<group>"; };
+		448431061A76CD2F0037AD8B /* GFTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFTextField.m; sourceTree = "<group>"; };
+		4484310B1A76CFB10037AD8B /* NSDate+CompareDateOnly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+CompareDateOnly.h"; sourceTree = "<group>"; };
+		4484310C1A76CFB10037AD8B /* NSDate+CompareDateOnly.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+CompareDateOnly.m"; sourceTree = "<group>"; };
+		4484310F1A76CFB10037AD8B /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
+		448431101A76CFB10037AD8B /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
+		448431121A76CFB10037AD8B /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		448431131A76CFB10037AD8B /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		448431151A76CFB10037AD8B /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
+		448431161A76CFB10037AD8B /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
+		448431191A76CFB10037AD8B /* UITextField+NextTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+NextTextField.h"; sourceTree = "<group>"; };
+		4484311A1A76CFB10037AD8B /* UITextField+NextTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+NextTextField.m"; sourceTree = "<group>"; };
+		4484311C1A76CFB10037AD8B /* UIViewController+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Additions.h"; sourceTree = "<group>"; };
+		4484311D1A76CFB10037AD8B /* UIViewController+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Additions.m"; sourceTree = "<group>"; };
 		449B76DA1A759F5F0091CEB7 /* CGVkGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGVkGateway.h; path = VK/CGVkGateway.h; sourceTree = "<group>"; };
 		449B76DB1A759F5F0091CEB7 /* CGVkGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGVkGateway.m; path = VK/CGVkGateway.m; sourceTree = "<group>"; };
 		44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -151,8 +201,8 @@
 		44349B721A74540A00DF86CE /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				448430C91A76CD010037AD8B /* CGSignInProtocol.h */,
 				44349B731A74545300DF86CE /* CGSignUpProtocol.h */,
-				44349B741A74546200DF86CE /* CGSignInProtocol.h */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -205,6 +255,8 @@
 		447CDC221A6EF3CC00CA9A07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				448431091A76CF9C0037AD8B /* Categories */,
+				448430CA1A76CD0A0037AD8B /* Controls */,
 				44349B721A74540A00DF86CE /* Protocols */,
 				447CDC2B1A6EF3CC00CA9A07 /* Logic */,
 				447CDC301A6EF3CC00CA9A07 /* Models */,
@@ -331,6 +383,278 @@
 				44DCF37A1A71A18000D0DE89 /* GostAlertView */,
 			);
 			path = Vendor;
+			sourceTree = "<group>";
+		};
+		448430CA1A76CD0A0037AD8B /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				448430FF1A76CD2F0037AD8B /* Auth */,
+				448431031A76CD2F0037AD8B /* Base */,
+				448430CB1A76CD180037AD8B /* SignUp */,
+			);
+			path = Controls;
+			sourceTree = "<group>";
+		};
+		448430CB1A76CD180037AD8B /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				448430CC1A76CD180037AD8B /* Base */,
+				448430D01A76CD180037AD8B /* Date */,
+				448430D41A76CD180037AD8B /* Email */,
+				448430DC1A76CD180037AD8B /* LastName */,
+				448430E01A76CD180037AD8B /* LimitedInput */,
+				448430E51A76CD180037AD8B /* Password */,
+				448430EC1A76CD180037AD8B /* Required */,
+			);
+			path = SignUp;
+			sourceTree = "<group>";
+		};
+		448430CC1A76CD180037AD8B /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				448430CD1A76CD180037AD8B /* GFSignUpTextField */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		448430CD1A76CD180037AD8B /* GFSignUpTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430CE1A76CD180037AD8B /* GFSignUpTextField.h */,
+				448430CF1A76CD180037AD8B /* GFSignUpTextField.m */,
+			);
+			path = GFSignUpTextField;
+			sourceTree = "<group>";
+		};
+		448430D01A76CD180037AD8B /* Date */ = {
+			isa = PBXGroup;
+			children = (
+				448430D11A76CD180037AD8B /* GFDateTextField */,
+			);
+			path = Date;
+			sourceTree = "<group>";
+		};
+		448430D11A76CD180037AD8B /* GFDateTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430D21A76CD180037AD8B /* GFDateTextField.h */,
+				448430D31A76CD180037AD8B /* GFDateTextField.m */,
+			);
+			path = GFDateTextField;
+			sourceTree = "<group>";
+		};
+		448430D41A76CD180037AD8B /* Email */ = {
+			isa = PBXGroup;
+			children = (
+				448430D51A76CD180037AD8B /* GFEmailTextField */,
+			);
+			path = Email;
+			sourceTree = "<group>";
+		};
+		448430D51A76CD180037AD8B /* GFEmailTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430D61A76CD180037AD8B /* GFEmailTextField.h */,
+				448430D71A76CD180037AD8B /* GFEmailTextField.m */,
+			);
+			path = GFEmailTextField;
+			sourceTree = "<group>";
+		};
+		448430DC1A76CD180037AD8B /* LastName */ = {
+			isa = PBXGroup;
+			children = (
+				448430DD1A76CD180037AD8B /* GFLastNameTextField */,
+			);
+			path = LastName;
+			sourceTree = "<group>";
+		};
+		448430DD1A76CD180037AD8B /* GFLastNameTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430DE1A76CD180037AD8B /* GFLastNameTextField.h */,
+				448430DF1A76CD180037AD8B /* GFLastNameTextField.m */,
+			);
+			path = GFLastNameTextField;
+			sourceTree = "<group>";
+		};
+		448430E01A76CD180037AD8B /* LimitedInput */ = {
+			isa = PBXGroup;
+			children = (
+				448430E11A76CD180037AD8B /* GFLimitedInputTextField */,
+			);
+			path = LimitedInput;
+			sourceTree = "<group>";
+		};
+		448430E11A76CD180037AD8B /* GFLimitedInputTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430E21A76CD180037AD8B /* GFLimitedInputTextField.h */,
+				448430E31A76CD180037AD8B /* GFLimitedInputTextField.m */,
+				448430E41A76CD180037AD8B /* GFLimitedInputTextFieldProtected.h */,
+			);
+			path = GFLimitedInputTextField;
+			sourceTree = "<group>";
+		};
+		448430E51A76CD180037AD8B /* Password */ = {
+			isa = PBXGroup;
+			children = (
+				448430E61A76CD180037AD8B /* GFConfirmPasswordTextField */,
+				448430E91A76CD180037AD8B /* GFPasswordTextField */,
+			);
+			path = Password;
+			sourceTree = "<group>";
+		};
+		448430E61A76CD180037AD8B /* GFConfirmPasswordTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430E71A76CD180037AD8B /* GFConfirmPasswordTextField.h */,
+				448430E81A76CD180037AD8B /* GFConfirmPasswordTextField.m */,
+			);
+			path = GFConfirmPasswordTextField;
+			sourceTree = "<group>";
+		};
+		448430E91A76CD180037AD8B /* GFPasswordTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430EA1A76CD180037AD8B /* GFPasswordTextField.h */,
+				448430EB1A76CD180037AD8B /* GFPasswordTextField.m */,
+			);
+			path = GFPasswordTextField;
+			sourceTree = "<group>";
+		};
+		448430EC1A76CD180037AD8B /* Required */ = {
+			isa = PBXGroup;
+			children = (
+				448430ED1A76CD180037AD8B /* GFRequiredSignUpTextField */,
+			);
+			path = Required;
+			sourceTree = "<group>";
+		};
+		448430ED1A76CD180037AD8B /* GFRequiredSignUpTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448430EE1A76CD180037AD8B /* GFRequiredSignUpTextField.h */,
+				448430EF1A76CD180037AD8B /* GFRequiredSignUpTextField.m */,
+				448430F01A76CD180037AD8B /* GFRequiredSignUpTextFieldProtected.h */,
+			);
+			path = GFRequiredSignUpTextField;
+			sourceTree = "<group>";
+		};
+		448430FF1A76CD2F0037AD8B /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				448431001A76CD2F0037AD8B /* GFAuthTextField */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		448431001A76CD2F0037AD8B /* GFAuthTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448431011A76CD2F0037AD8B /* GFAuthTextField.h */,
+				448431021A76CD2F0037AD8B /* GFAuthTextField.m */,
+			);
+			path = GFAuthTextField;
+			sourceTree = "<group>";
+		};
+		448431031A76CD2F0037AD8B /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				448431041A76CD2F0037AD8B /* GFTextField */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		448431041A76CD2F0037AD8B /* GFTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448431051A76CD2F0037AD8B /* GFTextField.h */,
+				448431061A76CD2F0037AD8B /* GFTextField.m */,
+			);
+			path = GFTextField;
+			sourceTree = "<group>";
+		};
+		448431091A76CF9C0037AD8B /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				4484310A1A76CFB10037AD8B /* NSDate */,
+				4484310D1A76CFB10037AD8B /* UIImage */,
+				448431171A76CFB10037AD8B /* UITextField */,
+				4484311B1A76CFB10037AD8B /* UIViewController */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		4484310A1A76CFB10037AD8B /* NSDate */ = {
+			isa = PBXGroup;
+			children = (
+				4484310B1A76CFB10037AD8B /* NSDate+CompareDateOnly.h */,
+				4484310C1A76CFB10037AD8B /* NSDate+CompareDateOnly.m */,
+			);
+			path = NSDate;
+			sourceTree = "<group>";
+		};
+		4484310D1A76CFB10037AD8B /* UIImage */ = {
+			isa = PBXGroup;
+			children = (
+				4484310E1A76CFB10037AD8B /* UIImage+Alpha */,
+				448431111A76CFB10037AD8B /* UIImage+Resize */,
+				448431141A76CFB10037AD8B /* UIImage+RoundedCorner */,
+			);
+			path = UIImage;
+			sourceTree = "<group>";
+		};
+		4484310E1A76CFB10037AD8B /* UIImage+Alpha */ = {
+			isa = PBXGroup;
+			children = (
+				4484310F1A76CFB10037AD8B /* UIImage+Alpha.h */,
+				448431101A76CFB10037AD8B /* UIImage+Alpha.m */,
+			);
+			path = "UIImage+Alpha";
+			sourceTree = "<group>";
+		};
+		448431111A76CFB10037AD8B /* UIImage+Resize */ = {
+			isa = PBXGroup;
+			children = (
+				448431121A76CFB10037AD8B /* UIImage+Resize.h */,
+				448431131A76CFB10037AD8B /* UIImage+Resize.m */,
+			);
+			path = "UIImage+Resize";
+			sourceTree = "<group>";
+		};
+		448431141A76CFB10037AD8B /* UIImage+RoundedCorner */ = {
+			isa = PBXGroup;
+			children = (
+				448431151A76CFB10037AD8B /* UIImage+RoundedCorner.h */,
+				448431161A76CFB10037AD8B /* UIImage+RoundedCorner.m */,
+			);
+			path = "UIImage+RoundedCorner";
+			sourceTree = "<group>";
+		};
+		448431171A76CFB10037AD8B /* UITextField */ = {
+			isa = PBXGroup;
+			children = (
+				448431181A76CFB10037AD8B /* UITextField+NextTextField */,
+			);
+			path = UITextField;
+			sourceTree = "<group>";
+		};
+		448431181A76CFB10037AD8B /* UITextField+NextTextField */ = {
+			isa = PBXGroup;
+			children = (
+				448431191A76CFB10037AD8B /* UITextField+NextTextField.h */,
+				4484311A1A76CFB10037AD8B /* UITextField+NextTextField.m */,
+			);
+			path = "UITextField+NextTextField";
+			sourceTree = "<group>";
+		};
+		4484311B1A76CFB10037AD8B /* UIViewController */ = {
+			isa = PBXGroup;
+			children = (
+				4484311C1A76CFB10037AD8B /* UIViewController+Additions.h */,
+				4484311D1A76CFB10037AD8B /* UIViewController+Additions.m */,
+			);
+			path = UIViewController;
 			sourceTree = "<group>";
 		};
 		449B76D91A759F2E0091CEB7 /* VK */ = {
@@ -602,23 +926,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4484311E1A76CFB10037AD8B /* NSDate+CompareDateOnly.m in Sources */,
+				448430FA1A76CD180037AD8B /* GFLimitedInputTextField.m in Sources */,
 				44DCF37D1A71A18000D0DE89 /* OLGhostAlertView.m in Sources */,
 				44DCF34A1A71861700D0DE89 /* CGMainViewController.m in Sources */,
+				448430F51A76CD180037AD8B /* GFSignUpTextField.m in Sources */,
 				447CDC431A6EF3CC00CA9A07 /* main.m in Sources */,
+				448430FB1A76CD180037AD8B /* GFConfirmPasswordTextField.m in Sources */,
 				44DCF3751A71953900D0DE89 /* CGParseAppDelegate.m in Sources */,
 				44349B7C1A74553400DF86CE /* CGFacebookGateway.m in Sources */,
 				44B7BEEB1A746C8C002AC33D /* CGConversationsViewController.m in Sources */,
+				448430F71A76CD180037AD8B /* GFEmailTextField.m in Sources */,
+				448431071A76CD2F0037AD8B /* GFAuthTextField.m in Sources */,
 				44DCF3511A718A7B00D0DE89 /* CGViewController.m in Sources */,
 				447CDC401A6EF3CC00CA9A07 /* AppDelegate.m in Sources */,
+				448430F61A76CD180037AD8B /* GFDateTextField.m in Sources */,
 				44A3B4561A756FC90064938B /* FHSTwitterEngine.m in Sources */,
+				448431221A76CFB10037AD8B /* UITextField+NextTextField.m in Sources */,
+				448430FD1A76CD180037AD8B /* GFRequiredSignUpTextField.m in Sources */,
+				448430FC1A76CD180037AD8B /* GFPasswordTextField.m in Sources */,
 				44349B781A7454E200DF86CE /* CGSignInGateway.m in Sources */,
+				4484311F1A76CFB10037AD8B /* UIImage+Alpha.m in Sources */,
 				44DCF3791A719A7600D0DE89 /* CGLoginViewController.m in Sources */,
 				44DCF3551A71919400D0DE89 /* CGNotifier.m in Sources */,
+				448431081A76CD2F0037AD8B /* GFTextField.m in Sources */,
 				44A3B45A1A757F1D0064938B /* CGTwitterGateway.m in Sources */,
+				448430F91A76CD180037AD8B /* GFLastNameTextField.m in Sources */,
 				44A3B4551A756FC90064938B /* FHSStream.m in Sources */,
+				448431231A76CFB10037AD8B /* UIViewController+Additions.m in Sources */,
 				44349B711A74538900DF86CE /* CGRootGateway.m in Sources */,
 				449B76DC1A759F5F0091CEB7 /* CGVkGateway.m in Sources */,
+				448431211A76CFB10037AD8B /* UIImage+RoundedCorner.m in Sources */,
 				44349B6C1A74456F00DF86CE /* CGSignUpViewController.m in Sources */,
+				448431201A76CFB10037AD8B /* UIImage+Resize.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

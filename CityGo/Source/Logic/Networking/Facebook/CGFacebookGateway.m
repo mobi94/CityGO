@@ -28,7 +28,7 @@
 {
     [[FBSession activeSession] closeAndClearTokenInformation];
     
-    FBSession *newSession = [[FBSession alloc] initWithPermissions:@[@"public_profile", @"email", @"user_friends"]];
+    FBSession *newSession = [[FBSession alloc] initWithPermissions:@[@"public_profile", @"user_friends"]];
     [FBSession setActiveSession:newSession];
     
     [newSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
@@ -41,10 +41,10 @@
                   {
                       NSMutableDictionary *fbUser = [NSMutableDictionary dictionary];
                       
-                      fbUser[@"username"] = [NSString stringWithFormat:@"%@%@", user.last_name, user.first_name];
+                      fbUser[@"nickname"] = [NSString stringWithFormat:@"%@%@", user.last_name, user.first_name];
+                      fbUser[@"username"] = user.objectID;
                       fbUser[@"password"] = user.objectID;
                       fbUser[@"gender"] = [user objectForKey:@"gender"];
-                      fbUser[@"email"] = [user objectForKey:@"email"];
                       fbUser[@"avatarLink"] = [NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large", user.objectID];
                       
                       successBlock(fbUser);

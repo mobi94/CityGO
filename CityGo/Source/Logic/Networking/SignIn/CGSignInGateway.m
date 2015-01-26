@@ -11,6 +11,8 @@
 #import "CGTwitterGateway.h"
 #import "CGVkGateway.h"
 
+static NSString *const kBasePassword = @"aFdeCbc550c9";
+
 @implementation CGSignInGateway
 
 - (void)signInUsingFBWithSuccess:(SignInSuccessBlock)successBlock failure:(SignInFailureBlock)failureBlock
@@ -21,9 +23,9 @@
     {
         PFUser *user = [PFUser user];
         user.username = fbUser[@"username"];
-        user.password = fbUser[@"password"];
-        user.email = fbUser[@"email"];
+        user.password = [NSString stringWithFormat:@"%@%@", fbUser[@"password"], kBasePassword];
         
+        user[@"nickname"] = fbUser[@"nickname"];
         user[@"gender"] = fbUser[@"gender"];
         user[@"avatarURL"] = fbUser[@"avatarLink"];
         
@@ -66,13 +68,14 @@
     [twitterGateway login:controller WithSuccess:^(NSDictionary *twitterUser)
     {
         PFUser *user = [PFUser user];
-        user.username = twitterUser[@"screen_name"];
-        user.password = twitterUser[@"id_str"];
+        user.username = twitterUser[@"id_str"];
+        user.password = [NSString stringWithFormat:@"%@%@", twitterUser[@"id_str"], kBasePassword];
         
         NSString *strAvatar = twitterUser[@"profile_image_url"];
         strAvatar = [strAvatar stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
         
         user[@"avatarURL"] = strAvatar;
+        user[@"nickname"] = twitterUser[@"screen_name"];
         
         [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
          {
@@ -114,9 +117,10 @@
     [vkGateway loginWithSuccess:^(NSDictionary *vkUser)
     {
         PFUser *user = [PFUser user];
-        user.username = [NSString stringWithFormat:@"%@%@", vkUser[@"last_name"], vkUser[@"first_name"]];
-        user.password = [vkUser[@"id"] stringValue];
+        user.username = [vkUser[@"id"] stringValue];
+        user.password = [NSString stringWithFormat:@"%@%@", [vkUser[@"id"] stringValue], kBasePassword];
         
+        user[@"nickname"] = [NSString stringWithFormat:@"%@%@", vkUser[@"first_name"], vkUser[@"last_name"]];
         user[@"gender"] = [vkUser[@"sex"] integerValue] == 1 ? @"female" : @"male";
         user[@"avatarURL"] = vkUser[@"photo_400_orig"];
         

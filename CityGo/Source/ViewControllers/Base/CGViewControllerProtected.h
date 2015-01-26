@@ -7,6 +7,7 @@
 //
 
 #import "MBProgressHUD.h"
+#import "CGViewController.h"
 
 @interface CGViewController ()
 

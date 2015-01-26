@@ -19,7 +19,7 @@
     // Do any additional setup after loading the view.
     // Get the user from a non-authenticated method
     PFQuery *query = [PFUser query];
-    PFUser *userAgain = (PFUser *)[query getObjectWithId:@"TZSYovHFc0"];
+    PFUser *userAgain = (PFUser *)[query getObjectWithId:@"8GfS6JFGUw"];
     
     NSLog(@"%@", userAgain);
     NSLog(@"%@", [PFUser currentUser]);

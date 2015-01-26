@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Ruslan Moskalenko. All rights reserved.
 //
 
-#ifndef CityGo_CGSignUpProtocol_h
-#define CityGo_CGSignUpProtocol_h
+@protocol CGSignUpProtocol <NSObject>
 
 
-#endif
+
+@end
