@@ -7,6 +7,8 @@
 //
 
 #import "GFDateTextField.h"
+#import "GFRequiredSignUpTextFieldProtected.h"
+#import "GFLimitedInputTextFieldProtected.h"
 
 @implementation GFDateTextField
 
@@ -22,6 +24,18 @@
     [dateFormatter setDateFormat:@"yyyy.MM.dd"];
     
     return [dateFormatter stringFromDate:dateToFormat];
+}
+
+- (void)promptInContainerView:(UIView *)container
+{
+    [self setPopUpMessage:@"This field help us"];
+    
+    [super promptInContainerView:container];
+}
+
+- (void)validate
+{
+    [self setValid:(self.text.length > 0)];
 }
 
 @end

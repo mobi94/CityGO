@@ -39,7 +39,6 @@
 - (IBAction)addAvatarButonClick:(id)sender;
 - (IBAction)signupButtonClick:(id)sender;
 
-- (void)setupDoneButton;
 - (void)setupOptionalFields;
 - (void)setupGenderDataSource;
 - (void)setupTextFieldIdentifiers;
@@ -71,7 +70,6 @@
     
     [self setupImagePicker];
     [self setupReturnKeyHandler];
-    [self setupDoneButton];
     [self setupOptionalFields];
     [self setupGenderDataSource];
 }
@@ -83,6 +81,8 @@
     [self.signupButton setEnabled:NO];
     
     [self registerObserver];
+    
+    [self.scrollView setScrollEnabled:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -123,18 +123,6 @@
     [_returnKeyHandler setDelegate:self];
 }
 
-- (void)setupDoneButton
-{
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done"
-                                                                   style:UIBarButtonItemStylePlain
-                                                                  target:self
-                                                                  action:@selector(signUp)];
-    
-    [doneButton setEnabled:_userInfoReady];
-    
-    [[self navigationItem] setRightBarButtonItem:doneButton];
-}
-
 - (void)setupOptionalFields
 {
     UIDatePicker *datePicker = [UIDatePicker new];
@@ -142,6 +130,7 @@
     [datePicker addTarget:self
                    action:@selector(datePickerValueDidChange:)
          forControlEvents:UIControlEventValueChanged];
+    [datePicker setMaximumDate:[NSDate date]];
     
     UIPickerView *genderPicker = [UIPickerView new];
     [genderPicker setDelegate:self];
@@ -151,7 +140,7 @@
     NSPredicate *genderPredicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@", @"placeholder", @"Gender"];
     
     GFTextField *genderField = [[_optionalFields filteredArrayUsingPredicate:genderPredicate] firstObject];
-    GFTextField *birthdayField = [[_optionalFields filteredArrayUsingPredicate:birthdayPredicate] firstObject];
+    GFTextField *birthdayField = [[_requiredFields filteredArrayUsingPredicate:birthdayPredicate] firstObject];
     
     [genderField setInputView:genderPicker];
     [birthdayField setInputView:datePicker];
@@ -179,9 +168,9 @@
     [self showHUD];
     
     [self gatherUserDataWithBlock:^(NSDictionary *signUpData)
-     {
+    {
          
-     }];
+    }];
 }
 
 
@@ -209,7 +198,7 @@
     NSString *dateString = [dateFormatter stringFromDate:[datePicker date]];
     
     NSPredicate *birthdayPredicate = [NSPredicate predicateWithFormat:@"%K CONTAINS %@", @"placeholder", @"Birthday"];
-    GFTextField *birthdayField = [[_optionalFields filteredArrayUsingPredicate:birthdayPredicate] firstObject];
+    GFTextField *birthdayField = [[_requiredFields filteredArrayUsingPredicate:birthdayPredicate] firstObject];
     
     [birthdayField setText:dateString];
 }
@@ -248,8 +237,6 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    [_scrollView setScrollEnabled:NO];
-    
     if ([textField respondsToSelector:@selector(isValid)] && ![(GFRequiredSignUpTextField *)textField isValid])
     {
         [(GFRequiredSignUpTextField *)textField promptInContainerView:_scrollView];
@@ -282,8 +269,6 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    [_scrollView setScrollEnabled:YES];
-    
     if ([textField respondsToSelector:@selector(validate)])
     {
         [(GFRequiredSignUpTextField *)textField finishEditing];

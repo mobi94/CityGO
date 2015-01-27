@@ -291,7 +291,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ABJ-T0-Avu">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ovo-Ms-Uyp" customClass="GFLastNameTextField">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ovo-Ms-Uyp" customClass="GFLastNameTextField">
                                         <rect key="frame" x="23" y="219" width="329" height="40"/>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -299,8 +299,11 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="nextTextField" destination="ORI-Nr-tVj" id="Qg1-i0-oTE"/>
+                                        </connections>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ORI-Nr-tVj" customClass="GFPasswordTextField">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ORI-Nr-tVj" customClass="GFPasswordTextField">
                                         <rect key="frame" x="23" y="267" width="329" height="40"/>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -308,8 +311,11 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                        <connections>
+                                            <outlet property="nextTextField" destination="dah-yY-vFs" id="RTl-ZJ-mFz"/>
+                                        </connections>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="confirm password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dah-yY-vFs" customClass="GFConfirmPasswordTextField">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Confirm password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dah-yY-vFs" customClass="GFConfirmPasswordTextField">
                                         <rect key="frame" x="23" y="315" width="329" height="40"/>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -317,8 +323,12 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                        <connections>
+                                            <outlet property="nextTextField" destination="1wj-r3-KjE" id="4iO-vg-Vm1"/>
+                                            <outlet property="passwordToMatch" destination="ORI-Nr-tVj" id="LDq-br-jbm"/>
+                                        </connections>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1wj-r3-KjE" customClass="GFEmailTextField">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1wj-r3-KjE" customClass="GFEmailTextField">
                                         <rect key="frame" x="23" y="361" width="329" height="40"/>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -326,8 +336,11 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="nextTextField" destination="bJi-Ma-ncv" id="ApF-62-lgp"/>
+                                        </connections>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="birthday" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bJi-Ma-ncv" customClass="GFDateTextField">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Birthday" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bJi-Ma-ncv" customClass="GFDateTextField">
                                         <rect key="frame" x="23" y="409" width="329" height="40"/>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -335,8 +348,11 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="nextTextField" destination="iMT-TV-Usj" id="RbI-Rc-rtJ"/>
+                                        </connections>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="gender" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iMT-TV-Usj" customClass="GFSignUpTextField">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Gender" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iMT-TV-Usj" customClass="GFSignUpTextField">
                                         <rect key="frame" x="23" y="457" width="329" height="40"/>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -357,13 +373,13 @@
                                             <action selector="dismissButtonClick:" destination="IFd-A7-c3O" eventType="touchUpInside" id="FXN-Wt-jKK"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bFI-Yl-rks">
+                                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bFI-Yl-rks">
                                         <rect key="frame" x="118" y="43" width="139" height="145"/>
                                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="139" id="sBC-i5-QU2"/>
                                         </constraints>
-                                        <state key="normal" title="Button">
+                                        <state key="normal">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -436,9 +452,16 @@
                         <outlet property="scrollView" destination="ABJ-T0-Avu" id="lCm-uZ-KKw"/>
                         <outlet property="signupButton" destination="dTa-7V-xdE" id="9yv-DW-PdJ"/>
                         <outletCollection property="requiredFields" destination="dah-yY-vFs" id="7WI-NH-mxd"/>
-                        <outletCollection property="optionalFields" destination="iMT-TV-Usj" id="oBM-4C-U4f"/>
                         <outletCollection property="signUpfields" destination="bJi-Ma-ncv" id="Emy-tu-KhY"/>
                         <outletCollection property="signUpfields" destination="iMT-TV-Usj" id="3DK-Bw-npl"/>
+                        <outletCollection property="requiredFields" destination="Ovo-Ms-Uyp" id="8F3-jg-13u"/>
+                        <outletCollection property="signUpfields" destination="Ovo-Ms-Uyp" id="i9V-Tu-ADg"/>
+                        <outletCollection property="requiredFields" destination="ORI-Nr-tVj" id="N2M-C2-bM9"/>
+                        <outletCollection property="signUpfields" destination="ORI-Nr-tVj" id="poj-7o-eGX"/>
+                        <outletCollection property="requiredFields" destination="1wj-r3-KjE" id="GNn-tg-sG1"/>
+                        <outletCollection property="signUpfields" destination="1wj-r3-KjE" id="koh-QD-yl9"/>
+                        <outletCollection property="requiredFields" destination="bJi-Ma-ncv" id="6eb-FD-9l5"/>
+                        <outletCollection property="optionalFields" destination="iMT-TV-Usj" id="gwT-iu-eyV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gmS-ji-Bvh" userLabel="First Responder" sceneMemberID="firstResponder"/>

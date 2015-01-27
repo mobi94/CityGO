@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 NIX. All rights reserved.
 //
 
-#import "GFSignUpTextField.h"
+#import "GFLimitedInputTextField.h"
 
-@interface GFDateTextField : GFSignUpTextField
+@interface GFDateTextField : GFLimitedInputTextField
 
 @end
