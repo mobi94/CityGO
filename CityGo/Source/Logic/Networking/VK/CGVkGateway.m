@@ -12,7 +12,7 @@
 
 - (void)loginWithSuccess:(VKLoginSuccessBlock)successBlock failure:(VKLoginFailureBlock)failureBlock
 {
-    static NSString *const ALL_USER_FIELDS = @"id, first_name, last_name, sex, photo_400_orig";
+    static NSString *const ALL_USER_FIELDS = @"id, first_name, last_name, sex, photo_400_orig, bdate";
     
     __block VKRequest *request = [[VKRequest alloc] init];
     

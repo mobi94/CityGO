@@ -7,7 +7,8 @@
 //
 
 #import "CGSignInProtocol.h"
+#import "CGSignUpProtocol.h"
 
-@interface CGRootGateway : NSObject <CGSignInProtocol>
+@interface CGRootGateway : NSObject <CGSignInProtocol, CGSignUpProtocol>
 
 @end

@@ -8,10 +8,12 @@
 
 #import "CGRootGateway.h"
 #import "CGSignInGateway.h"
+#import "CGSignUpGateway.h"
 
 @interface CGRootGateway ()
 
 @property(strong, nonatomic) CGSignInGateway *signInGateway;
+@property(strong, nonatomic) CGSignUpGateway *signUpGateway;
 
 @end
 
@@ -24,6 +26,7 @@
     if (self)
     {
         self.signInGateway = [[CGSignInGateway alloc] init];
+        self.signUpGateway = [[CGSignUpGateway alloc] init];
     }
     
     return self;
@@ -65,6 +68,21 @@
 - (void)signInUsingVkWithBlock:(SignInHandler)completitionHandler
 {
     [self.signInGateway signInUsingVkWithSuccess:^(BOOL success)
+    {
+        completitionHandler(nil);
+    }
+    failure:^(NSError *error)
+    {
+        completitionHandler(error);
+    }];
+}
+
+#pragma mark -
+#pragma mark Sign Up
+
+- (void)signUp:(NSDictionary *)userInfo WithBlock:(SignUpHandler)completitionHandler
+{
+    [self.signUpGateway signInUp:userInfo WithSuccess:^(BOOL success)
     {
         completitionHandler(nil);
     }

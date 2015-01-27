@@ -6,8 +6,10 @@
 //  Copyright (c) 2015 Ruslan Moskalenko. All rights reserved.
 //
 
+typedef void (^SignUpHandler)(NSError *error);
+
 @protocol CGSignUpProtocol <NSObject>
 
-
+- (void)signUp:(NSDictionary *)userInfo WithBlock:(SignUpHandler)completitionHandler;
 
 @end

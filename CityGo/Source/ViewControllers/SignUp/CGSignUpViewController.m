@@ -14,6 +14,7 @@
 #import "FDTakeController.h"
 #import "CGSignUpProtocol.h"
 #import <IQKeyboardManager/KeyboardManager.h>
+#import "AppDelegate.h"
 
 @interface CGSignUpViewController ()<UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UITextViewDelegate, UIAlertViewDelegate, UIScrollViewDelegate, FDTakeDelegate>
 
@@ -169,7 +170,24 @@
     
     [self gatherUserDataWithBlock:^(NSDictionary *signUpData)
     {
-         
+        [self.authenticator signUp:signUpData WithBlock:^(NSError *error)
+         {
+             if (!error)
+             {
+                 NSLog(@"Success sign up");
+                 
+                 AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
+                 appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+             }
+             else
+             {
+                 [self hideHUD];
+                 
+                 [self handleError:error];
+                 
+                 NSLog(@"%@", [error description]);
+             }
+         }];
     }];
 }
 
@@ -186,7 +204,7 @@
 
 - (IBAction)signupButtonClick:(id)sender
 {
-    
+    [self signUp];
 }
 
 - (void)datePickerValueDidChange:(UIDatePicker *)datePicker

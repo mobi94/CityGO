@@ -21,7 +21,9 @@
 
 - (void)promptInContainerView:(UIView *)container
 {
-    return;
+    [self setPopUpMessage:@"Your must confirm your Email"];
+    
+    [super promptInContainerView:container];
 }
 
 - (void)validate

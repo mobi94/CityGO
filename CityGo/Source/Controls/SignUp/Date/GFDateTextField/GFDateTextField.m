@@ -21,7 +21,7 @@
     NSString *dateString = [super text];
     NSDate *dateToFormat = [dateFormatter dateFromString:dateString];
     
-    [dateFormatter setDateFormat:@"yyyy.MM.dd"];
+    [dateFormatter setDateFormat:@"dd.MM.yyyy"];
     
     return [dateFormatter stringFromDate:dateToFormat];
 }

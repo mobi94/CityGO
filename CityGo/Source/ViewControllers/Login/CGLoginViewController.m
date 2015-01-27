@@ -11,10 +11,11 @@
 #import "CGSignInProtocol.h"
 #import "AppDelegate.h"
 #import "FHSTwitterEngine.h"
+#import <STAlertView/STAlertView.h>
 
 static NSArray  *SCOPE = nil;
 
-@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate, VKSdkDelegate>
+@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate, VKSdkDelegate, UIAlertViewDelegate>
 
 @property(weak, nonatomic) IBOutlet id<CGSignInProtocol> loginner;
 
@@ -131,6 +132,30 @@ static NSArray  *SCOPE = nil;
         }
         [self hideHUD];
     }];
+}
+
+- (IBAction)fogotPassword:(id)sender
+{
+    UIAlertView *recoveryPassword = [[UIAlertView alloc] initWithTitle:@"Restore Password" message:@"PLease, enter your account email" delegate:self cancelButtonTitle:@"Send" otherButtonTitles:@"Cancel", nil];
+    [recoveryPassword setAlertViewStyle:UIAlertViewStylePlainTextInput];
+    
+    [recoveryPassword show];
+}
+
+#pragma mark -
+#pragma mark - Alert View Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0)
+    {
+        UITextField *emailField = [alertView textFieldAtIndex:0];
+        [PFUser requestPasswordResetForEmailInBackground:emailField.text];
+    }
+    else
+    {
+        NSLog(@"cancel");
+    }
 }
 
 #pragma mark -

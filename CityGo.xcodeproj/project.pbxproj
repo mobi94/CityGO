@@ -31,6 +31,7 @@
 		448431211A76CFB10037AD8B /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 448431161A76CFB10037AD8B /* UIImage+RoundedCorner.m */; };
 		448431221A76CFB10037AD8B /* UITextField+NextTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4484311A1A76CFB10037AD8B /* UITextField+NextTextField.m */; };
 		448431231A76CFB10037AD8B /* UIViewController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4484311D1A76CFB10037AD8B /* UIViewController+Additions.m */; };
+		44856D821A7833CB007B2D76 /* CGSignUpGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44856D811A7833CB007B2D76 /* CGSignUpGateway.m */; };
 		449B76DC1A759F5F0091CEB7 /* CGVkGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 449B76DB1A759F5F0091CEB7 /* CGVkGateway.m */; };
 		44A3B44F1A756F8B0064938B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */; };
 		44A3B4551A756FC90064938B /* FHSStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 44A3B4521A756FC90064938B /* FHSStream.m */; };
@@ -118,6 +119,8 @@
 		4484311A1A76CFB10037AD8B /* UITextField+NextTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+NextTextField.m"; sourceTree = "<group>"; };
 		4484311C1A76CFB10037AD8B /* UIViewController+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Additions.h"; sourceTree = "<group>"; };
 		4484311D1A76CFB10037AD8B /* UIViewController+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Additions.m"; sourceTree = "<group>"; };
+		44856D801A7833CB007B2D76 /* CGSignUpGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGSignUpGateway.h; path = SignUp/CGSignUpGateway.h; sourceTree = "<group>"; };
+		44856D811A7833CB007B2D76 /* CGSignUpGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGSignUpGateway.m; path = SignUp/CGSignUpGateway.m; sourceTree = "<group>"; };
 		449B76DA1A759F5F0091CEB7 /* CGVkGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGVkGateway.h; path = VK/CGVkGateway.h; sourceTree = "<group>"; };
 		449B76DB1A759F5F0091CEB7 /* CGVkGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGVkGateway.m; path = VK/CGVkGateway.m; sourceTree = "<group>"; };
 		44A3B44E1A756F8B0064938B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -303,6 +306,7 @@
 		447CDC2C1A6EF3CC00CA9A07 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				44856D7F1A783376007B2D76 /* SignUp */,
 				449B76D91A759F2E0091CEB7 /* VK */,
 				44A3B4571A757F000064938B /* Twitter */,
 				44349B791A74551B00DF86CE /* Facebook */,
@@ -657,6 +661,15 @@
 			path = UIViewController;
 			sourceTree = "<group>";
 		};
+		44856D7F1A783376007B2D76 /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				44856D801A7833CB007B2D76 /* CGSignUpGateway.h */,
+				44856D811A7833CB007B2D76 /* CGSignUpGateway.m */,
+			);
+			name = SignUp;
+			sourceTree = "<group>";
+		};
 		449B76D91A759F2E0091CEB7 /* VK */ = {
 			isa = PBXGroup;
 			children = (
@@ -946,6 +959,7 @@
 				448430FD1A76CD180037AD8B /* GFRequiredSignUpTextField.m in Sources */,
 				448430FC1A76CD180037AD8B /* GFPasswordTextField.m in Sources */,
 				44349B781A7454E200DF86CE /* CGSignInGateway.m in Sources */,
+				44856D821A7833CB007B2D76 /* CGSignUpGateway.m in Sources */,
 				4484311F1A76CFB10037AD8B /* UIImage+Alpha.m in Sources */,
 				44DCF3791A719A7600D0DE89 /* CGLoginViewController.m in Sources */,
 				44DCF3551A71919400D0DE89 /* CGNotifier.m in Sources */,
