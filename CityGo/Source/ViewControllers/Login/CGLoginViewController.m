@@ -15,7 +15,7 @@
 
 static NSArray  *SCOPE = nil;
 
-@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate, VKSdkDelegate, UIAlertViewDelegate>
+@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate, VKSdkDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 
 @property(weak, nonatomic) IBOutlet id<CGSignInProtocol> loginner;
 
@@ -35,7 +35,7 @@ static NSArray  *SCOPE = nil;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    
+    [self.authButton setTitle:@"Sign Up" forState:UIControlStateNormal];
 }
 
 - (void)viewDidLoad {
@@ -45,6 +45,8 @@ static NSArray  *SCOPE = nil;
     
     [VKSdk initializeWithDelegate:self andAppId:@"4749201"];
     SCOPE = @[VK_PER_WALL, VK_PER_PHOTOS, VK_PER_NOHTTPS];
+    
+    [self setupTextFields];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -54,11 +56,75 @@ static NSArray  *SCOPE = nil;
 
 - (IBAction)authButtonClick:(id)sender
 {
+    if ([self userInfoReady])
+    {
+        [self signInViaUserInfo];
+        return;
+    }
+    
     [self performSegueWithIdentifier:@"signUpSegue" sender:sender];
 }
 
 #pragma mark -
+#pragma mark Actions
+
+- (void)setupTextFields
+{
+    [self.usernameTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.passwordTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+}
+
+- (void)setInitialViewController
+{
+    AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
+    appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+}
+
+#pragma mark -
+#pragma mark Actions
+
+- (BOOL)userInfoReady
+{
+    return (self.usernameTextField.text.length > 0 && self.passwordTextField.text.length > 0);
+}
+
+- (void)textFieldDidChange:(UITextField*)textField
+{
+    
+    if ([self userInfoReady])
+    {
+        [self.authButton setTitle:@"Sign In" forState:UIControlStateNormal];
+    }
+    else
+    {
+        [self.authButton setTitle:@"Sign Up" forState:UIControlStateNormal];
+    }
+}
+
+#pragma mark -
 #pragma mark Sign In
+
+- (void)signInViaUserInfo
+{
+    [self showHUD];
+    
+    [self.loginner signInUsingUserInfo:@{@"username" : self.usernameTextField.text, @"password" : self.passwordTextField.text} WithBlock:^(NSError *error)
+    {
+        if (!error)
+        {
+            NSLog(@"SuccesLogin");
+            
+            [self setInitialViewController];
+        }
+        else
+        {
+            [self handleError:error];
+            
+            NSLog(@"%@", [error description]);
+        }
+        [self hideHUD];
+    }];
+}
 
 - (IBAction)signInViaFB:(id)sender
 {
@@ -70,8 +136,7 @@ static NSArray  *SCOPE = nil;
         {
             NSLog(@"SuccesLogin");
             
-            AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
-            appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+            [self setInitialViewController];
         }
         else
         {
@@ -93,8 +158,7 @@ static NSArray  *SCOPE = nil;
         {
             NSLog(@"SuccesLogin");
             
-            AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
-            appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+            [self setInitialViewController];
         }
         else
         {
@@ -121,8 +185,7 @@ static NSArray  *SCOPE = nil;
         {
             NSLog(@"SuccesLogin");
             
-            AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
-            appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+            [self setInitialViewController];
         }
         else
         {

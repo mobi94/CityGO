@@ -92,4 +92,19 @@
     }];
 }
 
+#pragma mark -
+#pragma mark Sign In
+
+- (void)signInUsingUserInfo:(NSDictionary *)userInfo WithBlock:(SignInHandler)completitionHandler
+{
+    [self.signInGateway signInUsingUserInfo:userInfo WithSuccess:^(BOOL success)
+    {
+        completitionHandler(nil);
+    }
+    failure:^(NSError *error)
+    {
+        completitionHandler(error);
+    }];
+}
+
 @end

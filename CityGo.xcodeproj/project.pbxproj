@@ -11,6 +11,7 @@
 		44349B711A74538900DF86CE /* CGRootGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44349B701A74538900DF86CE /* CGRootGateway.m */; };
 		44349B781A7454E200DF86CE /* CGSignInGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44349B771A7454E200DF86CE /* CGSignInGateway.m */; };
 		44349B7C1A74553400DF86CE /* CGFacebookGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = 44349B7B1A74553400DF86CE /* CGFacebookGateway.m */; };
+		4456A2B51A797418008BF714 /* GFSignInTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4456A2B41A797418008BF714 /* GFSignInTextField.m */; };
 		447CDC401A6EF3CC00CA9A07 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 447CDC251A6EF3CC00CA9A07 /* AppDelegate.m */; };
 		447CDC431A6EF3CC00CA9A07 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 447CDC2F1A6EF3CC00CA9A07 /* main.m */; };
 		447CDC441A6EF3CC00CA9A07 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 447CDC331A6EF3CC00CA9A07 /* Images.xcassets */; };
@@ -76,6 +77,8 @@
 		44349B771A7454E200DF86CE /* CGSignInGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGSignInGateway.m; path = SignIn/CGSignInGateway.m; sourceTree = "<group>"; };
 		44349B7A1A74553400DF86CE /* CGFacebookGateway.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CGFacebookGateway.h; path = Facebook/CGFacebookGateway.h; sourceTree = "<group>"; };
 		44349B7B1A74553400DF86CE /* CGFacebookGateway.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CGFacebookGateway.m; path = Facebook/CGFacebookGateway.m; sourceTree = "<group>"; };
+		4456A2B31A797418008BF714 /* GFSignInTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GFSignInTextField.h; sourceTree = "<group>"; };
+		4456A2B41A797418008BF714 /* GFSignInTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFSignInTextField.m; sourceTree = "<group>"; };
 		447CDBF91A6EF10E00CA9A07 /* CityGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CityGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		447CDC121A6EF10E00CA9A07 /* CityGoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CityGoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		447CDC241A6EF3CC00CA9A07 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -226,6 +229,15 @@
 				44349B7B1A74553400DF86CE /* CGFacebookGateway.m */,
 			);
 			name = Facebook;
+			sourceTree = "<group>";
+		};
+		4456A2B21A797418008BF714 /* GFSignInTextField */ = {
+			isa = PBXGroup;
+			children = (
+				4456A2B31A797418008BF714 /* GFSignInTextField.h */,
+				4456A2B41A797418008BF714 /* GFSignInTextField.m */,
+			);
+			path = GFSignInTextField;
 			sourceTree = "<group>";
 		};
 		447CDBF01A6EF10E00CA9A07 = {
@@ -392,6 +404,7 @@
 		448430CA1A76CD0A0037AD8B /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				4456A2B21A797418008BF714 /* GFSignInTextField */,
 				448430FF1A76CD2F0037AD8B /* Auth */,
 				448431031A76CD2F0037AD8B /* Base */,
 				448430CB1A76CD180037AD8B /* SignUp */,
@@ -940,6 +953,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4484311E1A76CFB10037AD8B /* NSDate+CompareDateOnly.m in Sources */,
+				4456A2B51A797418008BF714 /* GFSignInTextField.m in Sources */,
 				448430FA1A76CD180037AD8B /* GFLimitedInputTextField.m in Sources */,
 				44DCF37D1A71A18000D0DE89 /* OLGhostAlertView.m in Sources */,
 				44DCF34A1A71861700D0DE89 /* CGMainViewController.m in Sources */,

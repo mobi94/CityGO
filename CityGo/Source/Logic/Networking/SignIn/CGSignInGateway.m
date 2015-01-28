@@ -123,6 +123,7 @@ static NSString *const kBasePassword = @"aFdeCbc550c9";
         user[@"nickname"] = [NSString stringWithFormat:@"%@%@", vkUser[@"first_name"], vkUser[@"last_name"]];
         user[@"gender"] = [vkUser[@"sex"] integerValue] == 1 ? @"female" : @"male";
         user[@"avatarURL"] = vkUser[@"photo_400_orig"];
+        user[@"birthday"] = vkUser[@"bdate"];
         
         [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
          {
@@ -154,6 +155,21 @@ static NSString *const kBasePassword = @"aFdeCbc550c9";
     {
         failureBlock(error);
     }];
+}
+
+- (void)signInUsingUserInfo:(NSDictionary *)userInfo WithSuccess:(SignInSuccessBlock)successBlock failure:(SignInFailureBlock)failureBlock
+{
+    [PFUser logInWithUsernameInBackground:userInfo[@"username"] password:userInfo[@"password"] block:^(PFUser *user, NSError *error)
+     {
+         if(!error)
+         {
+             successBlock(YES);
+         }
+         else
+         {
+             failureBlock(error);
+         }
+     }];
 }
 
 @end

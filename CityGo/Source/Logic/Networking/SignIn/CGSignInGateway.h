@@ -17,5 +17,7 @@ typedef void (^SignInFailureBlock)(NSError *error);
                          failure:(SignInFailureBlock)failureBlock;
 - (void)signInUsingVkWithSuccess:(SignInSuccessBlock)successBlock
                          failure:(SignInFailureBlock)failureBlock;
+- (void)signInUsingUserInfo:(NSDictionary *)userInfo WithSuccess:(SignInSuccessBlock)successBlock
+                         failure:(SignInFailureBlock)failureBlock;
 
 @end
