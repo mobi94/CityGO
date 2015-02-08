@@ -22,7 +22,7 @@ static NSString *const kBasePassword = @"aFdeCbc550c9";
     [FBGateway loginWithSuccess:^(NSDictionary *fbUser)
     {
         PFUser *user = [PFUser user];
-        user.username = fbUser[@"username"];
+        user.username = [NSString stringWithFormat:@"fb%@", fbUser[@"username"]];
         user.password = [NSString stringWithFormat:@"%@%@", fbUser[@"password"], kBasePassword];
         
         user[@"nickname"] = fbUser[@"nickname"];
@@ -68,7 +68,7 @@ static NSString *const kBasePassword = @"aFdeCbc550c9";
     [twitterGateway login:controller WithSuccess:^(NSDictionary *twitterUser)
     {
         PFUser *user = [PFUser user];
-        user.username = twitterUser[@"id_str"];
+        user.username = [NSString stringWithFormat:@"tw%@", twitterUser[@"id_str"]];
         user.password = [NSString stringWithFormat:@"%@%@", twitterUser[@"id_str"], kBasePassword];
         
         NSString *strAvatar = twitterUser[@"profile_image_url"];
@@ -117,7 +117,7 @@ static NSString *const kBasePassword = @"aFdeCbc550c9";
     [vkGateway loginWithSuccess:^(NSDictionary *vkUser)
     {
         PFUser *user = [PFUser user];
-        user.username = [vkUser[@"id"] stringValue];
+        user.username = [NSString stringWithFormat:@"vk%@", [vkUser[@"id"] stringValue]];
         user.password = [NSString stringWithFormat:@"%@%@", [vkUser[@"id"] stringValue], kBasePassword];
         
         user[@"nickname"] = [NSString stringWithFormat:@"%@%@", vkUser[@"first_name"], vkUser[@"last_name"]];

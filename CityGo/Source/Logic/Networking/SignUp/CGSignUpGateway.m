@@ -33,7 +33,7 @@
                  UIImage *image = [userInfo valueForKey:@"photo"];
     
                  imageData = UIImagePNGRepresentation(image);
-                 PFFile *imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@savtar", user.username] data:imageData];
+                 PFFile *imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@savatar", user.username] data:imageData];
                  
                  [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
                   {
