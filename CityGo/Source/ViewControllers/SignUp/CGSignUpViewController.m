@@ -69,6 +69,8 @@
 {
     [super viewDidLoad];
     
+    [self setupSignUpButton];
+    [self setupAvatarImage];
     [self setupImagePicker];
     [self setupReturnKeyHandler];
     [self setupOptionalFields];
@@ -116,6 +118,26 @@
     [_imagePicker setViewControllerForPresentingImagePickerController:self];
     [_imagePicker setDelegate:self];
     [_imagePicker setAllowsEditingPhoto:YES];
+}
+
+- (void)setupSignUpButton
+{
+    [[self.signupButton layer] setBorderWidth:0.5];
+    [[self.signupButton layer] setBorderColor:CG_WHITE_COLOR.CGColor];
+    [[self.signupButton layer] setCornerRadius:4];
+    [self.signupButton setBackgroundColor:[UIColor clearColor]];
+    [self.signupButton setTitleColor:CG_WHITE_COLOR forState:UIControlStateNormal];
+    [self.signupButton setClipsToBounds:YES];
+}
+
+- (void)setupAvatarImage
+{
+    [[self.profileImageButton layer] setBorderWidth:0.5];
+    [[self.profileImageButton layer] setBorderColor:CG_WHITE_COLOR.CGColor];
+    [[self.profileImageButton layer] setCornerRadius:self.profileImageButton.bounds.size.height / 2];
+    [self.profileImageButton setTitle:@"Add Photo" forState:UIControlStateNormal];
+    [self.profileImageButton setTitleColor:CG_WHITE_COLOR forState:UIControlStateNormal];
+    [self.profileImageButton setClipsToBounds:YES];
 }
 
 - (void)setupReturnKeyHandler
@@ -318,6 +340,7 @@
     }
     
     [_profileImageButton setImage:selectedImage forState:UIControlStateNormal];
+    [_profileImageButton setTitle:@"" forState:UIControlStateNormal];
 }
 
 #pragma mark -

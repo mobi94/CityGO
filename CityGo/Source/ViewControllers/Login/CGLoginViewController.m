@@ -47,6 +47,14 @@ static NSArray  *SCOPE = nil;
     SCOPE = @[VK_PER_WALL, VK_PER_PHOTOS, VK_PER_NOHTTPS];
     
     [self setupTextFields];
+    [self setupButton:self.authButton];
+    [self setupButton:self.facebookButton];
+    [self setupButton:self.twitterButton];
+    [self setupButton:self.vkButton];
+    
+    [self.fogotPasswordButton setTitleColor:CG_WHITE_COLOR forState:UIControlStateNormal];
+    
+    [self.privacyPolicyLabel setTextColor:CG_WHITE_COLOR];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -66,12 +74,22 @@ static NSArray  *SCOPE = nil;
 }
 
 #pragma mark -
-#pragma mark Actions
+#pragma mark Custom Setup
 
 - (void)setupTextFields
 {
     [self.usernameTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     [self.passwordTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+}
+
+- (void)setupButton:(UIButton *)button
+{
+    [[button layer] setCornerRadius:4];
+    [[button layer] setBorderColor:CG_WHITE_COLOR.CGColor];
+    [[button layer] setBorderWidth:0.5];
+    [button setBackgroundColor:[UIColor clearColor]];
+    [button setTitleColor:CG_WHITE_COLOR forState:UIControlStateNormal];
+    [button setClipsToBounds:YES];
 }
 
 - (void)setInitialViewController

@@ -23,9 +23,12 @@
 {
     [super awakeFromNib];
     
-    [self setBackgroundColor:CG_GREEN_COLOR];
+    [self setBackgroundColor:[UIColor clearColor]];
     [self setTextColor:CG_WHITE_COLOR];
-    [self setBorderStyle:UITextBorderStyleNone];
+    [[self layer] setBorderWidth:0.5];
+    [[self layer] setBorderColor:CG_WHITE_COLOR.CGColor];
+    [[self layer] setCornerRadius:4];
+    [self setClipsToBounds:YES];
     
     NSAttributedString *attrPlaceholder = [[NSAttributedString alloc] initWithString:[self placeholder]
                                                                           attributes:@{NSForegroundColorAttributeName : CG_WHITE_COLOR}];
