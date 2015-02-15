@@ -1,1 +1,0 @@
-../../../VK-ios-sdk/sdk/Source/NSString+MD5.h
