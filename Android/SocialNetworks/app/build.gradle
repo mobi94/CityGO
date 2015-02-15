@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "20.0"
+    defaultConfig {
+        applicationId "com.android.socialnetworks"
+        minSdkVersion 11
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: 'Parse-*.jar', dir: 'libs')
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.github.asne:asne-vk:0.3.3'
+    compile 'com.github.asne:asne-twitter:0.3.3'
+    compile 'com.github.asne:asne-facebook:0.3.3'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.parse.bolts:bolts-android:1.1.2'
+    compile 'com.rengwuxian.materialedittext:library:1.8.2'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.makeramen:roundedimageview:1.5.0'
+}
