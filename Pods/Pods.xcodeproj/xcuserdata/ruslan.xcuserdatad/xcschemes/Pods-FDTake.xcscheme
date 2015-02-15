@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E74EB4231CAE1F26B3D2DEF9"
+               BlueprintIdentifier = "30A70DE81398A10858EB59B1"
                BuildableName = "libPods-FDTake.a"
                BlueprintName = "Pods-FDTake"
                ReferencedContainer = "container:Pods.xcodeproj">

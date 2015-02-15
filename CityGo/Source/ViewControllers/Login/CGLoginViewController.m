@@ -12,10 +12,11 @@
 #import "AppDelegate.h"
 #import "FHSTwitterEngine.h"
 #import <STAlertView/STAlertView.h>
+#import "ICETutorialController.h"
 
 static NSArray  *SCOPE = nil;
 
-@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate, VKSdkDelegate, UIAlertViewDelegate, UITextFieldDelegate>
+@interface CGLoginViewController () <FHSTwitterEngineAccessTokenDelegate, VKSdkDelegate, UIAlertViewDelegate, UITextFieldDelegate, ICETutorialControllerDelegate>
 
 @property(weak, nonatomic) IBOutlet id<CGSignInProtocol> loginner;
 
@@ -29,6 +30,8 @@ static NSArray  *SCOPE = nil;
 @property (weak, nonatomic) IBOutlet UIButton *vkButton;
 @property (weak, nonatomic) IBOutlet UILabel *privacyPolicyLabel;
 
+@property (strong, nonatomic) ICETutorialController *tutorialViewController;
+
 @end
 
 @implementation CGLoginViewController
@@ -36,6 +39,13 @@ static NSArray  *SCOPE = nil;
 - (void)viewDidAppear:(BOOL)animated
 {
     [self.authButton setTitle:@"Sign Up" forState:UIControlStateNormal];
+    
+    if (![STANDART_USER_DEFAULTS boolForKey:@"secondLaunch"])
+    {
+        [self setupTutorialController];
+        [STANDART_USER_DEFAULTS setBool:YES forKey:@"secondLaunch"];
+        [STANDART_USER_DEFAULTS synchronize];
+    }
 }
 
 - (void)viewDidLoad {
@@ -96,6 +106,50 @@ static NSArray  *SCOPE = nil;
 {
     AppDelegate *appDelegateTemp = [[UIApplication sharedApplication] delegate];
     appDelegateTemp.window.rootViewController = [self.storyboard instantiateInitialViewController];
+}
+
+- (void)setupTutorialController
+{
+    // Init the pages texts, and pictures.
+    ICETutorialPage *layer1 = [[ICETutorialPage alloc] initWithTitle:@"Picture 1"
+                                                            subTitle:@"Champs-Elysées by night"
+                                                         pictureName:@"tutorial_background_00@2x.jpg"
+                                                            duration:3.0];
+    ICETutorialPage *layer2 = [[ICETutorialPage alloc] initWithTitle:@"Picture 2"
+                                                            subTitle:@"The Eiffel Tower with\n cloudy weather"
+                                                         pictureName:@"tutorial_background_01@2x.jpg"
+                                                            duration:3.0];
+    ICETutorialPage *layer3 = [[ICETutorialPage alloc] initWithTitle:@"Picture 3"
+                                                            subTitle:@"An other famous street of Paris"
+                                                         pictureName:@"tutorial_background_02@2x.jpg"
+                                                            duration:3.0];
+    ICETutorialPage *layer4 = [[ICETutorialPage alloc] initWithTitle:@"Picture 4"
+                                                            subTitle:@"The Eiffel Tower with a better weather"
+                                                         pictureName:@"tutorial_background_03@2x.jpg"
+                                                            duration:3.0];
+    ICETutorialPage *layer5 = [[ICETutorialPage alloc] initWithTitle:@"Picture 5"
+                                                            subTitle:@"The Louvre's Museum Pyramide"
+                                                         pictureName:@"tutorial_background_04@2x.jpg"
+                                                            duration:3.0];
+    NSArray *tutorialLayers = @[layer1,layer2,layer3,layer4,layer5];
+    
+    // Set the common style for the title.
+    ICETutorialLabelStyle *titleStyle = [[ICETutorialLabelStyle alloc] init];
+    [titleStyle setFont:[UIFont fontWithName:@"Helvetica-Bold" size:17.0f]];
+    [titleStyle setTextColor:[UIColor whiteColor]];
+    [titleStyle setLinesNumber:1];
+    [titleStyle setOffset:180];
+    [[ICETutorialStyle sharedInstance] setTitleStyle:titleStyle];
+    
+    // Set the subTitles style with few properties and let the others by default.
+    [[ICETutorialStyle sharedInstance] setSubTitleColor:[UIColor whiteColor]];
+    [[ICETutorialStyle sharedInstance] setSubTitleOffset:150];
+    
+    // Init tutorial.
+    self.tutorialViewController = [[ICETutorialController alloc] initWithPages:tutorialLayers
+                                                                      delegate:self];
+    
+    [self presentViewController:self.tutorialViewController animated:YES completion:nil];
 }
 
 #pragma mark -
@@ -284,6 +338,27 @@ static NSArray  *SCOPE = nil;
 - (void)vkSdkUserDeniedAccess:(VKError *)authorizationError
 {
     NSLog(@"Access denied");
+}
+
+#pragma mark - ICETutorialController delegate
+- (void)tutorialController:(ICETutorialController *)tutorialController scrollingFromPageIndex:(NSUInteger)fromIndex toPageIndex:(NSUInteger)toIndex
+{
+    NSLog(@"Scrolling from page %lu to page %lu.", (unsigned long)fromIndex, (unsigned long)toIndex);
+}
+
+- (void)tutorialControllerDidReachLastPage:(ICETutorialController *)tutorialController
+{
+    NSLog(@"Tutorial reached the last page.");
+}
+
+- (void)tutorialController:(ICETutorialController *)tutorialController didClickOnLeftButton:(UIButton *)sender
+{
+    [self.tutorialViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)tutorialController:(ICETutorialController *)tutorialController didClickOnRightButton:(UIButton *)sender
+{
+    NSLog(@"Button 2 pressed.");
 }
 
 @end

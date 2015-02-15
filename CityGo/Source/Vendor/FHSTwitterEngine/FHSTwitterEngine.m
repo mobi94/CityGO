@@ -1687,7 +1687,7 @@ id removeNull(id rootObject) {
 }
 
 - (int)parameterLengthForURL:(NSString *)url params:(NSMutableDictionary *)params {
-    int length = url.length;
+    int length = (int)url.length;
 
     for (NSString *key in params) {
         length += [key fhs_URLEncode].length;

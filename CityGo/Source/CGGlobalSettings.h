@@ -39,4 +39,5 @@
 #pragma mark Foundation singletons
 
 #define NOTIFICATION_CENTER [NSNotificationCenter defaultCenter]
+#define STANDART_USER_DEFAULTS [NSUserDefaults standardUserDefaults]
 #define MAIN_QUEUE [NSOperationQueue mainQueue]

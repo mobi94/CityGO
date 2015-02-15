@@ -30,6 +30,12 @@
 #define COCOAPODS_VERSION_MINOR_Facebook_iOS_SDK 17
 #define COCOAPODS_VERSION_PATCH_Facebook_iOS_SDK 0
 
+// ICETutorial
+#define COCOAPODS_POD_AVAILABLE_ICETutorial
+#define COCOAPODS_VERSION_MAJOR_ICETutorial 1
+#define COCOAPODS_VERSION_MINOR_ICETutorial 1
+#define COCOAPODS_VERSION_PATCH_ICETutorial 1
+
 // IQKeyboardManager
 #define COCOAPODS_POD_AVAILABLE_IQKeyboardManager
 // This library does not follow semantic-versioning,
