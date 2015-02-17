@@ -14,6 +14,29 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:text="Back"
+        android:id="@+id/back_button"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="25dp"
+        android:textSize="12sp"
+        android:textColor="#FFF"
+        android:background="@drawable/background_avatar"
+        android:layout_marginTop="25dp" />
+
+    <ImageView
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:id="@+id/avatar_signup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/background_avatar"
+        android:adjustViewBounds="true" />
+
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -29,7 +52,7 @@
         app:floatingLabelText="   XXX"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="300dp"
@@ -46,16 +69,7 @@
         app:floatingLabelText="   XXX"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        android:layout_marginBottom="5dp" />
-
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:id="@+id/avatar_signup"
-        android:layout_above="@+id/username_signup"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/background_avatar" />
+        android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="300dp"
@@ -72,7 +86,7 @@
         app:floatingLabelText="   XXX"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="300dp"
@@ -89,7 +103,7 @@
         app:floatingLabelText="   XXX"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="300dp"
@@ -105,7 +119,7 @@
         app:floatingLabelText="   XXX"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="300dp"
@@ -121,29 +135,17 @@
         app:floatingLabelText="   XXX"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="15dp" />
 
     <Button
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:text="Sign Up"
         android:id="@+id/signup_main"
-        android:layout_below="@+id/gender_signup"
-        android:layout_centerHorizontal="true"
         android:textColor="@drawable/button_text_color"
-        android:background="@drawable/background_normal" />
+        android:background="@drawable/background_normal"
+        android:layout_marginBottom="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:text="Back"
-        android:id="@+id/back_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="25dp"
-        android:textSize="11dp"
-        android:textColor="#FFF"
-        android:background="@drawable/background_avatar"
-        android:layout_marginTop="25dp" />
 </RelativeLayout>

@@ -7,69 +7,13 @@
     android:layout_height="match_parent"
     android:background="@drawable/background">
 
-    <ImageButton
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/facebook"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/background_normal"
-        android:src="@drawable/facebook"
-        android:textColor="#ffffffff"
-        android:layout_toLeftOf="@+id/twitter"
-        android:layout_marginRight="5dp"
-        android:layout_alignBottom="@+id/twitter"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:padding="1dp" />
-    <ImageButton
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/twitter"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/background_normal"
-        android:src="@drawable/twitter"
-        android:textColor="#ffffffff"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/password_recovery"
-        android:layout_centerHorizontal="true"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:padding="1dp" />
-    <ImageButton
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/vk"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/background_normal"
-        android:src="@drawable/vk"
-        android:textColor="#ffffffff"
-        android:layout_toRightOf="@+id/twitter"
-        android:layout_marginLeft="5dp"
-        android:layout_alignBottom="@+id/twitter"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:padding="1dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Forgot Password?"
-        android:id="@+id/password_recovery"
-        android:layout_below="@+id/sign_up"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:textColor="#ffffffff" />
-
-    <Button
+    <ImageView
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Sign Up"
-        android:id="@+id/sign_up"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/password_edit"
-        android:textColor="@drawable/button_text_color"
-        android:background="@drawable/background_normal"
+        android:layout_height="120dp"
+        android:id="@+id/avatar"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentTop="true"
+        android:background="#ffaf39ff"
         android:layout_centerHorizontal="true" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -85,10 +29,17 @@
         app:floatingLabelText="   XXX"
         app:hideUnderline="true"
         android:layout_above="@+id/center"
-        android:layout_alignLeft="@+id/password_edit"
-        android:layout_alignStart="@+id/password_edit"
+        android:layout_centerHorizontal="true"
         android:hint="User name"
         android:layout_marginBottom="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="300dp"
@@ -106,22 +57,72 @@
         android:layout_centerHorizontal="true"
         android:hint="Password" />
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="120dp"
-        android:id="@+id/avatar"
-        android:layout_marginBottom="40dp"
-        android:background="#ffaf39ff"
-        android:layout_above="@+id/username_edit"
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:id="@+id/sign_up"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/password_edit"
+        android:textColor="@drawable/button_text_color"
+        android:background="@drawable/background_normal"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/center"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Forgot Password?"
+        android:id="@+id/password_recovery"
+        android:layout_below="@+id/sign_up"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffffff" />
+
+    <ImageButton
+        android:layout_width="96.5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/facebook"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/background_normal"
+        android:src="@drawable/facebook"
+        android:textColor="#ffffffff"
+        android:layout_toLeftOf="@+id/twitter"
+        android:layout_marginRight="5dp"
+        android:layout_alignBottom="@+id/twitter"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:padding="1dp" />
+
+    <ImageButton
+        android:layout_width="96.5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/twitter"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/background_normal"
+        android:src="@drawable/twitter"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/password_recovery"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:padding="1dp" />
+
+    <ImageButton
+        android:layout_width="96.5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/vk"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/background_normal"
+        android:src="@drawable/vk"
+        android:textColor="#ffffffff"
+        android:layout_toRightOf="@+id/twitter"
+        android:layout_marginLeft="5dp"
+        android:layout_alignBottom="@+id/twitter"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:padding="1dp" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -3,18 +3,14 @@ package com.android.socialnetworks;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -64,7 +60,6 @@ public class RegistrationFragment extends Fragment {
     private EditText editBirthday;
     private EditText editGender;
     private Button signupButton;
-    private Button backButton;
     private boolean isUserNameValid;
     private boolean isEmailValid;
     private boolean isPasswordValid;
@@ -124,7 +119,7 @@ public class RegistrationFragment extends Fragment {
 
         signupButton = (Button)rootView.findViewById(R.id.signup_main);
         signupButton.setOnClickListener(buttonsClick);
-        backButton = (Button)rootView.findViewById(R.id.back_button);
+        Button backButton = (Button) rootView.findViewById(R.id.back_button);
         backButton.setOnClickListener(buttonsClick);
 
         InputFilter filter = new InputFilter() {
@@ -271,7 +266,7 @@ public class RegistrationFragment extends Fragment {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.signup_main:
-                    if(!isNetworkOn(getActivity().getBaseContext())) {
+                    if(!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
                         Toast.makeText(getActivity().getBaseContext(), "No network connection", Toast.LENGTH_SHORT).show();
                     } else {
                         // do login
@@ -289,17 +284,6 @@ public class RegistrationFragment extends Fragment {
         }
     };
 
-    private void startLoggedInActivity(){
-        Intent intent = new Intent(getActivity(), LoggedInActivity.class);
-        getActivity().startActivity(intent);
-        getActivity().finish();
-    }
-
-    public boolean isNetworkOn(Context context) { ConnectivityManager connMgr =
-            (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
 
     private void setBirthdayField() {
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
@@ -484,7 +468,7 @@ public class RegistrationFragment extends Fragment {
                                 // to figure out what went wrong
                                 Log.d("SIGNUP_ERROR", "signUpInBackground" + e);
                                 Toast.makeText(getActivity(), "SIGNUP_ERROR: " + e, Toast.LENGTH_LONG).show();
-                            } else startLoggedInActivity();
+                            } else MainActivity.startLoggedInActivity();
                         }
                     });
                 } else {
@@ -498,17 +482,6 @@ public class RegistrationFragment extends Fragment {
             }
         });
     }
-
-    Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-                    MainActivity.hideProgress();
-                    break;
-            }
-        }
-    };
 
     private ParseFile uploadImageToParse(){
         BitmapDrawable bitmapDrawable = ((BitmapDrawable) avatar.getDrawable());

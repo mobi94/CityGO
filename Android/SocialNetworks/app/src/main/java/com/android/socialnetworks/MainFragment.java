@@ -1,23 +1,25 @@
 package com.android.socialnetworks;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.gorbin.asne.core.SocialNetwork;
@@ -38,6 +40,7 @@ import java.util.List;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.RequestPasswordResetCallback;
 import com.parse.SignUpCallback;
 import com.vk.sdk.VKScope;
 
@@ -47,6 +50,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
     private Button signup_button;
     private EditText username;
     private EditText password;
+    private boolean isEmailValid;
     private boolean isUserNameValid;
     private boolean isPasswordValid;
     private boolean isUserNameFilled;
@@ -107,7 +111,6 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                 List<SocialNetwork> socialNetworks = mSocialNetworkManager.getInitializedSocialNetworks();
                 for (SocialNetwork socialNetwork : socialNetworks) {
                     socialNetwork.setOnLoginCompleteListener(this);
-                    initSocialNetwork(socialNetwork);
                 }
             }
         }
@@ -121,6 +124,8 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
         password = (EditText)rootView.findViewById(R.id.password_edit);
         password.setBackgroundResource(R.drawable.background_normal);
         passwordListener();
+        TextView passwordRecovery = (TextView) rootView.findViewById(R.id.password_recovery);
+        passwordRecovery.setOnClickListener(buttonsClick);
 
         InputFilter filter = new InputFilter() {
             @Override
@@ -216,10 +221,9 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.sign_up:
-                    if(!isNetworkOn(getActivity().getBaseContext())) {
+                    if(!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
                         Toast.makeText(getActivity().getBaseContext(), "No network connection", Toast.LENGTH_SHORT).show();
                     } else {
-                        // do login\
                         if(signup_button.getText().toString().equals("Sign Up")) {
                             getFragmentManager().beginTransaction()
                                     .setCustomAnimations(
@@ -230,56 +234,33 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                                     .commit();
                         }
                         else{
-                            MainActivity.showProgress("Loading social person");
+                            MainActivity.showProgress("Loading user profile...");
                             ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
                                 public void done(ParseUser user, ParseException e) {
+                                    MainActivity.hideProgress();
                                     if (user == null) {
                                         // Signup failed. Look at the ParseException to see what happened.
                                         Toast.makeText(getActivity(), "LOGIN ERROR: " + e, Toast.LENGTH_LONG).show();
-                                    }
-                                    else{
-                                        Intent intent = new Intent(getActivity(), LoggedInActivity.class);
-                                        getActivity().startActivity(intent);
-                                        getActivity().finish();
-                                        MainActivity.hideProgress();
+                                    } else {
+                                        MainActivity.startLoggedInActivity();
                                     }
                                 }
                             });
                         }
                     }
                     break;
+                case R.id.password_recovery:
+                    passwordRestoreDialog();
+                    break;
             }
         }
     };
-
-    public boolean isNetworkOn(Context context) { ConnectivityManager connMgr =
-            (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    private void initSocialNetwork(SocialNetwork socialNetwork) {
-        if (socialNetwork.isConnected()) {
-            switch (socialNetwork.getID()) {
-                case VkSocialNetwork.ID:
-                    //vk.setText("Show VK profile");
-                    break;
-                case FacebookSocialNetwork.ID:
-                    //facebook.setText("Show Facebook profile");
-                    break;
-                case TwitterSocialNetwork.ID:
-                    //twitter.setText("Show Twitter profile");
-                    break;
-            }
-        }
-    }
 
     @Override
     public void onSocialNetworkManagerInitialized() {
         //when init SocialNetworks - get and setup login only for initialized SocialNetworks
         for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
             socialNetwork.setOnLoginCompleteListener(this);
-            initSocialNetwork(socialNetwork);
         }
     }
 
@@ -298,11 +279,11 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                     networkId = TwitterSocialNetwork.ID;
                     break;
             }
+            MainActivity.showProgress("Loading user profile...");
             SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
             if(!socialNetwork.isConnected()) {
                 if(networkId != 0) {
                     socialNetwork.requestLogin();
-                    MainActivity.showProgress("Loading social person");
                 } else {
                     Toast.makeText(getActivity(), "Wrong networkId", Toast.LENGTH_LONG).show();
                 }
@@ -314,7 +295,6 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
 
     @Override
     public void onLoginSuccess(int networkId) {
-        MainActivity.hideProgress();
         startProfile(networkId);
         //Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_LONG).show();
     }
@@ -322,11 +302,11 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
     @Override
     public void onError(int networkId, String requestID, String errorMessage, Object data) {
         MainActivity.hideProgress();
-        Toast.makeText(getActivity(), "ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
+        Log.d("LOGIN ERROR", errorMessage);
+        Toast.makeText(getActivity(), "afsdfsdfsdfs: " + errorMessage, Toast.LENGTH_LONG).show();
     }
 
     private void startProfile(int networkId){
-        MainActivity.showProgress("Loading social person");
         SocialNetwork socialNetwork = MainFragment.mSocialNetworkManager.getSocialNetwork(networkId);
         socialNetwork.setOnRequestDetailedSocialPersonCompleteListener(this);
         socialNetwork.requestDetailedCurrentPerson();
@@ -338,9 +318,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
         if (currentUser == null) {
             // show the signup or login screen
             parseNewUser(socialNetworkID, socialPerson);
-            Intent intent = new Intent(getActivity(), LoggedInActivity.class);
-            getActivity().startActivity(intent);
-            getActivity().finish();
+            MainActivity.startLoggedInActivity();
         } /*else {
             // do stuff with the user
         }*/
@@ -445,8 +423,80 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                     if (e.getCode() == 202) {
                         parseLoginUser(socialNetworkID, socialPerson);
                     }
+                    else MainActivity.hideProgress();
                 }
             }
         });
+    }
+
+    private void passwordRestoreDialog (){
+        AlertDialog.Builder alertBw;
+        final AlertDialog alertDw;
+        final EditText email = new EditText(getActivity());
+        email.setHint("Input your email here");
+        email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS );
+        email.setBackgroundResource(R.drawable.background_normal);
+        email.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    validateEmail(s.toString());
+                    if (isEmailValid) email.setBackgroundResource(R.drawable.background_normal);
+                    else email.setBackgroundResource(R.drawable.background_error);
+                }
+            });
+
+        RelativeLayout linearLayout=new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(250,100);
+        RelativeLayout.LayoutParams numPicerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        numPicerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        linearLayout.setLayoutParams(params);
+        linearLayout.addView(email,numPicerParams);
+
+        alertBw=new AlertDialog.Builder(getActivity());
+        alertBw.setTitle("Password recovery");
+        alertBw.setView(linearLayout);
+        alertBw.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, int which) {
+                if (isEmailValid) {
+                    if (!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
+                        Toast.makeText(getActivity().getBaseContext(), "No network connection", Toast.LENGTH_SHORT).show();
+                    } else {
+                        MainActivity.showProgress("Sending email...");
+                        ParseUser.requestPasswordResetInBackground(email.getText().toString(),
+                                new RequestPasswordResetCallback() {
+                                    public void done(ParseException e) {
+                                        MainActivity.hideProgress();
+                                        if (e == null) {
+                                            Toast.makeText(getActivity(),
+                                                    "An email was successfully sent with reset instructions", Toast.LENGTH_LONG).show();
+                                            dialog.dismiss();
+                                        } else {
+                                            // Something went wrong. Look at the ParseException to see what's up.
+                                            Toast.makeText(getActivity(), "PASSWORD_RESET_ERROR: " + e, Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+        });
+        alertBw.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which){
+                dialog.dismiss();
+            }
+        });
+        alertDw=alertBw.create();
+        alertDw.show();
+    }
+
+    private void validateEmail(String text) { isEmailValid = text.length()==0 || Patterns.EMAIL_ADDRESS.matcher(text).matches();
     }
 }

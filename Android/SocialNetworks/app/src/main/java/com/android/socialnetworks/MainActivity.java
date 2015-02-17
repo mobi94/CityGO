@@ -1,29 +1,18 @@
 package com.android.socialnetworks;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 
 import com.parse.Parse;
 import com.parse.ParseUser;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 public class MainActivity extends ActionBarActivity{
 
@@ -78,5 +67,17 @@ public class MainActivity extends ActionBarActivity{
 
     protected static void hideProgress() {
         pd.dismiss();
+    }
+
+    protected static boolean isNetworkOn(Context context) { ConnectivityManager connMgr =
+            (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    protected static void startLoggedInActivity(){
+        Intent intent = new Intent(context, LoggedInActivity.class);
+        context.startActivity(intent);
+        ((Activity)context).finish();
     }
 }
