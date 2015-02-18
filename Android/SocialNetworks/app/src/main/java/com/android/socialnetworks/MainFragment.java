@@ -42,14 +42,15 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 import com.parse.SignUpCallback;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.vk.sdk.VKScope;
 
 public class MainFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestDetailedSocialPersonCompleteListener {
 
     public static SocialNetworkManager mSocialNetworkManager;
     private Button signup_button;
-    private EditText username;
-    private EditText password;
+    private MaterialEditText username;
+    private MaterialEditText password;
     private boolean isEmailValid;
     private boolean isUserNameValid;
     private boolean isPasswordValid;
@@ -118,10 +119,10 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
         isPasswordFilled = false;
         signup_button = (Button) rootView.findViewById(R.id.sign_up);
         signup_button.setOnClickListener(buttonsClick);
-        username = (EditText)rootView.findViewById(R.id.username_edit);
+        username = (MaterialEditText)rootView.findViewById(R.id.username_edit);
         username.setBackgroundResource(R.drawable.background_normal);
         userNameListener();
-        password = (EditText)rootView.findViewById(R.id.password_edit);
+        password = (MaterialEditText)rootView.findViewById(R.id.password_edit);
         password.setBackgroundResource(R.drawable.background_normal);
         passwordListener();
         TextView passwordRecovery = (TextView) rootView.findViewById(R.id.password_recovery);
@@ -166,8 +167,14 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
             }
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validatePassword(s.toString());
-                if (isPasswordValid) password.setBackgroundResource(R.drawable.background_normal);
-                else password.setBackgroundResource(R.drawable.background_error);
+                if (isPasswordValid) {
+                    password.setBackgroundResource(R.drawable.background_normal);
+                    password.setFloatingLabelText("   " + getString(R.string.password_edit_text));
+                }
+                else {
+                    password.setBackgroundResource(R.drawable.background_error);
+                    password.setFloatingLabelText("   " + getString(R.string.password_edit_text_main_hint));
+                }
                 updateSigninButtonState();
             }
         });
@@ -184,8 +191,14 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUserName(s.toString());
-                if (isUserNameValid) username.setBackgroundResource(R.drawable.background_normal);
-                else username.setBackgroundResource(R.drawable.background_error);
+                if (isUserNameValid) {
+                    username.setBackgroundResource(R.drawable.background_normal);
+                    username.setFloatingLabelText("   " + getString(R.string.user_name_edit_text));
+                }
+                else {
+                    username.setBackgroundResource(R.drawable.background_error);
+                    username.setFloatingLabelText("   " + getString(R.string.user_name_hint));
+                }
                 updateSigninButtonState();
             }
         });
@@ -203,7 +216,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
 
     private void updateSigninButtonState() {
         if (isUserNameFilled && isPasswordFilled) {
-            signup_button.setText("Sign In");
+            signup_button.setText(R.string.login_button);
             if (isPasswordValid && isUserNameValid) {
                 signup_button.setEnabled(true);
             } else {
@@ -211,7 +224,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
             }
         }
         else {
-            signup_button.setText("Sign Up");
+            signup_button.setText(R.string.sign_up_main_button);
             signup_button.setEnabled(true);
         }
     }
@@ -222,9 +235,9 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
             switch (view.getId()){
                 case R.id.sign_up:
                     if(!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), "No network connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
-                        if(signup_button.getText().toString().equals("Sign Up")) {
+                        if(signup_button.getText().toString().equals(getString(R.string.sign_up_main_button))) {
                             getFragmentManager().beginTransaction()
                                     .setCustomAnimations(
                                             R.anim.slide_in_bottom, R.anim.slide_out_top,
@@ -234,7 +247,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                                     .commit();
                         }
                         else{
-                            MainActivity.showProgress("Loading user profile...");
+                            MainActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
                             ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
                                 public void done(ParseUser user, ParseException e) {
                                     MainActivity.hideProgress();
@@ -279,7 +292,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                     networkId = TwitterSocialNetwork.ID;
                     break;
             }
-            MainActivity.showProgress("Loading user profile...");
+            MainActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
             SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
             if(!socialNetwork.isConnected()) {
                 if(networkId != 0) {
@@ -303,7 +316,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
     public void onError(int networkId, String requestID, String errorMessage, Object data) {
         MainActivity.hideProgress();
         Log.d("LOGIN ERROR", errorMessage);
-        Toast.makeText(getActivity(), "afsdfsdfsdfs: " + errorMessage, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "LOGIN ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
     }
 
     private void startProfile(int networkId){
@@ -341,7 +354,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
                     // Hooray! The user is logged in.
-                    user.put("nickname", socialPerson.name.replace(" ", ""));
+                    /*user.put("nickname", socialPerson.name.replace(" ", ""));
                     switch (socialNetworkID) {
                         case 1:
                             user.put("avatarURL", socialPerson.avatarURL);
@@ -370,6 +383,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                             break;
                     }
                     user.saveInBackground(); // This succeeds, since the user was authenticated on the device
+                    */
                 } else {
                     // Signup failed. Look at the ParseException to see what happened.
                     Log.d("LOGIN ERROR", "logInInBackground" + e);
@@ -433,8 +447,8 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
         AlertDialog.Builder alertBw;
         final AlertDialog alertDw;
         final EditText email = new EditText(getActivity());
-        email.setHint("Input your email here");
-        email.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS );
+        email.setHint(getString(R.string.password_restore_dialog_email_hint));
+        email.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS );
         email.setBackgroundResource(R.drawable.background_normal);
         email.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -459,23 +473,23 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
         linearLayout.addView(email,numPicerParams);
 
         alertBw=new AlertDialog.Builder(getActivity());
-        alertBw.setTitle("Password recovery");
+        alertBw.setTitle(getString(R.string.password_restore_dialog_title));
         alertBw.setView(linearLayout);
-        alertBw.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alertBw.setPositiveButton(getString(R.string.password_restore_dialog_ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
                 if (isEmailValid) {
                     if (!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), "No network connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
-                        MainActivity.showProgress("Sending email...");
+                        MainActivity.showProgress(getString(R.string.progress_dialog_msg_sending_email));
                         ParseUser.requestPasswordResetInBackground(email.getText().toString(),
                                 new RequestPasswordResetCallback() {
                                     public void done(ParseException e) {
                                         MainActivity.hideProgress();
                                         if (e == null) {
                                             Toast.makeText(getActivity(),
-                                                    "An email was successfully sent with reset instructions", Toast.LENGTH_LONG).show();
+                                                    getString(R.string.password_restore_dialog_toast_success), Toast.LENGTH_LONG).show();
                                             dialog.dismiss();
                                         } else {
                                             // Something went wrong. Look at the ParseException to see what's up.
@@ -487,7 +501,7 @@ public class MainFragment extends Fragment implements SocialNetworkManager.OnIni
                 }
             }
         });
-        alertBw.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+        alertBw.setNeutralButton(getString(R.string.password_restore_dialog_cancel_button), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which){
                 dialog.dismiss();

@@ -40,6 +40,7 @@ import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -53,10 +54,10 @@ import java.util.Locale;
 public class RegistrationFragment extends Fragment {
 
     private ImageView avatar;
-    private EditText editUserName;
-    private EditText editPassword;
-    private EditText editConfirmPassword;
-    private EditText editEmail;
+    private MaterialEditText editUserName;
+    private MaterialEditText editPassword;
+    private MaterialEditText editConfirmPassword;
+    private MaterialEditText editEmail;
     private EditText editBirthday;
     private EditText editGender;
     private Button signupButton;
@@ -97,16 +98,16 @@ public class RegistrationFragment extends Fragment {
                 .centerCrop()
                 .into(avatar);
 
-        editUserName = (EditText)rootView.findViewById(R.id.username_signup);
+        editUserName = (MaterialEditText)rootView.findViewById(R.id.username_signup);
         editUserName.setBackgroundResource(R.drawable.background_normal);
         userNameListener();
-        editEmail = (EditText)rootView.findViewById(R.id.email_signup);
+        editEmail = (MaterialEditText)rootView.findViewById(R.id.email_signup);
         editEmail.setBackgroundResource(R.drawable.background_normal);
         emailListener();
-        editPassword = (EditText) rootView.findViewById(R.id.password_signup);
+        editPassword = (MaterialEditText) rootView.findViewById(R.id.password_signup);
         editPassword.setBackgroundResource(R.drawable.background_normal);
         passwordListener();
-        editConfirmPassword = (EditText) rootView.findViewById(R.id.confirm_password_signup);
+        editConfirmPassword = (MaterialEditText) rootView.findViewById(R.id.confirm_password_signup);
         editConfirmPassword.setBackgroundResource(R.drawable.background_normal);
         confirmPasswordListener();
 
@@ -167,8 +168,14 @@ public class RegistrationFragment extends Fragment {
             }
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validatePassword(s.toString());
-                if (isPasswordValid) editPassword.setBackgroundResource(R.drawable.background_normal);
-                else editPassword.setBackgroundResource(R.drawable.background_error);
+                if (isPasswordValid) {
+                    editPassword.setBackgroundResource(R.drawable.background_normal);
+                    editPassword.setFloatingLabelText("   " + getString(R.string.password_edit_text));
+                }
+                else {
+                    editPassword.setBackgroundResource(R.drawable.background_error);
+                    editPassword.setFloatingLabelText("   " + getString(R.string.password_edit_text_sign_up_hint));
+                }
                 updateLoginButtonState();
             }
         });
@@ -178,14 +185,18 @@ public class RegistrationFragment extends Fragment {
         editConfirmPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
             }
-
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateConfirmPassword(s.toString());
-                if (isPasswordsMatches) editConfirmPassword.setBackgroundResource(R.drawable.background_normal);
-                else editConfirmPassword.setBackgroundResource(R.drawable.background_error);
+                if (isPasswordsMatches) {
+                    editConfirmPassword.setBackgroundResource(R.drawable.background_normal);
+                    editConfirmPassword.setFloatingLabelText("   " + getString(R.string.confirm_password_edit_text));
+                }
+                else {
+                    editConfirmPassword.setBackgroundResource(R.drawable.background_error);
+                    editConfirmPassword.setFloatingLabelText("   " + getString(R.string.confirm_password_edit_text_hint));
+                }
                 updateLoginButtonState();
             }
         });
@@ -202,8 +213,14 @@ public class RegistrationFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateEmail(s.toString());
-                if (isEmailValid) editEmail.setBackgroundResource(R.drawable.background_normal);
-                else editEmail.setBackgroundResource(R.drawable.background_error);
+                if (isEmailValid) {
+                    editEmail.setBackgroundResource(R.drawable.background_normal);
+                    editEmail.setFloatingLabelText("   " + getString(R.string.email_edit_text));
+                }
+                else {
+                    editEmail.setBackgroundResource(R.drawable.background_error);
+                    editEmail.setFloatingLabelText("   " + getString(R.string.email_edit_text_hint));
+                }
                 updateLoginButtonState();
             }
         });
@@ -220,8 +237,14 @@ public class RegistrationFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUserName(s.toString());
-                if (isUserNameValid) editUserName.setBackgroundResource(R.drawable.background_normal);
-                else editUserName.setBackgroundResource(R.drawable.background_error);
+                if (isUserNameValid) {
+                    editUserName.setBackgroundResource(R.drawable.background_normal);
+                    editUserName.setFloatingLabelText("   " + getString(R.string.user_name_edit_text));
+                }
+                else {
+                    editUserName.setBackgroundResource(R.drawable.background_error);
+                    editUserName.setFloatingLabelText("   " + getString(R.string.user_name_hint));
+                }
                 updateLoginButtonState();
             }
         });
@@ -267,9 +290,10 @@ public class RegistrationFragment extends Fragment {
             switch (view.getId()){
                 case R.id.signup_main:
                     if(!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), "No network connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
                         // do login
+                        MainActivity.showProgress(getString(R.string.progress_dialog_msg_user_creating));
                         ParseUser currentUser = ParseUser.getCurrentUser();
                         if (currentUser == null) {
                             // show the signup or login screen
@@ -315,8 +339,8 @@ public class RegistrationFragment extends Fragment {
         RelativeLayout linearLayout=new RelativeLayout(getActivity());
         aNumberPicker=new NumberPicker(getActivity());
         final String[] values=new String[2];
-        values[0]="Male";
-        values[1]="Female";
+        values[0]=getString(R.string.gender_dialog_man_value);
+        values[1]=getString(R.string.gender_dialog_female_value);
         aNumberPicker.setMaxValue(values.length-1);
         aNumberPicker.setMinValue(0);
         aNumberPicker.setDisplayedValues(values);
@@ -332,16 +356,16 @@ public class RegistrationFragment extends Fragment {
         linearLayout.addView(aNumberPicker,numPicerParams);
 
         alertBw=new AlertDialog.Builder(getActivity());
-        alertBw.setTitle("Choose your gender");
+        alertBw.setTitle(getString(R.string.gender_dialog_title));
         alertBw.setView(linearLayout);
-        alertBw.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alertBw.setPositiveButton(getString(R.string.gender_dialog_ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editGender.setText(values[aNumberPicker.getValue()]);
                 dialog.dismiss();
             }
         });
-        alertBw.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+        alertBw.setNeutralButton(getString(R.string.gender_dialog_cancel_button), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which){
                 dialog.dismiss();
@@ -359,15 +383,17 @@ public class RegistrationFragment extends Fragment {
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Gallery",
-                "Cancel" };
+        final CharSequence[] items = {
+                getString(R.string.photo_picker_dialog_take_photo),
+                getString(R.string.photo_picker_dialog_choose_from_gallery),
+                getString(R.string.photo_picker_dialog_cancel) };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Photo!");
+        builder.setTitle(getString(R.string.photo_picker_dialog_title));
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take Photo")) {
+                if (items[item].equals(items[0])) {
                     deletePhoto();
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     File file = new File(Environment.getExternalStorageDirectory(),
@@ -376,11 +402,11 @@ public class RegistrationFragment extends Fragment {
                     outputFileUri = Uri.fromFile(file);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
                     startActivityForResult(intent, 0);
-                } else if (items[item].equals("Choose from Gallery")) {
+                } else if (items[item].equals(items[1])) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
-                } else if (items[item].equals("Cancel")) {
+                } else if (items[item].equals(items[2])) {
                     dialog.dismiss();
                 }
             }
@@ -447,7 +473,6 @@ public class RegistrationFragment extends Fragment {
     }
 
     public void parseNewUser(){
-        MainActivity.showProgress("User creating...");
         final ParseUser user = new ParseUser();
         user.setUsername(editUserName.getText().toString());
         user.setPassword(editPassword.getText().toString());
@@ -459,6 +484,7 @@ public class RegistrationFragment extends Fragment {
         file.saveInBackground(new SaveCallback() {
             public void done(ParseException e) {
                 // Handle success or failure here ...
+                MainActivity.hideProgress();
                 if (e == null) {
                     user.put("photo", file);
                     user.signUpInBackground(new SignUpCallback() {

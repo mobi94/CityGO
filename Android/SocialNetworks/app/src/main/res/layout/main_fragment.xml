@@ -8,7 +8,7 @@
     android:background="@drawable/background">
 
     <ImageView
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="120dp"
         android:id="@+id/avatar"
         android:layout_marginTop="50dp"
@@ -17,7 +17,7 @@
         android:layout_centerHorizontal="true" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:id="@+id/username_edit"
         android:inputType="textPersonName"
@@ -26,11 +26,11 @@
         app:floatingLabel="highlight"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        app:floatingLabelText="   XXX"
+        app:floatingLabelText="@string/user_name_hint"
         app:hideUnderline="true"
         android:layout_above="@+id/center"
         android:layout_centerHorizontal="true"
-        android:hint="User name"
+        android:hint="@string/user_name_edit_text"
         android:layout_marginBottom="5dp" />
 
     <TextView
@@ -42,7 +42,7 @@
         android:layout_centerHorizontal="true" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
@@ -50,17 +50,17 @@
         app:floatingLabel="highlight"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        app:floatingLabelText="   XXX"
+        app:floatingLabelText="@string/password_edit_text_main_hint"
         app:hideUnderline="true"
         android:id="@+id/password_edit"
         android:layout_below="@+id/username_edit"
         android:layout_centerHorizontal="true"
-        android:hint="Password" />
+        android:hint="@string/password_edit_text" />
 
     <Button
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="@string/sign_up_main_button"
         android:id="@+id/sign_up"
         android:layout_marginTop="15dp"
         android:layout_below="@+id/password_edit"
@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Forgot Password?"
+        android:text="@string/forgot_password_text_view"
         android:id="@+id/password_recovery"
         android:layout_below="@+id/sign_up"
         android:layout_marginTop="20dp"
@@ -80,7 +80,7 @@
         android:textColor="#ffffffff" />
 
     <ImageButton
-        android:layout_width="96.5dp"
+        android:layout_width="@dimen/social_buttons_width"
         android:layout_height="wrap_content"
         android:id="@+id/facebook"
         android:layout_gravity="center_horizontal"
@@ -95,14 +95,14 @@
         android:padding="1dp" />
 
     <ImageButton
-        android:layout_width="96.5dp"
+        android:layout_width="@dimen/social_buttons_width"
         android:layout_height="wrap_content"
         android:id="@+id/twitter"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/background_normal"
         android:src="@drawable/twitter"
         android:textColor="#ffffffff"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/social_buttons_margin_top"
         android:layout_below="@+id/password_recovery"
         android:layout_centerHorizontal="true"
         android:scaleType="fitCenter"
@@ -110,7 +110,7 @@
         android:padding="1dp" />
 
     <ImageButton
-        android:layout_width="96.5dp"
+        android:layout_width="@dimen/social_buttons_width"
         android:layout_height="wrap_content"
         android:id="@+id/vk"
         android:layout_gravity="center_horizontal"
@@ -128,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Privacy Policy"
+        android:text="@string/privacy_policy_text_view"
         android:id="@+id/privacy_policy"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

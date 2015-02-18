@@ -1,0 +1,48 @@
+<resources>
+
+    <string name="action_settings">Настройки</string>
+
+    <string name="back_button">Назад</string>
+    <string name="sign_up_main_button">Зарегистрироваться</string>
+    <string name="login_button">Войти</string>
+    <string name="forgot_password_text_view">Забыли пароль?</string>
+    <string name="privacy_policy_text_view">Политика конфиденциальности</string>
+
+    <string name="user_name_edit_text">Имя</string>
+    <string name="user_name_hint">Должно быть не менее 2 букв</string>
+    <string name="password_edit_text">Пароль</string>
+    <string name="password_edit_text_main_hint">Должно быть не менее 6 символов</string>
+    <string name="password_edit_text_sign_up_hint">6 символов, включая большую букву и цифру</string>
+    <string name="confirm_password_edit_text">Подтвердите пароль</string>
+    <string name="confirm_password_edit_text_hint">  Введите ваш пароль ещё раз</string>
+    <string name="email_edit_text">Электронная почта</string>
+    <string name="email_edit_text_hint">Aдрес для восстановления пароля</string>
+    <string name="birthday_edit_text">Дата рождения</string>
+    <string name="birthday_edit_text_hint">"   Дата рождения"</string>
+    <string name="gender_edit_text">Пол</string>
+    <string name="gender_edit_text_hint">"   Пол"</string>
+
+    <string name="toast_no_network_connection">Отсутствует интернет соединение</string>
+
+    <string name="progress_dialog_msg_sending_email">Отправка электронной почты…</string>
+    <string name="progress_dialog_msg_loading_user_profile">Загрузка профиля пользователя…</string>
+    <string name="progress_dialog_msg_user_creating">Создание учётной записи…</string>
+
+    <string name="password_restore_dialog_title">Восстановление пароля</string>
+    <string name="password_restore_dialog_email_hint">Адрес электронной почты</string>
+    <string name="password_restore_dialog_ok_button">Готово</string>
+    <string name="password_restore_dialog_cancel_button">Отмена</string>
+    <string name="password_restore_dialog_toast_success">Письмо было успешно отправлено с инструкциями сброса</string>
+
+    <string name="gender_dialog_title">Выберите ваш пол</string>
+    <string name="gender_dialog_man_value">Мужчина</string>
+    <string name="gender_dialog_female_value">Женщина</string>
+    <string name="gender_dialog_ok_button">Готово</string>
+    <string name="gender_dialog_cancel_button">Отмена</string>
+
+    <string name="photo_picker_dialog_title">Добавить фото!</string>
+    <string name="photo_picker_dialog_take_photo">Сделать снимок</string>
+    <string name="photo_picker_dialog_choose_from_gallery">Выбрать из галереи</string>
+    <string name="photo_picker_dialog_cancel">Отмена</string>
+
+</resources>

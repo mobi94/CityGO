@@ -1,0 +1,48 @@
+<resources>
+
+    <string name="action_settings">Установки</string>
+
+    <string name="back_button">Назад</string>
+    <string name="sign_up_main_button">Зареєструватися</string>
+    <string name="login_button">Увійти</string>
+    <string name="forgot_password_text_view">Забули пароль?</string>
+    <string name="privacy_policy_text_view">Політика конфіденційності</string>
+
+    <string name="user_name_edit_text">Ім'я</string>
+    <string name="user_name_hint">Повинно бути не менше 2 літер</string>
+    <string name="password_edit_text">Пароль</string>
+    <string name="password_edit_text_main_hint">Повинно бути не менше 6 символів</string>
+    <string name="password_edit_text_sign_up_hint">6 символів, включаючи велику букву і цифру</string>
+    <string name="confirm_password_edit_text">Підтвердіть пароль</string>
+    <string name="confirm_password_edit_text_hint">Введіть ваш пароль ще раз</string>
+    <string name="email_edit_text">Електронна пошта</string>
+    <string name="email_edit_text_hint">Aдрес для відновлення пароля</string>
+    <string name="birthday_edit_text">Дата народження</string>
+    <string name="birthday_edit_text_hint">"   Дата народження"</string>
+    <string name="gender_edit_text">Стать</string>
+    <string name="gender_edit_text_hint">"   Стать"</string>
+
+    <string name="toast_no_network_connection">Відсутнє інтернет з'єднання</string>
+
+    <string name="progress_dialog_msg_sending_email">Відправлення електронної пошти…</string>
+    <string name="progress_dialog_msg_loading_user_profile">Завантаження профілю користувача…</string>
+    <string name="progress_dialog_msg_user_creating">Створення облікового запису…</string>
+
+    <string name="password_restore_dialog_title">Відновлення пароля</string>
+    <string name="password_restore_dialog_email_hint">Адреса електронної пошти</string>
+    <string name="password_restore_dialog_ok_button">Готово</string>
+    <string name="password_restore_dialog_cancel_button">Відміна</string>
+    <string name="password_restore_dialog_toast_success">Письмо було успішно відправлено з інструкціями скидання</string>
+
+    <string name="gender_dialog_title">Виберіть вашу стать</string>
+    <string name="gender_dialog_man_value">Чоловік</string>
+    <string name="gender_dialog_female_value">Жінка</string>
+    <string name="gender_dialog_ok_button">Готово</string>
+    <string name="gender_dialog_cancel_button">Відміна</string>
+
+    <string name="photo_picker_dialog_title">Додати фото!</string>
+    <string name="photo_picker_dialog_take_photo">зробити знімок</string>
+    <string name="photo_picker_dialog_choose_from_gallery">Вибрати з галереї</string>
+    <string name="photo_picker_dialog_cancel">Відміна</string>
+
+</resources>

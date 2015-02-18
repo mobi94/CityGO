@@ -17,7 +17,7 @@
     <Button
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:text="Back"
+        android:text="@string/back_button"
         android:id="@+id/back_button"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -28,17 +28,17 @@
         android:layout_marginTop="25dp" />
 
     <ImageView
-        android:layout_width="135dp"
-        android:layout_height="135dp"
+        android:layout_width="@dimen/avatar_radius"
+        android:layout_height="@dimen/avatar_radius"
         android:id="@+id/avatar_signup"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/background_avatar"
         android:adjustViewBounds="true" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
@@ -48,14 +48,15 @@
         android:id="@+id/username_signup"
         android:layout_above="@+id/password_signup"
         android:layout_centerHorizontal="true"
-        android:hint="User name"
-        app:floatingLabelText="   XXX"
+        android:hint="@string/user_name_edit_text"
+        app:floatingLabelText="@string/user_name_hint"
         app:baseColor="#fff"
         app:primaryColor="#fff"
+        android:textSize="@dimen/text_size"
         android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
@@ -65,14 +66,15 @@
         android:id="@+id/password_signup"
         android:layout_above="@+id/center"
         android:layout_centerHorizontal="true"
-        android:hint="Password"
-        app:floatingLabelText="   XXX"
+        android:hint="@string/password_edit_text"
+        app:floatingLabelText="@string/password_edit_text_sign_up_hint"
         app:baseColor="#fff"
         app:primaryColor="#fff"
+        android:textSize="@dimen/text_size"
         android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/confirm_password_signup"
@@ -82,14 +84,15 @@
         android:layout_centerHorizontal="true"
         android:inputType="textPassword"
         android:layout_alignTop="@+id/center"
-        android:hint="Confirm password"
-        app:floatingLabelText="   XXX"
+        android:hint="@string/confirm_password_edit_text"
+        app:floatingLabelText="@string/confirm_password_edit_text_hint"
         app:baseColor="#fff"
         app:primaryColor="#fff"
+        android:textSize="@dimen/text_size"
         android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
@@ -99,14 +102,15 @@
         app:hideUnderline="true"
         android:layout_below="@+id/confirm_password_signup"
         android:layout_centerHorizontal="true"
-        android:hint="Email"
-        app:floatingLabelText="   XXX"
+        android:hint="@string/email_edit_text"
+        app:floatingLabelText="@string/email_edit_text_hint"
         app:baseColor="#fff"
         app:primaryColor="#fff"
+        android:textSize="@dimen/text_size"
         android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/birthday_signup"
@@ -115,14 +119,15 @@
         app:hideUnderline="true"
         android:layout_below="@+id/email_signup"
         android:layout_centerHorizontal="true"
-        android:hint="Birthday"
-        app:floatingLabelText="   XXX"
+        android:hint="@string/birthday_edit_text"
+        app:floatingLabelText="@string/birthday_edit_text_hint"
         app:baseColor="#fff"
         app:primaryColor="#fff"
+        android:textSize="@dimen/text_size"
         android:layout_marginBottom="3dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/gender_signup"
@@ -131,20 +136,22 @@
         app:hideUnderline="true"
         android:layout_below="@+id/birthday_signup"
         android:layout_centerHorizontal="true"
-        android:hint="Gender"
-        app:floatingLabelText="   XXX"
+        android:hint="@string/gender_edit_text"
+        app:floatingLabelText="@string/gender_edit_text_hint"
         app:baseColor="#fff"
         app:primaryColor="#fff"
+        android:textSize="@dimen/text_size"
         android:layout_marginBottom="15dp" />
 
     <Button
-        android:layout_width="300dp"
+        android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="@string/sign_up_main_button"
         android:id="@+id/signup_main"
         android:textColor="@drawable/button_text_color"
         android:background="@drawable/background_normal"
         android:layout_marginBottom="15dp"
+        android:textSize="@dimen/text_size"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
