@@ -1,516 +1,156 @@
 package com.android.socialnetworks;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.SharedPreferences;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.gorbin.asne.core.SocialNetwork;
-import com.github.gorbin.asne.core.SocialNetworkManager;
-import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
-import com.github.gorbin.asne.core.listener.OnRequestDetailedSocialPersonCompleteListener;
-import com.github.gorbin.asne.core.persons.SocialPerson;
-import com.github.gorbin.asne.facebook.FacebookPerson;
-import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
-import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
-import com.github.gorbin.asne.vk.VKPerson;
-import com.github.gorbin.asne.vk.VkSocialNetwork;
+import com.desarrollodroide.libraryfragmenttransactionextended.FragmentTransactionExtended;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public class MainFragment extends Fragment implements OnMapReadyCallback {
 
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseUser;
-import com.parse.RequestPasswordResetCallback;
-import com.parse.SignUpCallback;
-import com.rengwuxian.materialedittext.MaterialEditText;
-import com.vk.sdk.VKScope;
-
-public class MainFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestDetailedSocialPersonCompleteListener {
-
-    public static SocialNetworkManager mSocialNetworkManager;
-    private Button signup_button;
-    private MaterialEditText username;
-    private MaterialEditText password;
-    private boolean isEmailValid;
-    private boolean isUserNameValid;
-    private boolean isPasswordValid;
-    private boolean isUserNameFilled;
-    private boolean isPasswordFilled;
-
-    public MainFragment() {
-    }
+    private boolean isLocationShowed;
+    private CameraPosition currentCam;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.main_fragment, container, false);
-        // init buttons and set Listener
-        ImageButton vk = (ImageButton) rootView.findViewById(R.id.vk);
-        vk.setOnClickListener(loginClick);
-        ImageButton facebook = (ImageButton) rootView.findViewById(R.id.facebook);
-        facebook.setOnClickListener(loginClick);
-        ImageButton twitter = (ImageButton) rootView.findViewById(R.id.twitter);
-        twitter.setOnClickListener(loginClick);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.map_fragment, container, false);
 
-        //Get Keys for initiate SocialNetworks
-        String VK_KEY = getActivity().getString(R.string.vk_app_id);
-        String TWITTER_CONSUMER_KEY = getActivity().getString(R.string.twitter_consumer_key);
-        String TWITTER_CONSUMER_SECRET = getActivity().getString(R.string.twitter_consumer_secret);
-        String TWITTER_CALLBACK_URL = "oauth://ASNE";
+        isLocationShowed = false;
+        MapFragment map = getMapFragment();
+        map.getMapAsync(this);
 
-        //Chose permissions
-        String[] vkScope = new String[]{
-                VKScope.FRIENDS,
-                VKScope.WALL,
-                VKScope.PHOTOS,
-                VKScope.NOHTTPS,
-                VKScope.STATUS,
-        };
-        ArrayList<String> fbScope = new ArrayList<>();
-        fbScope.addAll(Arrays.asList("public_profile, email, user_friends"));
-
-        //Use manager to manage SocialNetworks
-        mSocialNetworkManager = (SocialNetworkManager) getFragmentManager().findFragmentByTag(MainActivity.SOCIAL_NETWORK_TAG);
-
-        //Check if manager exist
-        if (mSocialNetworkManager == null) {
-            mSocialNetworkManager = new SocialNetworkManager();
-
-            VkSocialNetwork vkNetwork = new VkSocialNetwork(this, VK_KEY, vkScope);
-            mSocialNetworkManager.addSocialNetwork(vkNetwork);
-            FacebookSocialNetwork fbNetwork = new FacebookSocialNetwork(this, fbScope);
-            mSocialNetworkManager.addSocialNetwork(fbNetwork);
-            TwitterSocialNetwork twNetwork = new TwitterSocialNetwork(this, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_CALLBACK_URL);
-            mSocialNetworkManager.addSocialNetwork(twNetwork);
-
-            //Initiate every network from mSocialNetworkManager
-            getFragmentManager().beginTransaction().add(mSocialNetworkManager, MainActivity.SOCIAL_NETWORK_TAG).commit();
-            mSocialNetworkManager.setOnInitializationCompleteListener(this);
-        } else {
-            //if manager exist - get and setup login only for initialized SocialNetworks
-            if (!mSocialNetworkManager.getInitializedSocialNetworks().isEmpty()) {
-                List<SocialNetwork> socialNetworks = mSocialNetworkManager.getInitializedSocialNetworks();
-                for (SocialNetwork socialNetwork : socialNetworks) {
-                    socialNetwork.setOnLoginCompleteListener(this);
-                }
-            }
+        setHasOptionsMenu(true);
+        ActionBar actionBar = getActivity().getActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.app_name);
+            actionBar.setDisplayHomeAsUpEnabled(false);
         }
-        isUserNameFilled = false;
-        isPasswordFilled = false;
-        signup_button = (Button) rootView.findViewById(R.id.sign_up);
-        signup_button.setOnClickListener(buttonsClick);
-        username = (MaterialEditText)rootView.findViewById(R.id.username_edit);
-        username.setBackgroundResource(R.drawable.background_normal);
-        userNameListener();
-        password = (MaterialEditText)rootView.findViewById(R.id.password_edit);
-        password.setBackgroundResource(R.drawable.background_normal);
-        passwordListener();
-        TextView passwordRecovery = (TextView) rootView.findViewById(R.id.password_recovery);
-        passwordRecovery.setOnClickListener(buttonsClick);
-
-        InputFilter filter = new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-
-                if (source instanceof SpannableStringBuilder) {
-                    SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
-                    for (int i = end - 1; i >= start; i--) {
-                        char currentChar = source.charAt(i);
-                        if (!Character.isLetterOrDigit(currentChar)) {
-                            sourceAsSpannableBuilder.delete(i, i+1);
-                        }
-                    }
-                    return source;
-                } else {
-                    StringBuilder filteredStringBuilder = new StringBuilder();
-                    for (int i = start; i < end; i++) {
-                        char currentChar = source.charAt(i);
-                        if (Character.isLetterOrDigit(currentChar)) {
-                            filteredStringBuilder.append(currentChar);
-                        }
-                    }
-                    return filteredStringBuilder.toString();
-                }
-            }
-        };
-        username.setFilters(new InputFilter[] { filter });
-        password.setFilters(new InputFilter[] { filter });
         return rootView;
     }
 
-    private void passwordListener(){
-        password.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-            }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validatePassword(s.toString());
-                if (isPasswordValid) {
-                    password.setBackgroundResource(R.drawable.background_normal);
-                    password.setFloatingLabelText("   " + getString(R.string.password_edit_text));
-                }
-                else {
-                    password.setBackgroundResource(R.drawable.background_error);
-                    password.setFloatingLabelText("   " + getString(R.string.password_edit_text_main_hint));
-                }
-                updateSigninButtonState();
-            }
-        });
-    }
-
-    private void userNameListener() {
-        username.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validateUserName(s.toString());
-                if (isUserNameValid) {
-                    username.setBackgroundResource(R.drawable.background_normal);
-                    username.setFloatingLabelText("   " + getString(R.string.user_name_edit_text));
-                }
-                else {
-                    username.setBackgroundResource(R.drawable.background_error);
-                    username.setFloatingLabelText("   " + getString(R.string.user_name_hint));
-                }
-                updateSigninButtonState();
-            }
-        });
-    }
-
-    private void validateUserName(String text) {
-        isUserNameValid = text.length()==0 || text.length()>=2;
-        isUserNameFilled = text.length() != 0;
-    }
-
-    private void validatePassword(String text) {
-        isPasswordValid = text.length()==0 || text.length()>=6;
-        isPasswordFilled = text.length() != 0;
-    }
-
-    private void updateSigninButtonState() {
-        if (isUserNameFilled && isPasswordFilled) {
-            signup_button.setText(R.string.login_button);
-            if (isPasswordValid && isUserNameValid) {
-                signup_button.setEnabled(true);
-            } else {
-                signup_button.setEnabled(false);
-            }
+    private MapFragment getMapFragment() {
+        FragmentManager fm;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Log.d("MainFragment", "using getFragmentManager");
+            fm = getFragmentManager();
+        } else {
+            Log.d("MainFragment", "using getChildFragmentManager");
+            fm = getChildFragmentManager();
         }
-        else {
-            signup_button.setText(R.string.sign_up_main_button);
-            signup_button.setEnabled(true);
-        }
-    }
-
-    private View.OnClickListener buttonsClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.sign_up:
-                    if(!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
-                    } else {
-                        if(signup_button.getText().toString().equals(getString(R.string.sign_up_main_button))) {
-                            getFragmentManager().beginTransaction()
-                                    .setCustomAnimations(
-                                            R.anim.slide_in_bottom, R.anim.slide_out_top,
-                                            R.anim.slide_in_top, R.anim.slide_out_bottom)
-                                    .replace(R.id.container, new RegistrationFragment())
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-                        else{
-                            MainActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
-                            ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
-                                public void done(ParseUser user, ParseException e) {
-                                    MainActivity.hideProgress();
-                                    if (user == null) {
-                                        // Signup failed. Look at the ParseException to see what happened.
-                                        Toast.makeText(getActivity(), "LOGIN ERROR: " + e, Toast.LENGTH_LONG).show();
-                                    } else {
-                                        MainActivity.startLoggedInActivity();
-                                    }
-                                }
-                            });
-                        }
-                    }
-                    break;
-                case R.id.password_recovery:
-                    passwordRestoreDialog();
-                    break;
-            }
-        }
-    };
-
-    @Override
-    public void onSocialNetworkManagerInitialized() {
-        //when init SocialNetworks - get and setup login only for initialized SocialNetworks
-        for (SocialNetwork socialNetwork : mSocialNetworkManager.getInitializedSocialNetworks()) {
-            socialNetwork.setOnLoginCompleteListener(this);
-        }
-    }
-
-    private View.OnClickListener loginClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            int networkId = 0;
-            switch (view.getId()){
-                case R.id.vk:
-                    networkId = VkSocialNetwork.ID;
-                    break;
-                case R.id.facebook:
-                    networkId = FacebookSocialNetwork.ID;
-                    break;
-                case R.id.twitter:
-                    networkId = TwitterSocialNetwork.ID;
-                    break;
-            }
-            MainActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
-            SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
-            if(!socialNetwork.isConnected()) {
-                if(networkId != 0) {
-                    socialNetwork.requestLogin();
-                } else {
-                    Toast.makeText(getActivity(), "Wrong networkId", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                startProfile(socialNetwork.getID());
-            }
-        }
-    };
-
-    @Override
-    public void onLoginSuccess(int networkId) {
-        startProfile(networkId);
-        //Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_LONG).show();
+        return (MapFragment) fm.findFragmentById(R.id.map);
     }
 
     @Override
-    public void onError(int networkId, String requestID, String errorMessage, Object data) {
-        MainActivity.hideProgress();
-        Log.d("LOGIN ERROR", errorMessage);
-        Toast.makeText(getActivity(), "LOGIN ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
+    public void onMapReady(final GoogleMap map) {
+        map.getUiSettings().setCompassEnabled(true);
+        map.getUiSettings().setTiltGesturesEnabled(true);
+        map.getUiSettings().setRotateGesturesEnabled(true);
+        map.getUiSettings().setScrollGesturesEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(true);
+        map.getUiSettings().setZoomGesturesEnabled(true);
+        map.setMyLocationEnabled(true);
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                if (!isLocationShowed) {
+                    /*CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(16);
+                    map.moveCamera(center);
+                    map.animateCamera(zoom);*/
+                    LatLng latLng;
+                    if (currentCam == null) {
+                        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    }
+                    else {
+                        SharedPreferences settings = getActivity().getSharedPreferences("MAP_STATE", 0);
+                        latLng = new LatLng(settings.getFloat("latitude", 0), settings.getFloat("longitude", 0));
+                    }
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+                    map.animateCamera(cameraUpdate);
+                    isLocationShowed = true;
+                }
+                else currentCam = map.getCameraPosition();
+            }
+        });
+        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                Toast.makeText(getActivity(), "LongClick", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void startProfile(int networkId){
-        SocialNetwork socialNetwork = MainFragment.mSocialNetworkManager.getSocialNetwork(networkId);
-        socialNetwork.setOnRequestDetailedSocialPersonCompleteListener(this);
-        socialNetwork.requestDetailedCurrentPerson();
+    private void destroyMap(){
+        MapFragment destroyMap = getMapFragment();
+        if (destroyMap != null) {
+            if (currentCam != null) {
+                SharedPreferences settings = getActivity().getSharedPreferences("MAP_STATE", 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putFloat("latitude", (float) currentCam.target.latitude);
+                editor.putFloat("longitude", (float) currentCam.target.longitude);
+                editor.apply();
+            }
+            getFragmentManager().beginTransaction().remove(destroyMap).commit();
+        }
     }
 
     @Override
-    public void onRequestDetailedSocialPersonSuccess(int socialNetworkID, SocialPerson socialPerson) {
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser == null) {
-            // show the signup or login screen
-            parseNewUser(socialNetworkID, socialPerson);
-            MainActivity.startLoggedInActivity();
-        } /*else {
-            // do stuff with the user
-        }*/
+    public void onDestroyView() {
+        super.onDestroyView();
+        destroyMap();
     }
 
-    public void parseLoginUser(final int socialNetworkID, final SocialPerson socialPerson){
-        String name = "";
-        switch(socialNetworkID){
-            case 1:
-                name = "tw";
-                break;
-            case 4:
-                name = "fb";
-                break;
-            case 5:
-                name = "vk";
-                break;
+    @Override
+    public void onStop() {
+        super.onStop();
+        destroyMap();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        destroyMap();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_chat:
+                return true;
+            case R.id.action_profile:
+                FragmentTransactionExtended fragmentTransactionExtended = new FragmentTransactionExtended(getActivity(),
+                        getFragmentManager().beginTransaction(), MainFragment.this, new ProfileFragment(), R.id.container);
+                fragmentTransactionExtended.addTransition(FragmentTransactionExtended.ZOOM_SLIDE_HORIZONTAL);
+                fragmentTransactionExtended.commit();
+                return true;
         }
-        ParseUser.logInInBackground(name + socialPerson.id, socialPerson.id + "aFdeCbc550c9", new LogInCallback() {
-            public void done(ParseUser user, ParseException e) {
-                if (user != null) {
-                    // Hooray! The user is logged in.
-                    /*user.put("nickname", socialPerson.name.replace(" ", ""));
-                    switch (socialNetworkID) {
-                        case 1:
-                            user.put("avatarURL", socialPerson.avatarURL);
-                            break;
-                        case 4:
-                            FacebookPerson facebookPerson = (FacebookPerson) socialPerson;
-                            user.put("gender", facebookPerson.gender);
-                            user.put("birthday", facebookPerson.birthday.replace("/", "."));
-                            user.put("avatarURL", socialPerson.avatarURL);
-                            break;
-                        case 5:
-                            VKPerson vkPerson = (VKPerson) socialPerson;
-                            switch (vkPerson.sex) {
-                                case 0:
-                                    user.put("gender", "not presented");
-                                    break;
-                                case 1:
-                                    user.put("gender", "female");
-                                    break;
-                                case 2:
-                                    user.put("gender", "male");
-                                    break;
-                            }
-                            user.put("birthday", vkPerson.birthday);
-                            user.put("avatarURL", vkPerson.photoMaxOrig);
-                            break;
-                    }
-                    user.saveInBackground(); // This succeeds, since the user was authenticated on the device
-                    */
-                } else {
-                    // Signup failed. Look at the ParseException to see what happened.
-                    Log.d("LOGIN ERROR", "logInInBackground" + e);
-                    Toast.makeText(getActivity(), "LOGIN ERROR: " + e, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
-    public void parseNewUser(final int socialNetworkID, final SocialPerson socialPerson){
-        ParseUser user = new ParseUser();
-        user.put("nickname", socialPerson.name.replace(" ", ""));
-        user.setPassword(socialPerson.id + "aFdeCbc550c9");
-        switch(socialNetworkID){
-            case 1:
-                user.setUsername("tw" + socialPerson.id);
-                user.put("avatarURL", socialPerson.avatarURL);
-                break;
-            case 4:
-                FacebookPerson facebookPerson = (FacebookPerson) socialPerson;
-                user.setUsername("fb" + socialPerson.id);
-                user.put("gender", facebookPerson.gender);
-                user.put("birthday", facebookPerson.birthday.replace("/", "."));
-                user.put("avatarURL", socialPerson.avatarURL);
-                break;
-            case 5:
-                VKPerson vkPerson = (VKPerson) socialPerson;
-                user.setUsername("vk" + socialPerson.id);
-                switch(vkPerson.sex){
-                    case 0:
-                        user.put("gender", "not presented");
-                        break;
-                    case 1:
-                        user.put("gender", "female");
-                        break;
-                    case 2:
-                        user.put("gender", "male");
-                        break;
-                }
-                user.put("birthday", vkPerson.birthday);
-                user.put("avatarURL", vkPerson.photoMaxOrig);
-                break;
-        }
-        user.signUpInBackground(new SignUpCallback() {
-            public void done(ParseException e) {
-                if (e != null) {
-                    // Sign up didn't succeed. Look at the ParseException
-                    // to figure out what went wrong
-                    Log.d("SIGNUP ERROR", "signUpInBackground" + e);
-                    // Toast.makeText(getActivity(), "SIGNUP ERROR: " + e, Toast.LENGTH_LONG).show();
-                    if (e.getCode() == 202) {
-                        parseLoginUser(socialNetworkID, socialPerson);
-                    }
-                    else MainActivity.hideProgress();
-                }
-            }
-        });
-    }
-
-    private void passwordRestoreDialog (){
-        AlertDialog.Builder alertBw;
-        final AlertDialog alertDw;
-        final EditText email = new EditText(getActivity());
-        email.setHint(getString(R.string.password_restore_dialog_email_hint));
-        email.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS );
-        email.setBackgroundResource(R.drawable.background_normal);
-        email.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    validateEmail(s.toString());
-                    if (isEmailValid) email.setBackgroundResource(R.drawable.background_normal);
-                    else email.setBackgroundResource(R.drawable.background_error);
-                }
-            });
-
-        RelativeLayout linearLayout=new RelativeLayout(getActivity());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(250,100);
-        RelativeLayout.LayoutParams numPicerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-        numPicerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        linearLayout.setLayoutParams(params);
-        linearLayout.addView(email,numPicerParams);
-
-        alertBw=new AlertDialog.Builder(getActivity());
-        alertBw.setTitle(getString(R.string.password_restore_dialog_title));
-        alertBw.setView(linearLayout);
-        alertBw.setPositiveButton(getString(R.string.password_restore_dialog_ok_button), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialog, int which) {
-                if (isEmailValid) {
-                    if (!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
-                    } else {
-                        MainActivity.showProgress(getString(R.string.progress_dialog_msg_sending_email));
-                        ParseUser.requestPasswordResetInBackground(email.getText().toString(),
-                                new RequestPasswordResetCallback() {
-                                    public void done(ParseException e) {
-                                        MainActivity.hideProgress();
-                                        if (e == null) {
-                                            Toast.makeText(getActivity(),
-                                                    getString(R.string.password_restore_dialog_toast_success), Toast.LENGTH_LONG).show();
-                                            dialog.dismiss();
-                                        } else {
-                                            // Something went wrong. Look at the ParseException to see what's up.
-                                            Toast.makeText(getActivity(), "PASSWORD_RESET_ERROR: " + e, Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-                    }
-                }
-            }
-        });
-        alertBw.setNeutralButton(getString(R.string.password_restore_dialog_cancel_button), new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int which){
-                dialog.dismiss();
-            }
-        });
-        alertDw=alertBw.create();
-        alertDw.show();
-    }
-
-    private void validateEmail(String text) { isEmailValid = text.length()==0 || Patterns.EMAIL_ADDRESS.matcher(text).matches();
+        return super.onOptionsItemSelected(item);
     }
 }

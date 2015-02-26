@@ -76,7 +76,7 @@ public class RegistrationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.main_registration, container, false);
+        View rootView = inflater.inflate(R.layout.registration_fragment, container, false);
 
         avatar = (ImageView)rootView.findViewById(R.id.avatar_signup);
         avatar.setOnClickListener(new View.OnClickListener() {
@@ -289,11 +289,11 @@ public class RegistrationFragment extends Fragment {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.signup_main:
-                    if(!MainActivity.isNetworkOn(getActivity().getBaseContext())) {
+                    if(!SignUpActivity.isNetworkOn(getActivity().getBaseContext())) {
                         Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
                         // do login
-                        MainActivity.showProgress(getString(R.string.progress_dialog_msg_user_creating));
+                        SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_user_creating));
                         ParseUser currentUser = ParseUser.getCurrentUser();
                         if (currentUser == null) {
                             // show the signup or login screen
@@ -308,7 +308,6 @@ public class RegistrationFragment extends Fragment {
         }
     };
 
-
     private void setBirthdayField() {
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
         Calendar newCalendar = Calendar.getInstance();
@@ -319,6 +318,7 @@ public class RegistrationFragment extends Fragment {
                 editBirthday.setText(dateFormatter.format(newDate.getTime()));
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(newCalendar.getTimeInMillis());
 
         editBirthday.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -464,7 +464,6 @@ public class RegistrationFragment extends Fragment {
                         public void onSuccess() {
                             deletePhoto();
                         }
-
                         @Override
                         public void onError() {
                         }
@@ -484,7 +483,7 @@ public class RegistrationFragment extends Fragment {
         file.saveInBackground(new SaveCallback() {
             public void done(ParseException e) {
                 // Handle success or failure here ...
-                MainActivity.hideProgress();
+                SignUpActivity.hideProgress();
                 if (e == null) {
                     user.put("photo", file);
                     user.signUpInBackground(new SignUpCallback() {
@@ -494,7 +493,7 @@ public class RegistrationFragment extends Fragment {
                                 // to figure out what went wrong
                                 Log.d("SIGNUP_ERROR", "signUpInBackground" + e);
                                 Toast.makeText(getActivity(), "SIGNUP_ERROR: " + e, Toast.LENGTH_LONG).show();
-                            } else MainActivity.startLoggedInActivity();
+                            } else SignUpActivity.startMainActivity();
                         }
                     });
                 } else {

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:orientation="vertical"
+            android:background="@android:color/transparent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:orientation="vertical">
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/content"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical">
+
+                <com.makeramen.RoundedImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/background"
+                    app:riv_border_color="#ffffffff"
+                    android:scaleType="center"
+                    app:riv_corner_radius="30dp"
+                    app:riv_border_width="0.5dp"
+                    app:riv_oval="false" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:layout_width="@dimen/layout_width"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/nickname_profile"
+                    android:singleLine="true"
+                    app:floatingLabel="highlight"
+                    app:hideUnderline="true"
+                    android:layout_centerHorizontal="true"
+                    android:hint="Nickname"
+                    app:floatingLabelText="   New nickname"
+                    app:baseColor="#fff"
+                    app:primaryColor="#fff"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="15dp" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:layout_width="@dimen/layout_width"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/gender_profile"
+                    android:singleLine="true"
+                    app:floatingLabel="highlight"
+                    app:hideUnderline="true"
+                    android:layout_below="@+id/nickname_profile"
+                    android:layout_centerHorizontal="true"
+                    android:hint="Gender"
+                    app:floatingLabelText="   New gender"
+                    app:baseColor="#fff"
+                    app:primaryColor="#fff"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginBottom="5dp" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:layout_width="@dimen/layout_width"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/birthday_profile"
+                    android:singleLine="true"
+                    app:floatingLabel="highlight"
+                    app:hideUnderline="true"
+                    android:layout_below="@+id/gender_profile"
+                    android:layout_centerHorizontal="true"
+                    android:hint="Birthday"
+                    app:floatingLabelText="   New birthday"
+                    app:baseColor="#fff"
+                    app:primaryColor="#fff"
+                    android:textSize="@dimen/text_size"
+                    android:layout_marginBottom="10dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:id="@+id/cancel_button"
+                    android:textColor="#FFF"
+                    android:textSize="@dimen/text_size"
+                    android:background="@drawable/background_normal"
+                    android:layout_below="@+id/birthday_profile"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toLeftOf="@+id/vertical_separator"
+                    android:layout_marginRight="20dp" />
+
+                <View
+                    android:id="@+id/vertical_separator"
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/birthday_profile"
+                    android:layout_centerInParent="true" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OK"
+                    android:id="@+id/ok_button"
+                    android:textColor="#FFF"
+                    android:textSize="@dimen/text_size"
+                    android:background="@drawable/background_normal"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/vertical_separator"
+                    android:layout_below="@+id/birthday_profile"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
+            android:orientation="vertical"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+
+</com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout>

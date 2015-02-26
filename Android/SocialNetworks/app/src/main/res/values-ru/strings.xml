@@ -23,10 +23,12 @@
     <string name="gender_edit_text_hint">"   Пол"</string>
 
     <string name="toast_no_network_connection">Отсутствует интернет соединение</string>
+    <string name="toast_login_success">Вы успешно вошли в систему!</string>
 
     <string name="progress_dialog_msg_sending_email">Отправка электронной почты…</string>
     <string name="progress_dialog_msg_loading_user_profile">Загрузка профиля пользователя…</string>
     <string name="progress_dialog_msg_user_creating">Создание учётной записи…</string>
+    <string name="progress_dialog_msg_loading_photo">Загрузка фото…</string>
 
     <string name="password_restore_dialog_title">Восстановление пароля</string>
     <string name="password_restore_dialog_email_hint">Адрес электронной почты</string>
@@ -44,5 +46,12 @@
     <string name="photo_picker_dialog_take_photo">Сделать снимок</string>
     <string name="photo_picker_dialog_choose_from_gallery">Выбрать из галереи</string>
     <string name="photo_picker_dialog_cancel">Отмена</string>
+
+    <string name="profile_nickname_na">Псевдоним: нет данных</string>
+    <string name="profile_gender_na">Пол: нет данных</string>
+    <string name="profile_age_na">Возраст: нет данных</string>
+    <string name="profile_change_avatar">Изменить аватар</string>
+    <string name="profile_edit_my_info">Редактировать профиль</string>
+    <string name="profile_your_go_events">Ваши GO-События:</string>
 
 </resources>

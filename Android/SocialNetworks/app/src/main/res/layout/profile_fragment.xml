@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/profile_fragment"
+    android:background="@drawable/background">
+
+    <ImageView
+        android:layout_width="@dimen/avatar_radius"
+        android:layout_height="@dimen/avatar_radius"
+        android:id="@+id/profile_avatar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/background_avatar"
+        android:adjustViewBounds="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nickname"
+        android:id="@+id/profile_username"
+        android:textColor="#FFF"
+        android:layout_below="@+id/profile_avatar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/text_size" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gender"
+        android:id="@+id/profile_gender"
+        android:textColor="#FFF"
+        android:layout_toLeftOf="@+id/vertical_separator"
+        android:layout_marginRight="30dp"
+        android:layout_alignBottom="@+id/vertical_separator"
+        android:layout_alignTop="@+id/vertical_separator"
+        android:textSize="@dimen/text_size" />
+
+    <View
+        android:id="@+id/vertical_separator"
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/profile_username"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Age"
+        android:id="@+id/profile_age"
+        android:textColor="#FFF"
+        android:layout_toRightOf="@+id/vertical_separator"
+        android:layout_marginLeft="30dp"
+        android:layout_alignBottom="@+id/vertical_separator"
+        android:layout_alignTop="@+id/vertical_separator"
+        android:textSize="@dimen/text_size" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/profile_change_avatar"
+        android:id="@+id/profile_change_avatar"
+        android:layout_below="@+id/vertical_separator"
+        android:layout_toLeftOf="@+id/vertical_separator"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/background_normal"
+        android:textColor="#FFF"
+        android:textSize="@dimen/text_size"
+        android:layout_marginLeft="10dp" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/profile_edit_my_info"
+        android:id="@+id/profile_edit_my_info"
+        android:layout_below="@+id/vertical_separator"
+        android:layout_toRightOf="@+id/vertical_separator"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/background_normal"
+        android:textColor="#FFF"
+        android:textSize="@dimen/text_size"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profile_your_go_events"
+        android:id="@+id/profile_events_title"
+        android:textSize="@dimen/text_size"
+        android:textColor="#FFF"
+        android:layout_below="@+id/profile_change_avatar"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:id="@+id/profile_events_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/profile_events_title"
+        android:layout_marginTop="10dp"
+        android:background="#FFF">
+
+    </LinearLayout>
+
+</com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout>

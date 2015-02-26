@@ -5,7 +5,7 @@ android {
     buildToolsVersion "20.0"
     defaultConfig {
         applicationId "com.android.socialnetworks"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -33,4 +33,6 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.makeramen:roundedimageview:1.5.0'
+    compile 'com.daimajia.slider:library:1.1.2'
+    compile 'com.desarrollodroide:fragmenttransactionextended:1'
 }
