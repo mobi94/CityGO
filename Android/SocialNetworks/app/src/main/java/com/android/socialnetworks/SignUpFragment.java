@@ -1,7 +1,6 @@
 package com.android.socialnetworks;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -46,10 +45,13 @@ import com.parse.SignUpCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.vk.sdk.VKScope;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+
 public class SignUpFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener, OnRequestDetailedSocialPersonCompleteListener {
 
     public static SocialNetworkManager mSocialNetworkManager;
     private Button signup_button;
+    private SmoothProgressBar progressBar;
     private MaterialEditText username;
     private MaterialEditText password;
     private boolean isEmailValid;
@@ -121,8 +123,10 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         isPasswordFilled = false;
         signup_button = (Button) rootView.findViewById(R.id.sign_up);
         signup_button.setOnClickListener(buttonsClick);
+        progressBar = (SmoothProgressBar) rootView.findViewById(R.id.signup_progress_bar);
+        progressBar.setVisibility(View.GONE);
         username = (MaterialEditText)rootView.findViewById(R.id.username_edit);
-        username.setBackgroundResource(R.drawable.background_normal);
+        username.setBackgroundResource(R.drawable.background_normal_name);
         userNameListener();
         password = (MaterialEditText)rootView.findViewById(R.id.password_edit);
         password.setBackgroundResource(R.drawable.background_normal);
@@ -134,7 +138,6 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
             @Override
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
-
                 if (source instanceof SpannableStringBuilder) {
                     SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
                     for (int i = end - 1; i >= start; i--) {
@@ -166,7 +169,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                     int current = getFragmentManager().getBackStackEntryCount();
                     if (current == 1) stackSize = 1;
                     if (current == 0 && stackSize == 1) {
-                        signup_button.setEnabled(true);
+                        enableAllViews();
                         stackSize = 0;
                     }
                 }
@@ -174,6 +177,22 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         });
 
         return rootView;
+    }
+
+    private void disableAllViews(){
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.sign_up_fragment);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setEnabled(false);
+        }
+    }
+
+    private void enableAllViews(){
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.sign_up_fragment);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setEnabled(true);
+        }
     }
 
     private void passwordListener(){
@@ -186,11 +205,11 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                 validatePassword(s.toString());
                 if (isPasswordValid) {
                     password.setBackgroundResource(R.drawable.background_normal);
-                    password.setFloatingLabelText("   " + getString(R.string.password_edit_text));
+                    password.setFloatingLabelText("     " + getString(R.string.password_edit_text));
                 }
                 else {
                     password.setBackgroundResource(R.drawable.background_error);
-                    password.setFloatingLabelText("   " + getString(R.string.password_edit_text_main_hint));
+                    password.setFloatingLabelText("     " + getString(R.string.password_edit_text_main_hint));
                 }
                 updateSigninButtonState();
             }
@@ -209,12 +228,13 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUserName(s.toString());
                 if (isUserNameValid) {
-                    username.setBackgroundResource(R.drawable.background_normal);
-                    username.setFloatingLabelText("   " + getString(R.string.user_name_edit_text));
+                    username.setBackgroundResource(R.drawable.background_normal_name);
+                    username.setFloatingLabelText("     " + getString(R.string.user_name_edit_text));
                 }
                 else {
                     username.setBackgroundResource(R.drawable.background_error);
-                    username.setFloatingLabelText("   " + getString(R.string.user_name_hint));
+                    if (s.length()<=2) username.setFloatingLabelText("   " + getString(R.string.user_name_hint_1));
+                    else username.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                 }
                 updateSigninButtonState();
             }
@@ -222,7 +242,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
     }
 
     private void validateUserName(String text) {
-        isUserNameValid = text.length()==0 || text.length()>=2;
+        isUserNameValid = (text.length()==0 || text.length()>=2) && text.length()<=15;
         isUserNameFilled = text.length() != 0;
     }
 
@@ -234,6 +254,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
     private void updateSigninButtonState() {
         if (isUserNameFilled && isPasswordFilled) {
             signup_button.setText(R.string.login_button);
+            signup_button.setBackgroundResource(R.drawable.background_success);
             if (isPasswordValid && isUserNameValid) {
                 signup_button.setEnabled(true);
             } else {
@@ -242,6 +263,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         }
         else {
             signup_button.setText(R.string.sign_up_main_button);
+            signup_button.setBackgroundResource(R.drawable.background_signup);
             signup_button.setEnabled(true);
         }
     }
@@ -255,7 +277,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                         Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
                         if(signup_button.getText().toString().equals(getString(R.string.sign_up_main_button))) {
-                            signup_button.setEnabled(false);
+                            disableAllViews();
                             getFragmentManager().beginTransaction()
                                     .setCustomAnimations(
                                             R.anim.slide_in_bottom, R.anim.slide_out_bottom,
@@ -265,14 +287,22 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                                     .commit();
                         }
                         else{
-                            SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
+                            //SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
+                            signup_button.setText(getString(R.string.progress_bar_loading));
+                            disableAllViews();
+                            progressBar.setVisibility(View.VISIBLE);
+                            progressBar.progressiveStart();
                             ParseUser.logInInBackground(username.getText().toString(), password.getText().toString(), new LogInCallback() {
                                 public void done(ParseUser user, ParseException e) {
-                                    SignUpActivity.hideProgress();
+                                    //SignUpActivity.hideProgress();
+                                    enableAllViews();
+                                    updateSigninButtonState();
+                                    progressBar.progressiveStop();
                                     if (user == null) {
                                         // Signup failed. Look at the ParseException to see what happened.
                                         Toast.makeText(getActivity(), "LOGIN ERROR: " + e, Toast.LENGTH_LONG).show();
                                     } else {
+                                        signup_button.setText(getString(R.string.progress_bar_success));
                                         SignUpActivity.startMainActivity();
                                     }
                                 }
@@ -313,7 +343,11 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                         networkId = TwitterSocialNetwork.ID;
                         break;
                 }
-                SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
+                //SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
+                disableAllViews();
+                signup_button.setText(getString(R.string.progress_bar_loading));
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.progressiveStart();
                 SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
                 if (!socialNetwork.isConnected()) {
                     if (networkId != 0) {
@@ -330,14 +364,16 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
 
     @Override
     public void onLoginSuccess(int networkId) {
-        Log.d("LOGIN SUCCESS", "fuck");
         Toast.makeText(getActivity(), getString(R.string.toast_login_success), Toast.LENGTH_SHORT).show();
         startProfile(networkId);
     }
 
     @Override
     public void onError(int networkId, String requestID, String errorMessage, Object data) {
-        SignUpActivity.hideProgress();
+        //SignUpActivity.hideProgress();
+        enableAllViews();
+        updateSigninButtonState();
+        progressBar.progressiveStop();
         Log.d("LOGIN ERROR", errorMessage);
         Toast.makeText(getActivity(), "LOGIN ERROR: " + errorMessage, Toast.LENGTH_LONG).show();
     }
@@ -372,13 +408,20 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         }
         ParseUser.logInInBackground(name + socialPerson.id, socialPerson.id + "aFdeCbc550c9", new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
+                enableAllViews();
+                updateSigninButtonState();
+                progressBar.progressiveStop();
                 if (user == null) {
                     // Signup failed. Look at the ParseException to see what happened.
                     Log.d("LOGIN ERROR", "logInInBackground" + e);
                     Toast.makeText(getActivity(), "LOGIN ERROR: " + e, Toast.LENGTH_LONG).show();
                 }
-                else SignUpActivity.startMainActivity();
-                SignUpActivity.hideProgress();
+                else {
+                    signup_button.setText(getString(R.string.progress_bar_success));
+                    signup_button.setBackgroundResource(R.drawable.background_success);
+                    SignUpActivity.startMainActivity();
+                }
+                //SignUpActivity.hideProgress();
             }
         });
     }
@@ -427,11 +470,21 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                     if (e.getCode() == 202) {
                         parseLoginUser(socialNetworkID, socialPerson);
                     }
-                    else SignUpActivity.hideProgress();
+                    else //SignUpActivity.hideProgress();
+                    {
+                        enableAllViews();
+                        updateSigninButtonState();
+                        progressBar.progressiveStop();
+                    }
                 }
                 else {
+                    enableAllViews();
+                    updateSigninButtonState();
+                    progressBar.progressiveStop();
+                    signup_button.setText(getString(R.string.progress_bar_success));
+                    signup_button.setBackgroundResource(R.drawable.background_success);
                     SignUpActivity.startMainActivity();
-                    SignUpActivity.hideProgress();
+                    //SignUpActivity.hideProgress();
                 }
             }
         });
@@ -469,7 +522,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         alertBw=new AlertDialog.Builder(getActivity());
         alertBw.setTitle(getString(R.string.password_restore_dialog_title));
         alertBw.setView(linearLayout);
-        alertBw.setPositiveButton(getString(R.string.password_restore_dialog_ok_button), new DialogInterface.OnClickListener() {
+        alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
                 if (isEmailValid) {
@@ -495,7 +548,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                 }
             }
         });
-        alertBw.setNeutralButton(getString(R.string.password_restore_dialog_cancel_button), new DialogInterface.OnClickListener(){
+        alertBw.setNeutralButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which){
                 dialog.dismiss();

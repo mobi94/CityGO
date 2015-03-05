@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/registration_fragment"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,10 +33,10 @@
         android:layout_height="@dimen/avatar_radius"
         android:id="@+id/avatar_signup"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentTop="true"
         android:background="@drawable/background_avatar"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:layout_above="@+id/username_signup"
+        android:layout_marginBottom="20dp" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="@dimen/layout_width"
@@ -49,7 +50,7 @@
         android:layout_above="@+id/password_signup"
         android:layout_centerHorizontal="true"
         android:hint="@string/user_name_edit_text"
-        app:floatingLabelText="@string/user_name_hint"
+        app:floatingLabelText="@string/user_name_hint_1"
         app:baseColor="#fff"
         app:primaryColor="#fff"
         android:textSize="@dimen/text_size"
@@ -149,10 +150,22 @@
         android:text="@string/sign_up_main_button"
         android:id="@+id/signup_main"
         android:textColor="@drawable/button_text_color"
-        android:background="@drawable/background_normal"
+        android:background="@drawable/background_signup"
         android:layout_marginBottom="15dp"
         android:textSize="@dimen/text_size"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+        android:id="@+id/registration_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        style="@style/GNowProgressBar"
+        android:indeterminate="true"
+        android:layout_below="@+id/signup_main"
+        android:layout_alignRight="@+id/signup_main"
+        android:layout_alignLeft="@+id/signup_main"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
 
 </RelativeLayout>

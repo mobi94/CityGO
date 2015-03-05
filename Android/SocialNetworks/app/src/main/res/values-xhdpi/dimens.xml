@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_size">18sp</dimen>
+    <dimen name="profile_text_size">16sp</dimen>
+    <dimen name="event_start_date_text_size">15sp</dimen>
     <dimen name="layout_width">300dp</dimen>
     <dimen name="avatar_radius">135dp</dimen>
     <dimen name="social_buttons_width">96.5dp</dimen>

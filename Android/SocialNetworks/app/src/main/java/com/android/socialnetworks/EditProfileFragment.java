@@ -19,18 +19,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,7 +36,6 @@ import java.util.Locale;
 
 public class EditProfileFragment extends Fragment {
 
-    private MyProgressDialog progressDialog;
     private MaterialEditText editNickname;
     private EditText editBirthday;
     private EditText editGender;
@@ -48,7 +44,12 @@ public class EditProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.change_profile_fragment, container, false);
-        progressDialog = new MyProgressDialog(getActivity());
+
+        RelativeLayout content = (RelativeLayout)rootView.findViewById(R.id.content);
+        if (MainActivity.hasNavBar()) content.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f));
+        else content.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, 0.85f));
 
         editNickname = (MaterialEditText)rootView.findViewById(R.id.nickname_profile);
         editNickname.setBackgroundResource(R.drawable.background_normal);
@@ -160,14 +161,15 @@ public class EditProfileFragment extends Fragment {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if ((s.length()==0 || s.length()>=2) &&  s.length()<=60) {
+                if (s.length()>=2 && s.length()<=15) {
                     editNickname.setBackgroundResource(R.drawable.background_normal);
-                    editNickname.setFloatingLabelText("   " + "New nickname");
+                    editNickname.setFloatingLabelText("     " + getString(R.string.edit_profile_nickname));
                     okButton.setEnabled(true);
                 }
                 else {
                     editNickname.setBackgroundResource(R.drawable.background_error);
-                    editNickname.setFloatingLabelText("   " + getString(R.string.user_name_hint));
+                    if (s.length()<=2) editNickname.setFloatingLabelText("   " + getString(R.string.user_name_hint_1));
+                    else editNickname.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                     okButton.setEnabled(false);
                 }
             }
@@ -206,6 +208,14 @@ public class EditProfileFragment extends Fragment {
                 return false;
             }
         });
+        editBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    datePickerDialog.show();
+                }
+            }
+        });
     }
 
     private void setGenderField(){
@@ -221,8 +231,7 @@ public class EditProfileFragment extends Fragment {
         aNumberPicker.setMaxValue(values.length-1);
         aNumberPicker.setMinValue(0);
         aNumberPicker.setDisplayedValues(values);
-        aNumberPicker.setWrapSelectorWheel(false);
-        aNumberPicker.setClickable(false);
+        aNumberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(250,100);
         RelativeLayout.LayoutParams numPicerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -235,26 +244,33 @@ public class EditProfileFragment extends Fragment {
         alertBw=new AlertDialog.Builder(getActivity());
         alertBw.setTitle(getString(R.string.gender_dialog_title));
         alertBw.setView(linearLayout);
-        alertBw.setPositiveButton(getString(R.string.gender_dialog_ok_button), new DialogInterface.OnClickListener() {
+        alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editGender.setText(values[aNumberPicker.getValue()]);
                 dialog.dismiss();
             }
         });
-        alertBw.setNeutralButton(getString(R.string.gender_dialog_cancel_button), new DialogInterface.OnClickListener(){
+        alertBw.setNeutralButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which){
                 dialog.dismiss();
             }
         });
         alertDw=alertBw.create();
-
         editGender.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(v == editGender)  alertDw.show();
                 return false;
+            }
+        });
+        editGender.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    alertDw.show();
+                }
             }
         });
     }

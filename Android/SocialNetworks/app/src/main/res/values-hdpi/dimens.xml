@@ -1,5 +1,7 @@
 <resources>
     <dimen name="text_size">14sp</dimen>
+    <dimen name="profile_text_size">14sp</dimen>
+    <dimen name="event_start_date_text_size">13sp</dimen>
     <dimen name="layout_width">250dp</dimen>
     <dimen name="avatar_radius">115dp</dimen>
     <dimen name="social_buttons_width">80dp</dimen>

@@ -8,11 +8,15 @@
     <string name="facebook_app_id">429860077172893</string>
     <string name="twitter_consumer_key">xg9TRDoEYIRX8qHZRj8mvZ1rz</string>
     <string name="twitter_consumer_secret">l1aRRR1ZNiXgYbsGJAxKmOZQaJgZU2tKOa0T21j5B2vVlrzH6L</string>
+    <string name="google_maps_API_KEY">AIzaSyD0jyB9vADXBK5Fv-VtlNn0-0Myft4w6wk</string>
+
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Cancel</string>
 
     <string name="login_button">Sign in</string>
     <string name="sign_up_main_button">Sign Up</string>
     <string name="back_button">Back</string>
-    <string name="forgot_password_text_view">Forgot Password?</string>
+    <string name="forgot_password_text_view">Forgot password?</string>
     <string name="privacy_policy_text_view">Privacy Policy</string>
 
     <string name="user_name_edit_text">User name</string>
@@ -22,13 +26,14 @@
     <string name="birthday_edit_text">Birthday</string>
     <string name="gender_edit_text">Gender</string>
 
-    <string name="user_name_hint">Must contain at least 2 symbols</string>
+    <string name="user_name_hint_1">Must contain at least 2 symbols</string>
+    <string name="user_name_hint_2">Must contain at most 15 symbols</string>
     <string name="password_edit_text_main_hint">Must contain at least 6 symbols</string>
     <string name="password_edit_text_sign_up_hint">6 symbols, including capital letter and digit</string>
     <string name="confirm_password_edit_text_hint">Input your password again</string>
     <string name="email_edit_text_hint">Will be used for password recovery</string>
-    <string name="birthday_edit_text_hint">"   Birthday"</string>
-    <string name="gender_edit_text_hint">"   Gender"</string>
+    <string name="birthday_edit_text_hint">"     Birthday"</string>
+    <string name="gender_edit_text_hint">"     Gender"</string>
 
     <string name="toast_no_network_connection">No network connection</string>
     <string name="toast_login_success">Login successful!</string>
@@ -40,26 +45,36 @@
 
     <string name="password_restore_dialog_email_hint">Input your email</string>
     <string name="password_restore_dialog_title">Password recovery</string>
-    <string name="password_restore_dialog_ok_button">OK</string>
-    <string name="password_restore_dialog_cancel_button">Cancel</string>
     <string name="password_restore_dialog_toast_success">An email was successfully sent with reset instructions</string>
 
-    <string name="gender_dialog_man_value">Male</string>
-    <string name="gender_dialog_female_value">Female</string>
+    <string name="gender_dialog_man_value">male</string>
+    <string name="gender_dialog_female_value">female</string>
     <string name="gender_dialog_title">Choose your gender</string>
-    <string name="gender_dialog_ok_button">OK</string>
-    <string name="gender_dialog_cancel_button">Cancel</string>
 
     <string name="photo_picker_dialog_title">Add Photo!</string>
     <string name="photo_picker_dialog_take_photo">Take Photo</string>
     <string name="photo_picker_dialog_choose_from_gallery">Choose from Gallery</string>
-    <string name="photo_picker_dialog_cancel">Cancel</string>
 
+    <string name="profile_na">NA</string>
     <string name="profile_nickname_na">Nickname: NA</string>
-    <string name="profile_gender_na">Gender: NA</string>
-    <string name="profile_age_na">Age: NA</string>
     <string name="profile_change_avatar">Change avatar</string>
     <string name="profile_edit_my_info">Edit profile</string>
     <string name="profile_your_go_events">Your GO Events:</string>
+    <string name="profile_nickname_textview">"Nickname"</string>
+    <string name="profile_gender_title_textview">"Gender: "</string>
+    <string name="profile_age_title_textview">"Age: "</string>
+
+    <string name="edit_profile_nickname">Nickname</string>
+    <string name="edit_profile_gender">Gender</string>
+    <string name="edit_profile_gender_hint">"     Gender"</string>
+    <string name="edit_profile_birthday">Birthday</string>
+    <string name="edit_profile_birthday_hint">"     Birthday"</string>
+
+    <string name="tabs_chat">Chat</string>
+    <string name="tabs_map">Map</string>
+    <string name="tabs_profile">Profile</string>
+
+    <string name="progress_bar_loading">Loading…</string>
+    <string name="progress_bar_success">Success!</string>
 
 </resources>

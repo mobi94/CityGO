@@ -51,6 +51,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+
 public class RegistrationFragment extends Fragment {
 
     private ImageView avatar;
@@ -61,6 +63,7 @@ public class RegistrationFragment extends Fragment {
     private EditText editBirthday;
     private EditText editGender;
     private Button signupButton;
+    private SmoothProgressBar progressBar;
     private boolean isUserNameValid;
     private boolean isEmailValid;
     private boolean isPasswordValid;
@@ -99,7 +102,7 @@ public class RegistrationFragment extends Fragment {
                 .into(avatar);
 
         editUserName = (MaterialEditText)rootView.findViewById(R.id.username_signup);
-        editUserName.setBackgroundResource(R.drawable.background_normal);
+        editUserName.setBackgroundResource(R.drawable.background_normal_name);
         userNameListener();
         editEmail = (MaterialEditText)rootView.findViewById(R.id.email_signup);
         editEmail.setBackgroundResource(R.drawable.background_normal);
@@ -120,6 +123,10 @@ public class RegistrationFragment extends Fragment {
 
         signupButton = (Button)rootView.findViewById(R.id.signup_main);
         signupButton.setOnClickListener(buttonsClick);
+
+        progressBar = (SmoothProgressBar) rootView.findViewById(R.id.registration_progress_bar);
+        progressBar.setVisibility(View.GONE);
+
         Button backButton = (Button) rootView.findViewById(R.id.back_button);
         backButton.setOnClickListener(buttonsClick);
 
@@ -127,7 +134,6 @@ public class RegistrationFragment extends Fragment {
             @Override
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
-
                 if (source instanceof SpannableStringBuilder) {
                     SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
                     for (int i = end - 1; i >= start; i--) {
@@ -160,6 +166,22 @@ public class RegistrationFragment extends Fragment {
         return rootView;
     }
 
+    private void disableAllViews(){
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.registration_fragment);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setEnabled(false);
+        }
+    }
+
+    private void enableAllViews(){
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.registration_fragment);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setEnabled(true);
+        }
+    }
+
     private void passwordListener(){
         editPassword.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -170,11 +192,11 @@ public class RegistrationFragment extends Fragment {
                 validatePassword(s.toString());
                 if (isPasswordValid) {
                     editPassword.setBackgroundResource(R.drawable.background_normal);
-                    editPassword.setFloatingLabelText("   " + getString(R.string.password_edit_text));
+                    editPassword.setFloatingLabelText("     " + getString(R.string.password_edit_text));
                 }
                 else {
                     editPassword.setBackgroundResource(R.drawable.background_error);
-                    editPassword.setFloatingLabelText("   " + getString(R.string.password_edit_text_sign_up_hint));
+                    editPassword.setFloatingLabelText("     " + getString(R.string.password_edit_text_sign_up_hint));
                 }
                 updateLoginButtonState();
             }
@@ -191,11 +213,11 @@ public class RegistrationFragment extends Fragment {
                 validateConfirmPassword(s.toString());
                 if (isPasswordsMatches) {
                     editConfirmPassword.setBackgroundResource(R.drawable.background_normal);
-                    editConfirmPassword.setFloatingLabelText("   " + getString(R.string.confirm_password_edit_text));
+                    editConfirmPassword.setFloatingLabelText("     " + getString(R.string.confirm_password_edit_text));
                 }
                 else {
                     editConfirmPassword.setBackgroundResource(R.drawable.background_error);
-                    editConfirmPassword.setFloatingLabelText("   " + getString(R.string.confirm_password_edit_text_hint));
+                    editConfirmPassword.setFloatingLabelText("     " + getString(R.string.confirm_password_edit_text_hint));
                 }
                 updateLoginButtonState();
             }
@@ -215,11 +237,11 @@ public class RegistrationFragment extends Fragment {
                 validateEmail(s.toString());
                 if (isEmailValid) {
                     editEmail.setBackgroundResource(R.drawable.background_normal);
-                    editEmail.setFloatingLabelText("   " + getString(R.string.email_edit_text));
+                    editEmail.setFloatingLabelText("     " + getString(R.string.email_edit_text));
                 }
                 else {
                     editEmail.setBackgroundResource(R.drawable.background_error);
-                    editEmail.setFloatingLabelText("   " + getString(R.string.email_edit_text_hint));
+                    editEmail.setFloatingLabelText("     " + getString(R.string.email_edit_text_hint));
                 }
                 updateLoginButtonState();
             }
@@ -238,22 +260,23 @@ public class RegistrationFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUserName(s.toString());
                 if (isUserNameValid) {
-                    editUserName.setBackgroundResource(R.drawable.background_normal);
-                    editUserName.setFloatingLabelText("   " + getString(R.string.user_name_edit_text));
+                    editUserName.setBackgroundResource(R.drawable.background_normal_name);
+                    editUserName.setFloatingLabelText("     " + getString(R.string.user_name_edit_text));
                 }
                 else {
                     editUserName.setBackgroundResource(R.drawable.background_error);
-                    editUserName.setFloatingLabelText("   " + getString(R.string.user_name_hint));
+                    if (s.length()<=2) editUserName.setFloatingLabelText("   " + getString(R.string.user_name_hint_1));
+                    else editUserName.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                 }
                 updateLoginButtonState();
             }
         });
     }
 
-    private void validateEmail(String text) { isEmailValid = text.length()==0 || Patterns.EMAIL_ADDRESS.matcher(text).matches();
+    private void validateEmail(String text) { isEmailValid = Patterns.EMAIL_ADDRESS.matcher(text).matches();
     }
 
-    private void validateUserName(String text) { isUserNameValid = text.length()==0 || text.length()>=2;
+    private void validateUserName(String text) { isUserNameValid = text.length()>=2 && text.length()<=15;
     }
 
     private void validatePassword(String text) {
@@ -271,14 +294,15 @@ public class RegistrationFragment extends Fragment {
                 break;
             }
         }
-        isPasswordValid = text.length()==0 || (text.length()>=6 && upperFound && digitFound);
+        isPasswordValid = text.length()>=6 && upperFound && digitFound;
     }
 
     private void validateConfirmPassword(String text) { isPasswordsMatches =
-            text.equals(editPassword.getText().toString()) || text.length()==0;
+            text.equals(editPassword.getText().toString());
     }
 
     private void updateLoginButtonState() {
+        signupButton.setText(getString(R.string.sign_up_main_button));
         if(isEmailValid && isPasswordsMatches && isPasswordValid && isUserNameValid) { signupButton.setEnabled(true);
         } else { signupButton.setEnabled(false);
         }
@@ -293,7 +317,11 @@ public class RegistrationFragment extends Fragment {
                         Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
                         // do login
-                        SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_user_creating));
+                        //SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_user_creating));
+                        signupButton.setText(getString(R.string.progress_bar_loading));
+                        progressBar.setVisibility(View.VISIBLE);
+                        progressBar.progressiveStart();
+                        disableAllViews();
                         ParseUser currentUser = ParseUser.getCurrentUser();
                         if (currentUser == null) {
                             // show the signup or login screen
@@ -329,6 +357,14 @@ public class RegistrationFragment extends Fragment {
                 return false;
             }
         });
+        editBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    datePickerDialog.show();
+                }
+            }
+        });
     }
 
     private void setGenderField(){
@@ -344,8 +380,7 @@ public class RegistrationFragment extends Fragment {
         aNumberPicker.setMaxValue(values.length-1);
         aNumberPicker.setMinValue(0);
         aNumberPicker.setDisplayedValues(values);
-        aNumberPicker.setWrapSelectorWheel(false);
-        aNumberPicker.setClickable(false);
+        aNumberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(250,100);
         RelativeLayout.LayoutParams numPicerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -358,26 +393,33 @@ public class RegistrationFragment extends Fragment {
         alertBw=new AlertDialog.Builder(getActivity());
         alertBw.setTitle(getString(R.string.gender_dialog_title));
         alertBw.setView(linearLayout);
-        alertBw.setPositiveButton(getString(R.string.gender_dialog_ok_button), new DialogInterface.OnClickListener() {
+        alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 editGender.setText(values[aNumberPicker.getValue()]);
                 dialog.dismiss();
             }
         });
-        alertBw.setNeutralButton(getString(R.string.gender_dialog_cancel_button), new DialogInterface.OnClickListener(){
+        alertBw.setNeutralButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which){
                 dialog.dismiss();
             }
         });
         alertDw=alertBw.create();
-
         editGender.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(v == editGender)  alertDw.show();
                 return false;
+            }
+        });
+        editGender.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    alertDw.show();
+                }
             }
         });
     }
@@ -386,7 +428,7 @@ public class RegistrationFragment extends Fragment {
         final CharSequence[] items = {
                 getString(R.string.photo_picker_dialog_take_photo),
                 getString(R.string.photo_picker_dialog_choose_from_gallery),
-                getString(R.string.photo_picker_dialog_cancel) };
+                getString(R.string.cancel_button) };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.photo_picker_dialog_title));
@@ -483,9 +525,12 @@ public class RegistrationFragment extends Fragment {
         file.saveInBackground(new SaveCallback() {
             public void done(ParseException e) {
                 // Handle success or failure here ...
-                SignUpActivity.hideProgress();
+                //SignUpActivity.hideProgress();
+                enableAllViews();
+                updateLoginButtonState();
+                progressBar.progressiveStop();
                 if (e == null) {
-                    user.put("photo", file);
+                    user.put("profilePic", file);
                     user.signUpInBackground(new SignUpCallback() {
                         public void done(ParseException e) {
                             if (e != null) {
@@ -493,7 +538,11 @@ public class RegistrationFragment extends Fragment {
                                 // to figure out what went wrong
                                 Log.d("SIGNUP_ERROR", "signUpInBackground" + e);
                                 Toast.makeText(getActivity(), "SIGNUP_ERROR: " + e, Toast.LENGTH_LONG).show();
-                            } else SignUpActivity.startMainActivity();
+                            } else {
+                                signupButton.setText(getString(R.string.progress_bar_success));
+                                signupButton.setBackgroundResource(R.drawable.background_success);
+                                SignUpActivity.startMainActivity();
+                            }
                         }
                     });
                 } else {

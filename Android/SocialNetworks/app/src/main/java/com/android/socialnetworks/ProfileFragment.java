@@ -1,9 +1,5 @@
 package com.android.socialnetworks;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -37,6 +33,7 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -53,6 +50,7 @@ import java.util.Random;
 
 public class ProfileFragment extends Fragment {
 
+    public ProgressWheel wheel;
     private ImageView avatar;
     private TextView userName;
     private TextView gender;
@@ -61,35 +59,26 @@ public class ProfileFragment extends Fragment {
     private String birthday;
     private Uri outputFileUri;
     private MyProgressDialog progressDialog;
-    EditProfileFragment editProfleFragment;
     private int stackSize = 0;
+    private boolean isFirstTime;
+    private boolean isProfileEdited = false;
 
-    @Override
-    public Animator onCreateAnimator(int transit, boolean enter, int nextAnim) {
-        Animator animator = AnimatorInflater.loadAnimator(getActivity(), nextAnim);
-        animator.addListener(new AnimatorListenerAdapter(){
-            @Override
-            public void onAnimationStart(Animator animation){}
-            @Override
-            public void onAnimationEnd(Animator animation){
-                if (getFragmentManager().getBackStackEntryCount() == 1) {
-                    getPhoto();
-                    getProfile();
-                }
-            }
-        });
-        return animator;
+    private static final String ARG_POSITION = "position";
+
+    public static ProfileFragment newInstance(int position) {
+        ProfileFragment f = new ProfileFragment();
+        Bundle b = new Bundle();
+        b.putInt(ARG_POSITION, position);
+        f.setArguments(b);
+        return f;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.profile_fragment, container, false);
         setHasOptionsMenu(true);
-        ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("Profile");
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        isFirstTime = true;
+        wheel = (ProgressWheel) rootView.findViewById(R.id.progress_wheel);
         progressDialog = new MyProgressDialog(getActivity());
         avatar = (ImageView)rootView.findViewById(R.id.profile_avatar);
 
@@ -105,6 +94,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 editProfile.setEnabled(false);
+                isProfileEdited = true;
                 startEditFragment();
             }
         });
@@ -116,24 +106,50 @@ public class ProfileFragment extends Fragment {
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                if (isResumed()) {
+                if (isProfileEdited) {
                     int current = getFragmentManager().getBackStackEntryCount();
-                    if (current == 2) stackSize = 2;
-                    if (current == 1 && stackSize == 2) {
-                        getPhoto();
-                        getProfile();
+                    if (current == 1) stackSize = 1;
+                    if (current == 0 && stackSize == 1) {
+                        if (!isDataMatch()) {
+                            getProfile();
+                        }
                         editProfile.setEnabled(true);
+                        isProfileEdited = false;
                         stackSize = 0;
                     }
                 }
             }
         });
-
         return rootView;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (isFirstTime) {
+                getPhoto();
+                getProfile();
+                isFirstTime = false;
+            }
+        }
+    }
+
+    private boolean isDataMatch(){
+        boolean isNnicknameCorrect = false;
+        boolean isGenderCorrect = false;
+        boolean isBirthdayCorrect = false;
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            isNnicknameCorrect = userName.getText().toString().equals(currentUser.getString("nickname"));
+            isGenderCorrect = birthday.equals(currentUser.getString("birthday"));
+            isBirthdayCorrect = gender.getText().toString().equals(currentUser.getString("gender"));
+        }
+        return isNnicknameCorrect && isGenderCorrect && isBirthdayCorrect;
+    }
+
     private void startEditFragment(){
-        editProfleFragment = new EditProfileFragment();
+        EditProfileFragment editProfleFragment = new EditProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putString("NICKNAME", userName.getText().toString());
         bundle.putString("BIRTHDAY", birthday);
@@ -174,14 +190,14 @@ public class ProfileFragment extends Fragment {
                         gender.setText(R.string.gender_dialog_female_value);
                         break;
                     case "not presented":
-                        gender.setText(getString(R.string.profile_gender_na));
+                        gender.setText(getString(R.string.profile_na));
                         break;
                     default:
                         gender.setText(genderString);
                         break;
                 }
             }
-            else gender.setText(getString(R.string.profile_gender_na));
+            else gender.setText(getString(R.string.profile_na));
 
             String ageString = currentUser.getString("birthday");
             if (ageString != null) {
@@ -189,8 +205,8 @@ public class ProfileFragment extends Fragment {
                 birthday = ageString;
             }
             else {
-                age.setText(getString(R.string.profile_age_na));
-                birthday = getString(R.string.profile_age_na);
+                age.setText(getString(R.string.profile_na));
+                birthday = getString(R.string.profile_na);
             }
         }
     }
@@ -214,7 +230,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getPhoto(){
-        progressDialog.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
+        //progressDialog.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
+        wheel.spin();
         final ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             String photoUrl = currentUser.getString("avatarURL");
@@ -228,11 +245,13 @@ public class ProfileFragment extends Fragment {
                             .into(avatar, new com.squareup.picasso.Callback() {
                                 @Override
                                 public void onSuccess() {
-                                     progressDialog.hideProgress();
+                                     //progressDialog.hideProgress();
+                                    wheel.stopSpinning();
                                 }
                                 @Override
                                 public void onError() {
-                                     progressDialog.hideProgress();
+                                     //progressDialog.hideProgress();
+                                    wheel.stopSpinning();
                                 }
                             });
                 }
@@ -243,7 +262,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void downloadPhoto(ParseUser user){
-        ParseFile photo = (ParseFile) user.get("photo");
+        ParseFile photo = (ParseFile) user.get("profilePic");
         photo.getDataInBackground(new GetDataCallback() {
             public void done(byte[] data, ParseException e) {
                 if (e == null) {
@@ -266,11 +285,13 @@ public class ProfileFragment extends Fragment {
                                     @Override
                                     public void onSuccess() {
                                         deletePhoto(Uri.fromFile(f));
-                                        progressDialog.hideProgress();
+                                        //progressDialog.hideProgress();
+                                        wheel.stopSpinning();
                                     }
                                     @Override
                                     public void onError() {
-                                        progressDialog.hideProgress();
+                                        //progressDialog.hideProgress();
+                                        wheel.stopSpinning();
                                     }
                                 });
                     }
@@ -294,7 +315,7 @@ public class ProfileFragment extends Fragment {
         final CharSequence[] items = {
                 getString(R.string.photo_picker_dialog_take_photo),
                 getString(R.string.photo_picker_dialog_choose_from_gallery),
-                getString(R.string.photo_picker_dialog_cancel) };
+                getString(R.string.cancel_button) };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.photo_picker_dialog_title));
@@ -382,7 +403,7 @@ public class ProfileFragment extends Fragment {
                 public void done(ParseException e) {
                     // Handle success or failure here ...
                     if (e == null) {
-                        currentUser.put("photo", file);
+                        currentUser.put("profilePic", file);
                         currentUser.saveInBackground(new SaveCallback() {
                             public void done(ParseException e) {
                                 if (e != null) {
@@ -440,16 +461,14 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_profile, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                return true;
             case R.id.action_logout:
                 ParseUser.logOut();
                 startActivity(new Intent(getActivity(), SignUpActivity.class));

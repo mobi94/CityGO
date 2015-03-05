@@ -35,4 +35,8 @@ dependencies {
     compile 'com.makeramen:roundedimageview:1.5.0'
     compile 'com.daimajia.slider:library:1.1.2'
     compile 'com.desarrollodroide:fragmenttransactionextended:1'
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile 'com.android.support:support-v13:21.0.3'
+    compile 'com.github.castorflex.smoothprogressbar:library:1.0.1-SNAPSHOT@aar'
+    compile 'com.pnikosis:materialish-progress:1.4'
 }

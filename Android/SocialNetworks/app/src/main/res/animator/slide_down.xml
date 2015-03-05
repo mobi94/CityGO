@@ -6,4 +6,4 @@
     android:valueType="floatType"
     android:valueFrom="0"
     android:valueTo="1"
-    android:duration="@android:integer/config_mediumAnimTime"/>
+    android:duration="400"/>

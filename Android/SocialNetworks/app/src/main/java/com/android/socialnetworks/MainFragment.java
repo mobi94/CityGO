@@ -1,6 +1,5 @@
 package com.android.socialnetworks;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
@@ -8,15 +7,14 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.desarrollodroide.libraryfragmenttransactionextended.FragmentTransactionExtended;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,24 +27,52 @@ public class MainFragment extends Fragment implements OnMapReadyCallback {
 
     private boolean isLocationShowed;
     private CameraPosition currentCam;
+    private MapFragment map;
+    private static final String ARG_POSITION = "position";
+    private boolean isLongPressed = false;
+    private int stackSize = 0;
+
+    public static MainFragment newInstance(int position) {
+        MainFragment f = new MainFragment();
+        Bundle b = new Bundle();
+        b.putInt(ARG_POSITION, position);
+        f.setArguments(b);
+        return f;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_fragment, container, false);
 
         isLocationShowed = false;
-        MapFragment map = getMapFragment();
+        map = getMapFragment();
         map.getMapAsync(this);
-
+/*
         setHasOptionsMenu(true);
         ActionBar actionBar = getActivity().getActionBar();
         if (actionBar != null) {
             actionBar.setTitle(R.string.app_name);
             actionBar.setDisplayHomeAsUpEnabled(false);
         }
+*/
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (isLongPressed) {
+                    int current = getFragmentManager().getBackStackEntryCount();
+                    if (current == 1) stackSize = 1;
+                    if (current == 0 && stackSize == 1) {
+                        MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+                        pager.setPagingEnabled(true);
+                        map.getMap().getUiSettings().setAllGesturesEnabled(true);
+                        isLongPressed = false;
+                        stackSize = 0;
+                    }
+                }
+            }
+        });
         return rootView;
     }
-
     private MapFragment getMapFragment() {
         FragmentManager fm;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -78,39 +104,54 @@ public class MainFragment extends Fragment implements OnMapReadyCallback {
                     map.moveCamera(center);
                     map.animateCamera(zoom);*/
                     LatLng latLng;
+                    CameraUpdate cameraUpdate;
                     if (currentCam == null) {
                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    }
-                    else {
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+                        map.animateCamera(cameraUpdate);
+                    } else {
                         SharedPreferences settings = getActivity().getSharedPreferences("MAP_STATE", 0);
                         latLng = new LatLng(settings.getFloat("latitude", 0), settings.getFloat("longitude", 0));
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+                        map.moveCamera(cameraUpdate);
                     }
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
-                    map.animateCamera(cameraUpdate);
                     isLocationShowed = true;
-                }
-                else currentCam = map.getCameraPosition();
+                } else currentCam = map.getCameraPosition();
             }
         });
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                Toast.makeText(getActivity(), "LongClick", Toast.LENGTH_SHORT).show();
+                if (!isLongPressed) {
+                    map.getUiSettings().setAllGesturesEnabled(false);
+                    MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+                    pager.setPagingEnabled(false);
+                    getFragmentManager().beginTransaction()
+                            .setCustomAnimations(
+                                    R.animator.slide_up, R.animator.slide_down,
+                                    R.animator.slide_up, R.animator.slide_down)
+                            .add(R.id.container, new NewEventFragment())
+                            .addToBackStack(null)
+                            .commit();
+                    isLongPressed = true;
+                }
             }
         });
     }
 
     private void destroyMap(){
-        MapFragment destroyMap = getMapFragment();
-        if (destroyMap != null) {
-            if (currentCam != null) {
-                SharedPreferences settings = getActivity().getSharedPreferences("MAP_STATE", 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putFloat("latitude", (float) currentCam.target.latitude);
-                editor.putFloat("longitude", (float) currentCam.target.longitude);
-                editor.apply();
+        if (!getActivity().isFinishing()) {
+            MapFragment destroyMap = getMapFragment();
+            if (destroyMap != null) {
+                if (currentCam != null) {
+                    SharedPreferences settings = getActivity().getSharedPreferences("MAP_STATE", 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putFloat("latitude", (float) currentCam.target.latitude);
+                    editor.putFloat("longitude", (float) currentCam.target.longitude);
+                    editor.apply();
+                }
+                getFragmentManager().beginTransaction().remove(destroyMap).commit();
             }
-            getFragmentManager().beginTransaction().remove(destroyMap).commit();
         }
     }
 
@@ -118,39 +159,5 @@ public class MainFragment extends Fragment implements OnMapReadyCallback {
     public void onDestroyView() {
         super.onDestroyView();
         destroyMap();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        destroyMap();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        destroyMap();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_chat:
-                return true;
-            case R.id.action_profile:
-                FragmentTransactionExtended fragmentTransactionExtended = new FragmentTransactionExtended(getActivity(),
-                        getFragmentManager().beginTransaction(), MainFragment.this, new ProfileFragment(), R.id.container);
-                fragmentTransactionExtended.addTransition(FragmentTransactionExtended.ZOOM_SLIDE_HORIZONTAL);
-                fragmentTransactionExtended.commit();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
