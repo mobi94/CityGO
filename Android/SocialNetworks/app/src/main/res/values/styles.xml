@@ -1,14 +1,10 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:actionModeStyle">@style/MyTheme.ActionMode</item>
-    </style>
-
-    <style name="MyTheme.ActionMode" parent="@android:style/Theme.Holo.Light">
-        <item name="android:actionModeBackground">@drawable/cab_background_top</item>
-        <item name="android:actionModeCloseDrawable">@drawable/ic_action_previous_item</item>
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
     </style>
 
     <style name="SupportAppTheme" parent="Theme.AppCompat.Light"/>

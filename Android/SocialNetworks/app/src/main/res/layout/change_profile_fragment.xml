@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -16,7 +16,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1.1"
             android:orientation="vertical"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:id="@+id/edit_profile_top" />
 
         <RelativeLayout
             android:id="@+id/content"
@@ -30,6 +31,8 @@
             <com.makeramen.RoundedImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:id="@+id/imageView"
                 android:src="@drawable/background"
                 app:riv_border_color="#ffffffff"
@@ -97,9 +100,9 @@
                 android:background="@drawable/background_normal_name"
                 android:layout_below="@+id/birthday_profile"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="30dp"
                 android:layout_toLeftOf="@+id/vertical_separator"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp" />
@@ -122,8 +125,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_toRightOf="@+id/vertical_separator"
                 android:layout_below="@+id/birthday_profile"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp" />
@@ -134,8 +137,9 @@
             android:layout_height="match_parent"
             android:layout_weight="0.9"
             android:orientation="vertical"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:id="@+id/edit_profile_bottom" />
 
     </LinearLayout>
 
-</com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout>
+</RelativeLayout>

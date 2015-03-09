@@ -4,25 +4,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/container"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
-        app:pstsShouldExpand="true"
-        app:pstsTextAllCaps="true"
-        app:pstsIndicatorHeight="2dp"
-        app:pstsIndicatorColor="#ff79a4cf"
-        android:layout_width="match_parent"
-        android:layout_height="40dp">
-    </com.astuetz.PagerSlidingTabStrip>
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"/>
 
-    <com.android.socialnetworks.MyViewPager
-        android:id="@+id/pager"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tabs"
-        tools:context=".MainActivity" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tool_bar"
+        android:id="@+id/container"
+        tools:context=".MainActivity">
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:background="@color/niagara"
+            android:textColor="#FFF"
+            app:pstsShouldExpand="true"
+            app:pstsTextAllCaps="true"
+            app:pstsIndicatorHeight="2dp"
+            app:pstsIndicatorColor="#FFF"
+            app:pstsDividerColor="@color/ColorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+        </com.astuetz.PagerSlidingTabStrip>
+
+        <com.android.socialnetworks.MyViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tabs"
+            tools:context=".MainActivity" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

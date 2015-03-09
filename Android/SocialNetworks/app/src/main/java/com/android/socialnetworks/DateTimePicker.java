@@ -3,10 +3,10 @@ package com.android.socialnetworks;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -15,6 +15,7 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class DateTimePicker extends DialogFragment {
     public static final String TAG_FRAG_DATE_TIME = "fragDateTime";
@@ -103,10 +104,15 @@ public class DateTimePicker extends DialogFragment {
         mTimePicker = (TimePicker) mView.findViewById(R.id.time_picker);
         mDatePicker.init(mDateTime.getYear(), mDateTime.getMonthOfYear(),
                 mDateTime.getDayOfMonth(), null);
-        mTimePicker.setCurrentHour(mDateTime.getHourOfDay());
-        mTimePicker.setCurrentMinute(mDateTime.getMinuteOfHour() + 15);
+        mTimePicker.setIs24HourView(true);
+        setCorrectedTime();
 
-        mDatePicker.setMinDate(System.currentTimeMillis() - 1000);
+        long addDaysInMillis = 0;
+        int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if((currentMinute + 15) >= 60 && currentHour == 23) addDaysInMillis = TimeUnit.DAYS.toMillis(1);
+
+        mDatePicker.setMinDate(System.currentTimeMillis() - 1000 + addDaysInMillis);
         Calendar calendar = Calendar.getInstance();
         calendar.set(mDateTime.getYear() + 1, mDateTime.getMonthOfYear(), mDateTime.getDayOfMonth());
         mDatePicker.setMaxDate(calendar.getTimeInMillis());
@@ -130,17 +136,32 @@ public class DateTimePicker extends DialogFragment {
 
     private void updateTime(){
         Calendar minTime = Calendar.getInstance();
-        minTime.setTimeInMillis(Calendar.getInstance().get(Calendar.HOUR)*60 + Calendar.getInstance().get(Calendar.MINUTE) + 15);
+        minTime.setTimeInMillis(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)*60 + Calendar.getInstance().get(Calendar.MINUTE) + 15);
         Calendar currentTime = Calendar.getInstance();
         currentTime.setTimeInMillis(mTimePicker.getCurrentMinute() + mTimePicker.getCurrentHour()*60);
+        Calendar minDate = Calendar.getInstance();
+        minDate.setTimeInMillis(Calendar.getInstance().get(Calendar.YEAR) +
+                Calendar.getInstance().get(Calendar.MONTH) + Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         Calendar currentDate = Calendar.getInstance();
         currentDate.setTimeInMillis(mDatePicker.getYear() + mDatePicker.getMonth() + mDatePicker.getDayOfMonth());
-        if ((currentTime.getTimeInMillis() < minTime.getTimeInMillis())
-                && currentDate.getTimeInMillis() == (Calendar.getInstance().get(Calendar.YEAR) +
-                Calendar.getInstance().get(Calendar.MONTH) + Calendar.getInstance().get(Calendar.DAY_OF_MONTH))) {
-            mTimePicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR));
-            mTimePicker.setCurrentMinute(Calendar.getInstance().get(Calendar.MINUTE) + 15);
+        if (currentTime.getTimeInMillis() < minTime.getTimeInMillis()
+                && (currentDate.getTimeInMillis() == minDate.getTimeInMillis())) {
+            setCorrectedTime();
         }
+    }
+
+    private void setCorrectedTime(){
+        int addMinutes = 0;
+        int addHour = 0;
+        int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if((currentMinute + 15) >= 60) {
+            addMinutes = (currentMinute + 15) - 60;
+            addHour = 1;
+        }
+        else addMinutes = currentMinute + 15;
+        mTimePicker.setCurrentMinute(addMinutes);
+        mTimePicker.setCurrentHour(currentHour + addHour);
     }
 
     /**

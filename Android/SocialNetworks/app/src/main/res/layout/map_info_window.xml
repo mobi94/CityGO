@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/niagara">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:id="@+id/map_title"
+        android:textSize="12sp"
+        android:textColor="#FFF"
+        android:layout_marginBottom="5dp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Duration"
+            android:id="@+id/map_duration"
+            android:background="@drawable/background_normal"
+            android:textColor="#FFF"
+            android:textSize="12sp"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Empty seats"
+            android:id="@+id/map_empty_seats"
+            android:textSize="12sp"
+            android:background="@drawable/background_normal"
+            android:textColor="#FFF"
+            android:gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start date"
+        android:id="@+id/map_start_date"
+        android:textSize="12sp"
+        android:background="@drawable/background_normal"
+        android:textColor="#FFF"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

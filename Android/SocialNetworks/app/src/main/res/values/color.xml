@@ -8,6 +8,9 @@
     <color name="red_orange">#FA3C34</color>
     <color name="success">#00B957</color>
 
+    <color name="ColorPrimary">#009A90</color>
+    <color name="ColorPrimaryDark">#ff00837a</color>
+
     <color name="vk">#36638e</color>
     <color name="facebook">#3b5998</color>
     <color name="twitter">#55ACEE</color>

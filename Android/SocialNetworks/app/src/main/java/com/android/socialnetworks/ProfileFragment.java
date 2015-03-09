@@ -2,7 +2,6 @@ package com.android.socialnetworks;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,7 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class ProfileFragment extends Fragment {
     private TextView userName;
     private TextView gender;
     private TextView age;
+    private Button changeAvatar;
     private Button editProfile;
     private String birthday;
     private Uri outputFileUri;
@@ -82,7 +84,7 @@ public class ProfileFragment extends Fragment {
         progressDialog = new MyProgressDialog(getActivity());
         avatar = (ImageView)rootView.findViewById(R.id.profile_avatar);
 
-        Button changeAvatar = (Button) rootView.findViewById(R.id.profile_change_avatar);
+        changeAvatar = (Button) rootView.findViewById(R.id.profile_change_avatar);
         changeAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +95,6 @@ public class ProfileFragment extends Fragment {
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editProfile.setEnabled(false);
                 isProfileEdited = true;
                 startEditFragment();
             }
@@ -113,7 +114,9 @@ public class ProfileFragment extends Fragment {
                         if (!isDataMatch()) {
                             getProfile();
                         }
-                        editProfile.setEnabled(true);
+                        enableButtons();
+                        MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+                        pager.setPagingEnabled(true);
                         isProfileEdited = false;
                         stackSize = 0;
                     }
@@ -121,6 +124,16 @@ public class ProfileFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    private void disableButtons(){
+        changeAvatar.setEnabled(false);
+        editProfile.setEnabled(false);
+    }
+
+    private void enableButtons(){
+        changeAvatar.setEnabled(true);
+        editProfile.setEnabled(true);
     }
 
     @Override
@@ -149,6 +162,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void startEditFragment(){
+        disableButtons();
+        MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+        pager.setPagingEnabled(false);
         EditProfileFragment editProfleFragment = new EditProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putString("NICKNAME", userName.getText().toString());
@@ -157,8 +173,8 @@ public class ProfileFragment extends Fragment {
         editProfleFragment.setArguments(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(
-                        R.animator.slide_up, R.animator.slide_down,
-                        R.animator.slide_up, R.animator.slide_down)
+                        R.anim.slide_in_bottom, R.anim.slide_out_bottom,
+                        R.anim.slide_in_bottom, R.anim.slide_out_bottom)
                 .add(R.id.container, editProfleFragment)
                 .addToBackStack(null)
                 .commit();
@@ -201,7 +217,7 @@ public class ProfileFragment extends Fragment {
 
             String ageString = currentUser.getString("birthday");
             if (ageString != null) {
-                age.setText(Integer.toString(getAge(ageString)));
+                age.setText(Integer.toString(MainActivity.getAge(ageString)));
                 birthday = ageString;
             }
             else {
@@ -209,24 +225,6 @@ public class ProfileFragment extends Fragment {
                 birthday = getString(R.string.profile_na);
             }
         }
-    }
-
-    private int getAge(String string){
-        DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-        Date date = null;
-        try {
-            date = format.parse(string);
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
-        }
-        Calendar birthDay = Calendar.getInstance();
-        if (date != null) {
-            birthDay.setTimeInMillis(date.getTime());
-        }
-        long currentTime = System.currentTimeMillis();
-        Calendar now = Calendar.getInstance();
-        now.setTimeInMillis(currentTime);
-        return now.get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);
     }
 
     private void getPhoto(){

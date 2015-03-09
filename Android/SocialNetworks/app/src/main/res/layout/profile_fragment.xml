@@ -163,7 +163,6 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/profile_events_list"

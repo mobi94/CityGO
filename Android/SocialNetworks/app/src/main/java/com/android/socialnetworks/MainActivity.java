@@ -1,16 +1,13 @@
 package com.android.socialnetworks;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -21,17 +18,22 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.parse.Parse;
 import com.parse.ParseUser;
 
-public class MainActivity extends Activity {
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+public class MainActivity extends ActionBarActivity {
+
+    public static String EVENT_FRAGMENT_RESULT = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false); // remove the left caret
-            actionBar.setDisplayShowHomeEnabled(false); // remove the icon
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
         Parse.initialize(this, "OZYscvQi1cKHCP0vo6hPbbGAPvWs6M6vuMvrMRHi", "CTt2KMlNavNfboR5Tt0f8bA0I0h38ZgCFPtE6I5s");
 
         if (isFirstTime()) {
@@ -48,17 +50,17 @@ public class MainActivity extends Activity {
                 /*getFragmentManager().beginTransaction()
                         .add(R.id.container, new MainFragment())
                         .commit();*/
-                intialiseViewPager();
+                initialiseViewPager();
             }
         }
     }
 
-    private void intialiseViewPager() {
+    private void initialiseViewPager() {
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        final PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         MyViewPager pager = (MyViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new MyPagerAdapter(getFragmentManager()));
+        pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
         pager.setPageMargin(pageMargin);
         pager.setCurrentItem(1);
         pager.setOffscreenPageLimit(2);
@@ -70,6 +72,12 @@ public class MainActivity extends Activity {
         pager.setCurrentItem(1);
         pager.setOffscreenPageLimit(2);
         tabs.setViewPager(pager);*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        EVENT_FRAGMENT_RESULT = "canceled";
     }
 
     public static boolean hasNavBar() {
@@ -88,11 +96,7 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_refresh:
-                return true;
-            case R.id.action_help:
-                return true;
-            case R.id.action_check_updates:
+            case R.id.action_search:
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -142,5 +146,23 @@ public class MainActivity extends Activity {
                 default: return null;
             }
         }
+    }
+
+    public static int getAge(String string){
+        DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(string);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar birthDay = Calendar.getInstance();
+        if (date != null) {
+            birthDay.setTimeInMillis(date.getTime());
+        }
+        long currentTime = System.currentTimeMillis();
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(currentTime);
+        return now.get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);
     }
 }

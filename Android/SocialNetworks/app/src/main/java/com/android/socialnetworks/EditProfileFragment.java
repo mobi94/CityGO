@@ -2,9 +2,9 @@ package com.android.socialnetworks;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -44,6 +44,21 @@ public class EditProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.change_profile_fragment, container, false);
+
+        LinearLayout top = (LinearLayout) rootView.findViewById(R.id.edit_profile_top);
+        top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStackImmediate();
+            }
+        });
+        LinearLayout bottom = (LinearLayout) rootView.findViewById(R.id.edit_profile_bottom);
+        bottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStackImmediate();
+            }
+        });
 
         RelativeLayout content = (RelativeLayout)rootView.findViewById(R.id.content);
         if (MainActivity.hasNavBar()) content.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,

@@ -313,8 +313,8 @@ public class RegistrationFragment extends Fragment {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.signup_main:
-                    if(!SignUpActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
+                    if(!SignUpActivity.isNetworkOn(getActivity())) {
+                        Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
                         // do login
                         //SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_user_creating));

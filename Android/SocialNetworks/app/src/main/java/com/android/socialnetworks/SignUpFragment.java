@@ -273,8 +273,8 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.sign_up:
-                    if(!SignUpActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
+                    if(!SignUpActivity.isNetworkOn(getActivity())) {
+                        Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
                         if(signup_button.getText().toString().equals(getString(R.string.sign_up_main_button))) {
                             disableAllViews();
@@ -311,7 +311,10 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                     }
                     break;
                 case R.id.password_recovery:
-                    passwordRestoreDialog();
+                    if(!SignUpActivity.isNetworkOn(getActivity()))
+                        Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
+                    else
+                        passwordRestoreDialog();
                     break;
             }
         }
@@ -525,10 +528,11 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
-                if (isEmailValid) {
-                    if (!SignUpActivity.isNetworkOn(getActivity().getBaseContext())) {
-                        Toast.makeText(getActivity().getBaseContext(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
-                    } else {
+                if (!SignUpActivity.isNetworkOn(getActivity())) {
+                    Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (isEmailValid) {
                         SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_sending_email));
                         ParseUser.requestPasswordResetInBackground(email.getText().toString(),
                                 new RequestPasswordResetCallback() {

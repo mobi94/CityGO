@@ -141,8 +141,7 @@
         app:floatingLabelText="@string/gender_edit_text_hint"
         app:baseColor="#fff"
         app:primaryColor="#fff"
-        android:textSize="@dimen/text_size"
-        android:layout_marginBottom="15dp" />
+        android:textSize="@dimen/text_size" />
 
     <Button
         android:layout_width="@dimen/layout_width"
@@ -151,10 +150,11 @@
         android:id="@+id/signup_main"
         android:textColor="@drawable/button_text_color"
         android:background="@drawable/background_signup"
-        android:layout_marginBottom="15dp"
         android:textSize="@dimen/text_size"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/gender_signup"
+        android:layout_marginTop="20dp" />
 
     <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
         android:id="@+id/registration_progress_bar"

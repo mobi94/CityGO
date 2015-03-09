@@ -2,17 +2,17 @@ package com.android.socialnetworks;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.TypedValue;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,33 +23,48 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class NewEventFragment extends Fragment  implements DateTimePicker.OnDateTimeSetListener{
+public class NewEventFragment extends Fragment implements DateTimePicker.OnDateTimeSetListener{
 
-    private ActionMode mActionMode;
+    private ArrayList<Drawable> event_labels = new ArrayList<>();
     private ImageView eventType;
-    private String eventTypeString;
+    private String eventTypeString = "";
     private MaterialEditText editTitle;
     private MaterialEditText editDescription;
     private MaterialEditText editAvailableSits;
     private MaterialEditText editStartDate;
     private MaterialEditText editTemporary;
+    private MyProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_event_fragment, container, false);
+        setHasOptionsMenu(true);
 
-        if (mActionMode == null) {
-            mActionMode = getActivity().startActionMode(mActionModeCallback);
-            //mActionMode.setCustomView(inflater.inflate(R.layout.contextual_action_bar,null));
+        progressDialog = new MyProgressDialog(getActivity());
+        ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("Create Go Event");
         }
 
+        createEventLabelsArrayList();
         eventType = (ImageView)rootView.findViewById(R.id.event_type);
         setEventType();
         editTitle = (MaterialEditText)rootView.findViewById(R.id.event_title);
@@ -97,6 +112,15 @@ public class NewEventFragment extends Fragment  implements DateTimePicker.OnDate
         });
     }
 
+    private void createEventLabelsArrayList(){
+        event_labels.add(getResources().getDrawable(R.drawable.event_meet));
+        event_labels.add(getResources().getDrawable(R.drawable.event_movie));
+        event_labels.add(getResources().getDrawable(R.drawable.event_sport));
+        event_labels.add(getResources().getDrawable(R.drawable.event_business));
+        event_labels.add(getResources().getDrawable(R.drawable.event_coffee));
+        event_labels.add(getResources().getDrawable(R.drawable.event_love));
+    }
+
     private void setEventType(){
         final NumberPicker  aNumberPicker;
         AlertDialog.Builder alertBw;
@@ -130,6 +154,7 @@ public class NewEventFragment extends Fragment  implements DateTimePicker.OnDate
         alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                eventType.setImageDrawable(event_labels.get(aNumberPicker.getValue()));
                 eventTypeString = values[aNumberPicker.getValue()];
                 dialog.dismiss();
             }
@@ -226,11 +251,10 @@ public class NewEventFragment extends Fragment  implements DateTimePicker.OnDate
     public void DateTimeSet(Date date) {
         if (date != null) {
             DateTime dateTime = new DateTime(date);
-            if (getResources().getConfiguration().locale != Locale.US) {
-                editStartDate.setText(dateTime.getDateString().replace("at", "на"));
-                editStartDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.event_start_date_text_size));
-            }
-            else editStartDate.setText(dateTime.getDateString());
+            if (getResources().getConfiguration().locale != Locale.US)
+                editStartDate.setText(dateTime.getDateString("d MMMM, yyyy 'на' HH:mm"));
+            else
+                editStartDate.setText(dateTime.getDateString());
         }
         editStartDate.setEnabled(true);
     }
@@ -285,42 +309,100 @@ public class NewEventFragment extends Fragment  implements DateTimePicker.OnDate
         });
     }
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_event, menu);
+    }
 
-        // Called when the action mode is created; startActionMode() was called
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            // Inflate a menu resource providing context menu items
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.contextual_menu, menu);
-            return true;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                MainActivity.EVENT_FRAGMENT_RESULT = "canceled";
+                getActivity().getSupportFragmentManager().popBackStack();
+                return true;
+            case R.id.action_done:
+                if(!SignUpActivity.isNetworkOn(getActivity())) {
+                    Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isEditFieldsFilled())
+                        createParseObject();
+                    else
+                        Toast.makeText(getActivity(), "You must fill all necessary fields!", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isEditFieldsFilled(){
+        return !editTitle.getText().toString().equals("") && !editTemporary.getText().toString().equals("")
+        && !editStartDate.getText().toString().equals("") && !editAvailableSits.getText().toString().equals("")
+        && !eventTypeString.equals("");
+    }
+
+    private void createParseObject(){
+        progressDialog.showProgress("Sending data...");
+        final ParseObject goEvent = new ParseObject("GoEvents");
+
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            ParseGeoPoint point = new ParseGeoPoint(bundle.getDouble("LOCATION_LAT", 0), bundle.getDouble("LOCATION_LONG", 0));
+            goEvent.put("location", point);
         }
 
-        // Called each time the action mode is shown. Always called after onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false; // Return false if nothing is done
+        final ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            goEvent.put("creatorAge", Integer.toString(MainActivity.getAge(currentUser.getString("birthday"))));
+            goEvent.put("creatorGender", currentUser.getString("gender"));
+            goEvent.put("creatorName", currentUser.getString("nickname"));
         }
 
-        // Called when the user selects a contextual menu item
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.item_create:
-                    mode.finish(); // Action picked, so close the CAB
-                    getFragmentManager().popBackStackImmediate();
-                    return true;
-                default:
-                    return false;
+        SimpleDateFormat mFormat;
+        if (getResources().getConfiguration().locale != Locale.US)
+            mFormat = new SimpleDateFormat("d MMMM, yyyy 'на' HH:mm");
+        else
+            mFormat = new SimpleDateFormat("MMMM dd, yyyy 'at' h:mm a");
+        Date startDate = new Date();
+        try {
+            startDate = mFormat.parse(editStartDate.getText().toString());
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        goEvent.put("startDate", startDate);
+        goEvent.put("avaibleSeats", editAvailableSits.getText().toString());
+        goEvent.put("category", eventTypeString);
+        goEvent.put("description", editDescription.getText().toString());
+        goEvent.put("temporary", editTemporary.getText().toString());
+        goEvent.put("title", editTitle.getText().toString());
+
+        goEvent.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Toast.makeText(getActivity(), "CREATE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
+                    progressDialog.hideProgress();
+                }
+                else {
+                    if (currentUser != null) {
+                        ParseRelation<ParseObject> relation = currentUser.getRelation("goEvent");
+                        relation.add(goEvent);
+                        currentUser.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) Toast.makeText(getActivity(), "CREATE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
+                                else progressDialog.hideProgress();
+                            }
+                        });
+                    }
+                    Toast.makeText(getActivity(), "Event was successfully created!", Toast.LENGTH_SHORT).show();
+                    MainActivity.EVENT_FRAGMENT_RESULT = "done";
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             }
-        }
-
-        // Called when the user exits the action mode
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            mActionMode = null;
-            getFragmentManager().popBackStackImmediate();
-        }
-    };
+        });
+    }
 }

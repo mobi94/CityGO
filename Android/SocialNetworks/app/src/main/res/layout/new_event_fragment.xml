@@ -1,4 +1,4 @@
-<com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +13,8 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="40dp"
-        android:background="@drawable/background_avatar" />
+        android:background="@drawable/background_avatar"
+        android:adjustViewBounds="true" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="wrap_content"
@@ -43,7 +44,7 @@
         android:layout_height="150dp"
         app:floatingLabel="highlight"
         app:hideUnderline="true"
-        app:floatingLabelText="     Description"
+        app:floatingLabelText="     Description (unnecessary)"
         app:baseColor="#fff"
         app:primaryColor="#fff"
         android:textSize="@dimen/text_size"
@@ -52,7 +53,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:hint="Description"
+        android:hint="Description (unnecessary)"
         android:inputType="textCapSentences|textMultiLine"
         android:singleLine="false"
         android:maxLength="200"
@@ -122,4 +123,4 @@
         android:layout_marginRight="40dp"
         android:singleLine="true" />
 
-</com.desarrollodroide.libraryfragmenttransactionextended.SlidingRelativeLayout>
+</RelativeLayout>

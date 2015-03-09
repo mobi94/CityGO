@@ -1,33 +1,14 @@
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/more"
-        android:icon="@drawable/ic_action_overflow"
-        android:showAsAction="always"
-        android:title="More"
-        tools:ignore="AppCompatResource"
-        android:visible="true">
-        <menu>
-            <!-- Refresh -->
-            <item
-                android:id="@+id/action_refresh"
-                android:showAsAction="never"
-                tools:ignore="AppCompatResource"
-                android:title="Refresh"/>
-
-            <!-- Help -->
-            <item
-                android:id="@+id/action_help"
-                android:showAsAction="never"
-                tools:ignore="AppCompatResource"
-                android:title="Help"/>
-
-            <!-- Check updates -->
-            <item
-                android:id="@+id/action_check_updates"
-                android:showAsAction="never"
-                tools:ignore="AppCompatResource"
-                android:title="Check for updates"/>
-        </menu>
-    </item>
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="200"
+        android:title="Search"
+        android:icon="@drawable/ic_action_search"
+        app:showAsAction="ifRoom"/>
 </menu>
