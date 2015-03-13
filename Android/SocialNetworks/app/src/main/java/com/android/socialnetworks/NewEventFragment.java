@@ -2,13 +2,10 @@ package com.android.socialnetworks;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -25,7 +22,10 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
@@ -34,13 +34,11 @@ import com.parse.SaveCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 public class NewEventFragment extends Fragment implements DateTimePicker.OnDateTimeSetListener{
 
-    private ArrayList<Drawable> event_labels = new ArrayList<>();
     private ImageView eventType;
     private String eventTypeString = "";
     private MaterialEditText editTitle;
@@ -54,6 +52,10 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_event_fragment, container, false);
+        Bundle bundle = getArguments();
+        String eventUser = bundle.getString("CURRENT_USER", "");
+        String currentUser = ParseUser.getCurrentUser().getUsername();
+
         setHasOptionsMenu(true);
 
         progressDialog = new MyProgressDialog(getActivity());
@@ -61,10 +63,10 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Create Go Event");
+            if (eventUser.equals(currentUser)) actionBar.setTitle("Edit Go Event");
+            else actionBar.setTitle("Create Go Event");
         }
 
-        createEventLabelsArrayList();
         eventType = (ImageView)rootView.findViewById(R.id.event_type);
         setEventType();
         editTitle = (MaterialEditText)rootView.findViewById(R.id.event_title);
@@ -84,6 +86,23 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         editTemporary.setBackgroundResource(R.drawable.background_normal);
         editTemporary.setInputType(InputType.TYPE_NULL);
         setTemporary();
+
+        if (eventUser.equals(currentUser)){
+            if (MainActivity.newMarker != null) {
+                eventType.setImageDrawable(getResources().getDrawable(getMarkerIcon(Integer.parseInt(MainActivity.newMarker.getCategory()))));
+                eventTypeString = MainActivity.newMarker.getCategory();
+                editTitle.setText(MainActivity.newMarker.getTitle());
+                editDescription.setText(MainActivity.newMarker.getDescription());
+                editAvailableSits.setText(MainActivity.newMarker.getAvailableSeats());
+                SimpleDateFormat format;
+                if (getResources().getConfiguration().locale != Locale.US)
+                    format = new SimpleDateFormat("d MMMM, yyyy 'на' HH:mm");
+                else
+                    format = new SimpleDateFormat("MMMM dd, yyyy 'at' h:mm a");
+                editStartDate.setText(format.format(MainActivity.newMarker.getStartDate()));
+                editTemporary.setText(MainActivity.newMarker.getDuration());
+            }
+        }
 
         return rootView;
     }
@@ -112,13 +131,16 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         });
     }
 
-    private void createEventLabelsArrayList(){
-        event_labels.add(getResources().getDrawable(R.drawable.event_meet));
-        event_labels.add(getResources().getDrawable(R.drawable.event_movie));
-        event_labels.add(getResources().getDrawable(R.drawable.event_sport));
-        event_labels.add(getResources().getDrawable(R.drawable.event_business));
-        event_labels.add(getResources().getDrawable(R.drawable.event_coffee));
-        event_labels.add(getResources().getDrawable(R.drawable.event_love));
+    private int getMarkerIcon(int categoryIcon){
+        switch(categoryIcon){
+            case 0: return R.drawable.event_love;
+            case 1: return R.drawable.event_movie;
+            case 2: return R.drawable.event_sport;
+            case 3: return R.drawable.event_business;
+            case 4: return R.drawable.event_coffee;
+            case 5: return R.drawable.event_meet;
+            default: return R.drawable.event_meet;
+        }
     }
 
     private void setEventType(){
@@ -129,12 +151,12 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         RelativeLayout linearLayout=new RelativeLayout(getActivity());
         aNumberPicker=new NumberPicker(getActivity());
         final String[] values=new String[6];
-        values[0]="Meet";
+        values[0]="Love";
         values[1]="Movie";
         values[2]="Sport";
         values[3]="Business";
         values[4]="Coffee";
-        values[5]="Love";
+        values[5]="Meet";
         aNumberPicker.setMaxValue(values.length-1);
         aNumberPicker.setMinValue(0);
         aNumberPicker.setDisplayedValues(values);
@@ -154,8 +176,8 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                eventType.setImageDrawable(event_labels.get(aNumberPicker.getValue()));
-                eventTypeString = values[aNumberPicker.getValue()];
+                eventType.setImageDrawable(getResources().getDrawable(getMarkerIcon(aNumberPicker.getValue())));
+                eventTypeString = Integer.toString(aNumberPicker.getValue());
                 dialog.dismiss();
             }
         });
@@ -327,37 +349,75 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                 if(!SignUpActivity.isNetworkOn(getActivity())) {
                     Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                 } else {
-                    if (isEditFieldsFilled())
-                        createParseObject();
-                    else
-                        Toast.makeText(getActivity(), "You must fill all necessary fields!", Toast.LENGTH_SHORT).show();
+                    if (getArguments().getString("CURRENT_USER", "").equals(ParseUser.getCurrentUser().getUsername())){
+                        if (isEditFieldsEdited()) {
+                            if (isEditFieldsFilled()) updateParseObject();
+                            else Toast.makeText(getActivity(), "You must fill all necessary fields!", Toast.LENGTH_SHORT).show();
+                        }
+                        else getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                    else {
+                        if (isEditFieldsFilled()) createParseObject();
+                        else Toast.makeText(getActivity(), "You must fill all necessary fields!", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean isEditFieldsFilled(){
+    private boolean isEditFieldsFilled() {
         return !editTitle.getText().toString().equals("") && !editTemporary.getText().toString().equals("")
         && !editStartDate.getText().toString().equals("") && !editAvailableSits.getText().toString().equals("")
         && !eventTypeString.equals("");
     }
 
+    private boolean isEditFieldsEdited() {
+        SimpleDateFormat format;
+        if (getResources().getConfiguration().locale != Locale.US)
+            format = new SimpleDateFormat("d MMMM, yyyy 'на' HH:mm");
+        else
+            format = new SimpleDateFormat("MMMM dd, yyyy 'at' h:mm a");
+        return MainActivity.newMarker != null
+                && (!editTitle.getText().toString().equals(MainActivity.newMarker.getTitle())
+                || !editTemporary.getText().toString().equals(MainActivity.newMarker.getDuration())
+                || !editStartDate.getText().toString().equals(format.format(MainActivity.newMarker.getStartDate()))
+                || !editAvailableSits.getText().toString().equals(MainActivity.newMarker.getAvailableSeats())
+                || !eventTypeString.equals(MainActivity.newMarker.getCategory())
+                || !editDescription.getText().toString().equals(MainActivity.newMarker.getDescription()));
+    }
+
     private void createParseObject(){
         progressDialog.showProgress("Sending data...");
         final ParseObject goEvent = new ParseObject("GoEvents");
+        String title = editTitle.getText().toString();
+        String category = eventTypeString;
+        String duration = editTemporary.getText().toString();
+        String availableSeats = editAvailableSits.getText().toString();
+        String description = editDescription.getText().toString();
+        String creatorAge = "";
+        String creatorGender = "";
+        String creatorName = "";
+        String creatorNickName = "";
+        String creatorAvatarUrl = "";
+        LatLng location;
+        Date startDate;
 
         Bundle bundle = getArguments();
-        if(bundle != null) {
-            ParseGeoPoint point = new ParseGeoPoint(bundle.getDouble("LOCATION_LAT", 0), bundle.getDouble("LOCATION_LONG", 0));
-            goEvent.put("location", point);
-        }
+        ParseGeoPoint point = new ParseGeoPoint(bundle.getDouble("LOCATION_LAT", 0), bundle.getDouble("LOCATION_LONG", 0));
+        location = new LatLng(bundle.getDouble("LOCATION_LAT", 0), bundle.getDouble("LOCATION_LONG", 0));
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
-            goEvent.put("creatorAge", Integer.toString(MainActivity.getAge(currentUser.getString("birthday"))));
-            goEvent.put("creatorGender", currentUser.getString("gender"));
-            goEvent.put("creatorName", currentUser.getString("nickname"));
+            creatorAge = Integer.toString(MainActivity.getAge(currentUser.getString("birthday")));
+            creatorGender = currentUser.getString("gender");
+            creatorName = currentUser.getString("username");
+            creatorNickName = currentUser.getString("nickname");
+            creatorAvatarUrl = currentUser.getString("avatarURL");
+            if (creatorAvatarUrl == null || creatorAvatarUrl.equals("")) {
+                ParseFile photo = (ParseFile) currentUser.get("profilePic");
+                creatorAvatarUrl = photo.getUrl();
+            }
         }
 
         SimpleDateFormat mFormat;
@@ -365,19 +425,28 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
             mFormat = new SimpleDateFormat("d MMMM, yyyy 'на' HH:mm");
         else
             mFormat = new SimpleDateFormat("MMMM dd, yyyy 'at' h:mm a");
-        Date startDate = new Date();
+        startDate = new Date();
         try {
             startDate = mFormat.parse(editStartDate.getText().toString());
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
 
+        goEvent.put("title", title);
+        goEvent.put("creatorAge", creatorAge);
+        goEvent.put("creatorGender", creatorGender);
+        goEvent.put("creatorName", creatorName);
+        goEvent.put("creatorNickName", creatorNickName);
+        goEvent.put("creatorAvatarUrl", creatorAvatarUrl);
+        goEvent.put("category", category);
+        goEvent.put("temporary", duration);
+        goEvent.put("avaibleSeats", availableSeats);
+        goEvent.put("description", description);
         goEvent.put("startDate", startDate);
-        goEvent.put("avaibleSeats", editAvailableSits.getText().toString());
-        goEvent.put("category", eventTypeString);
-        goEvent.put("description", editDescription.getText().toString());
-        goEvent.put("temporary", editTemporary.getText().toString());
-        goEvent.put("title", editTitle.getText().toString());
+        goEvent.put("location", point);
+
+        MainActivity.newMarker = new MyMarker(title, creatorAge, creatorGender, creatorName, creatorNickName, creatorAvatarUrl,
+                category, duration, availableSeats, description, startDate, location);
 
         goEvent.saveInBackground(new SaveCallback() {
             @Override
@@ -393,16 +462,113 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                         currentUser.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
-                                if (e != null) Toast.makeText(getActivity(), "CREATE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
-                                else progressDialog.hideProgress();
+                                if (e != null) {
+                                    Toast.makeText(getActivity(), "CREATE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
+                                    MainActivity.EVENT_FRAGMENT_RESULT = "cancel";
+                                }
+                                else {
+                                    Toast.makeText(getActivity(), "Event was successfully created!", Toast.LENGTH_SHORT).show();
+                                    MainActivity.EVENT_FRAGMENT_RESULT = "done";
+                                }
+                                progressDialog.hideProgress();
+                                getActivity().getSupportFragmentManager().popBackStack();
                             }
                         });
                     }
-                    Toast.makeText(getActivity(), "Event was successfully created!", Toast.LENGTH_SHORT).show();
-                    MainActivity.EVENT_FRAGMENT_RESULT = "done";
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    else {
+                        MainActivity.EVENT_FRAGMENT_RESULT = "cancel";
+                        progressDialog.hideProgress();
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
                 }
             }
         });
+    }
+
+    private void updateParseObject(){
+        if (MainActivity.newMarker != null) {
+            progressDialog.showProgress("Updating data...");
+
+            final String title = editTitle.getText().toString();
+            final String category = eventTypeString;
+            final String duration = editTemporary.getText().toString();
+            final String availableSeats = editAvailableSits.getText().toString();
+            final String description = editDescription.getText().toString();
+            final String startDate = editStartDate.getText().toString();
+
+            final ParseUser currentUser = ParseUser.getCurrentUser();
+            if (currentUser != null) {
+                ParseRelation<ParseObject> relation = currentUser.getRelation("goEvent");
+                relation.getQuery().getInBackground(getArguments().getString("MARKER_ID", ""), new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject parseObject, ParseException e) {
+                        if (e != null) {
+                            Toast.makeText(getActivity(), "UPDATE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
+                            progressDialog.hideProgress();
+                            MainActivity.EVENT_FRAGMENT_RESULT = "cancel";
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                        else {
+                            if (!title.equals(MainActivity.newMarker.getTitle()))
+                                parseObject.put("title", title);
+                            if (!category.equals(MainActivity.newMarker.getCategory()))
+                                parseObject.put("category", category);
+                            if (!duration.equals(MainActivity.newMarker.getDuration()))
+                                parseObject.put("temporary", duration);
+                            if (!availableSeats.equals(MainActivity.newMarker.getAvailableSeats()))
+                                parseObject.put("avaibleSeats", availableSeats);
+                            if (!description.equals(MainActivity.newMarker.getDescription()))
+                                parseObject.put("description", description);
+                            final SimpleDateFormat format;
+                            if (getResources().getConfiguration().locale != Locale.US)
+                                format = new SimpleDateFormat("d MMMM, yyyy 'на' HH:mm");
+                            else
+                                format = new SimpleDateFormat("MMMM dd, yyyy 'at' h:mm a");
+                            if (!startDate.equals(format.format(MainActivity.newMarker.getStartDate())))
+                                try {
+                                    parseObject.put("startDate", format.parse(startDate));
+                                } catch (java.text.ParseException e1) {
+                                    e1.printStackTrace();
+                                }
+                            parseObject.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null) {
+                                        Toast.makeText(getActivity(), "UPDATE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
+                                        MainActivity.EVENT_FRAGMENT_RESULT = "cancel";
+                                    }
+                                    else {
+                                        if (!title.equals(MainActivity.newMarker.getTitle()))
+                                            MainActivity.newMarker.setTitle(title);
+                                        if (!category.equals(MainActivity.newMarker.getCategory()))
+                                            MainActivity.newMarker.setCategory(category);
+                                        if (!duration.equals(MainActivity.newMarker.getDuration()))
+                                            MainActivity.newMarker.setDuration(duration);
+                                        if (!availableSeats.equals(MainActivity.newMarker.getAvailableSeats()))
+                                            MainActivity.newMarker.setAvailableSeats(availableSeats);
+                                        if (!description.equals(MainActivity.newMarker.getDescription()))
+                                            MainActivity.newMarker.setDescription(description);
+                                        if (!startDate.equals(format.format(MainActivity.newMarker.getStartDate())))
+                                            try {
+                                                MainActivity.newMarker.setStartDate(format.parse(startDate));
+                                            } catch (java.text.ParseException e1) {
+                                                e1.printStackTrace();
+                                            }
+                                        MainActivity.EVENT_FRAGMENT_RESULT = "done";
+                                    }
+                                    progressDialog.hideProgress();
+                                    getActivity().getSupportFragmentManager().popBackStack();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            else  {
+                MainActivity.EVENT_FRAGMENT_RESULT = "cancel";
+                progressDialog.hideProgress();
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        }
     }
 }

@@ -180,14 +180,6 @@ public class ProfileFragment extends Fragment {
                 .commit();
     }
 
-    private Transformation transformation(){
-       return new RoundedTransformationBuilder()
-                .borderColor(Color.WHITE)
-                .borderWidthDp(1)
-                .cornerRadiusDp(200)
-                .oval(false)
-                .build();
-    }
 
     private void getProfile(){
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -228,7 +220,6 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getPhoto(){
-        //progressDialog.showProgress(getString(R.string.progress_dialog_msg_loading_user_profile));
         wheel.spin();
         final ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
@@ -237,18 +228,16 @@ public class ProfileFragment extends Fragment {
                 if (Patterns.WEB_URL.matcher(photoUrl).matches()) {
                     Picasso.with(getActivity())
                             .load(photoUrl)
-                            .transform(transformation())
+                            .transform(MainActivity.transformation())
                             .resize(400, 400)
                             .centerCrop()
                             .into(avatar, new com.squareup.picasso.Callback() {
                                 @Override
                                 public void onSuccess() {
-                                     //progressDialog.hideProgress();
                                     wheel.stopSpinning();
                                 }
                                 @Override
                                 public void onError() {
-                                     //progressDialog.hideProgress();
                                     wheel.stopSpinning();
                                 }
                             });
@@ -261,52 +250,36 @@ public class ProfileFragment extends Fragment {
 
     private void downloadPhoto(ParseUser user){
         ParseFile photo = (ParseFile) user.get("profilePic");
-        photo.getDataInBackground(new GetDataCallback() {
-            public void done(byte[] data, ParseException e) {
-                if (e == null) {
-                    // data has the bytes for the resume
-                    final File f = new File(getActivity().getCacheDir(), getRandomString(10));
-                    boolean isFileCreated = false;
-                    try {
-                        isFileCreated = f.createNewFile();
-                        FileOutputStream fos = new FileOutputStream(f);
-                        fos.write(data);
-                        fos.flush();
-                        fos.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    if (isFileCreated) {
-                        Picasso.with(getActivity())
-                                .load(f)
-                                .into(avatar, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        deletePhoto(Uri.fromFile(f));
-                                        //progressDialog.hideProgress();
-                                        wheel.stopSpinning();
-                                    }
-                                    @Override
-                                    public void onError() {
-                                        //progressDialog.hideProgress();
-                                        wheel.stopSpinning();
-                                    }
-                                });
-                    }
-                }
-            }
-        });
-    }
-
-    private static final String ALLOWED_CHARACTERS ="0123456789qwertyuiopasdfghjklzxcvbnm";
-
-    private static String getRandomString(final int sizeOfRandomString)
-    {
-        final Random random=new Random();
-        final StringBuilder sb=new StringBuilder(sizeOfRandomString);
-        for(int i=0;i<sizeOfRandomString;++i)
-            sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
-        return sb.toString();
+        String photoUrl = photo.getUrl();
+        if (photoUrl.endsWith(".png"))
+            Picasso.with(getActivity())
+                    .load(photoUrl)
+                    .into(avatar, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            wheel.stopSpinning();
+                        }
+                        @Override
+                        public void onError() {
+                            wheel.stopSpinning();
+                        }
+                    });
+        else
+            Picasso.with(getActivity())
+                    .load(photoUrl)
+                    .transform(MainActivity.transformation())
+                    .resize(400, 400)
+                    .centerCrop()
+                    .into(avatar, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            wheel.stopSpinning();
+                        }
+                        @Override
+                        public void onError() {
+                            wheel.stopSpinning();
+                        }
+                    });
     }
 
     private void selectPhoto() {
@@ -322,7 +295,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals(items[0])) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File file = new File(Environment.getExternalStorageDirectory(), getRandomString(10) + ".jpg");
+                    File file = new File(Environment.getExternalStorageDirectory(), MainActivity.getRandomString(10) + ".jpg");
                     outputFileUri = Uri.fromFile(file);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
                     startActivityForResult(intent, 0);
@@ -375,7 +348,7 @@ public class ProfileFragment extends Fragment {
             progressDialog.showProgress(getString(R.string.progress_dialog_msg_loading_photo));
             Picasso.with(getActivity())
                     .load(imageUri)
-                    .transform(transformation())
+                    .transform(MainActivity.transformation())
                     .resize(400, 400)
                     .centerCrop()
                     .into(avatar, new com.squareup.picasso.Callback() {

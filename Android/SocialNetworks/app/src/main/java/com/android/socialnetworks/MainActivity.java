@@ -2,6 +2,7 @@ package com.android.socialnetworks;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,18 +16,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.android.gms.maps.model.LatLng;
+import com.makeramen.RoundedTransformationBuilder;
 import com.parse.Parse;
 import com.parse.ParseUser;
+import com.squareup.picasso.Transformation;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 public class MainActivity extends ActionBarActivity {
 
     public static String EVENT_FRAGMENT_RESULT = "";
+    public static MyMarker newMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,5 +170,24 @@ public class MainActivity extends ActionBarActivity {
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(currentTime);
         return now.get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);
+    }
+
+    private static final String ALLOWED_CHARACTERS ="0123456789qwertyuiopasdfghjklzxcvbnm";
+    public static String getRandomString(final int sizeOfRandomString)
+    {
+        final Random random=new Random();
+        final StringBuilder sb=new StringBuilder(sizeOfRandomString);
+        for(int i=0;i<sizeOfRandomString;++i)
+            sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
+        return sb.toString();
+    }
+
+    public static Transformation transformation(){
+        return new RoundedTransformationBuilder()
+                .borderColor(Color.WHITE)
+                .borderWidthDp(1)
+                .cornerRadiusDp(200)
+                .oval(false)
+                .build();
     }
 }

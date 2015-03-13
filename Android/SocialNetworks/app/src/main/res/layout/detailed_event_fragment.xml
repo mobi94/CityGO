@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/niagara"
+    android:id="@+id/detailed_fragment">
+
+    <ImageView
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:id="@+id/detailed_avatar"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/background_avatar"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/detailed_avatar"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/detailed_creator_data">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Creator name"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/detailed_creator_name"
+            android:textColor="#FFF"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=", creator age"
+            android:textSize="@dimen/text_size"
+            android:id="@+id/detailed_creator_age"
+            android:textColor="#FFF" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:id="@+id/detailed_title"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFF"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/detailed_creator_data"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size" />
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:text="Description"
+        android:id="@+id/detailed_description"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFF"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/detailed_title"
+        android:layout_centerHorizontal="true"
+        android:singleLine="false"
+        android:maxLength="200"
+        android:scrollHorizontally="false"
+        android:textSize="@dimen/text_size" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Avaible seats"
+        android:id="@+id/detailed_available_seats"
+        android:layout_above="@+id/detailed_start_date"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:textColor="#FFF"
+        android:textSize="@dimen/text_size" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start date"
+        android:id="@+id/detailed_start_date"
+        android:layout_above="@+id/detailed_buttons"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/red_orange"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detailed_buttons"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go to direct"
+            android:id="@+id/detailed_direct_button"
+            android:textColor="#FFF"
+            android:background="@drawable/background_normal"
+            android:textSize="@dimen/text_size"
+            android:layout_marginRight="100dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go to chat"
+            android:id="@+id/detailed_chat_button"
+            android:background="@drawable/background_normal"
+            android:textColor="#FFF"
+            android:textSize="@dimen/text_size" />
+
+    </LinearLayout>
+
+</RelativeLayout>
