@@ -5,48 +5,26 @@
     android:layout_height="wrap_content"
     android:id="@+id/map_info">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Title"
-            android:id="@+id/map_title"
-            android:textSize="12sp"
-            android:background="@drawable/background_normal"
-            android:textColor="#FFF"
-            android:gravity="center_horizontal"
-            android:textStyle="bold"
-            android:layout_marginRight="5dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Gender: "
-            android:id="@+id/map_creator_gender"
-            android:textSize="12sp"
-            android:background="@drawable/background_normal"
-            android:textColor="#FFF"
-            android:gravity="center_horizontal" />
-
-    </LinearLayout>
-
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Start date"
-        android:id="@+id/map_start_date"
+        android:text="Title"
+        android:id="@+id/map_title"
         android:textSize="12sp"
         android:textColor="#FFF"
         android:gravity="center_horizontal"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_marginBottom="5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Gender"
+        android:id="@+id/map_creator_gender"
+        android:textSize="12sp"
+        android:textColor="#FFF"
+        android:gravity="center_horizontal" />
 
 </LinearLayout>

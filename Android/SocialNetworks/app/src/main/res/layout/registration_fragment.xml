@@ -165,7 +165,7 @@
         android:layout_below="@+id/signup_main"
         android:layout_alignRight="@+id/signup_main"
         android:layout_alignLeft="@+id/signup_main"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp" />
 
 </RelativeLayout>

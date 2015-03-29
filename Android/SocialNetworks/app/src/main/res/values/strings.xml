@@ -47,7 +47,7 @@
     <string name="password_restore_dialog_title">Password recovery</string>
     <string name="password_restore_dialog_toast_success">An email was successfully sent with reset instructions</string>
 
-    <string name="gender_dialog_man_value">male</string>
+    <string name="gender_dialog_male_value">male</string>
     <string name="gender_dialog_female_value">female</string>
     <string name="gender_dialog_title">Choose your gender</string>
 
@@ -57,8 +57,8 @@
 
     <string name="profile_na">NA</string>
     <string name="profile_nickname_na">Nickname: NA</string>
-    <string name="profile_change_avatar">Change avatar</string>
-    <string name="profile_edit_my_info">Edit profile</string>
+    <string name="profile_change_avatar">Avatar</string>
+    <string name="profile_edit_my_info">My Info</string>
     <string name="profile_your_go_events">Your GO Events:</string>
     <string name="profile_nickname_textview">"Nickname"</string>
     <string name="profile_gender_title_textview">"Gender: "</string>

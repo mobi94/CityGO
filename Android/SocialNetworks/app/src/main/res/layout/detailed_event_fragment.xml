@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/niagara"
     android:id="@+id/detailed_fragment">
 
     <ImageView
-        android:layout_width="125dp"
-        android:layout_height="125dp"
+        android:layout_width="@dimen/avatar_radius"
+        android:layout_height="@dimen/avatar_radius"
         android:id="@+id/detailed_avatar"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="25dp"
         android:background="@drawable/background_avatar"
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true" />
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel_detailed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        wheel:matProg_barColor="#FFF"
+        wheel:matProg_progressIndeterminate="true"
+        android:layout_alignTop="@+id/detailed_avatar"
+        android:layout_alignBottom="@+id/detailed_avatar"
+        android:layout_alignLeft="@+id/detailed_avatar"
+        android:layout_alignRight="@+id/detailed_avatar" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -26,7 +39,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Creator name"
             android:textSize="@dimen/text_size"
             android:id="@+id/detailed_creator_name"
             android:textColor="#FFF"/>
@@ -34,7 +46,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=", creator age"
             android:textSize="@dimen/text_size"
             android:id="@+id/detailed_creator_age"
             android:textColor="#FFF" />
@@ -44,7 +55,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
         android:id="@+id/detailed_title"
         android:layout_gravity="center_horizontal"
         android:textColor="#FFF"
@@ -57,22 +67,18 @@
     <TextView
         android:layout_width="250dp"
         android:layout_height="150dp"
-        android:text="Description"
         android:id="@+id/detailed_description"
         android:layout_gravity="center_horizontal"
         android:textColor="#FFF"
         android:layout_marginTop="25dp"
         android:layout_below="@+id/detailed_title"
         android:layout_centerHorizontal="true"
-        android:singleLine="false"
-        android:maxLength="200"
-        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
         android:textSize="@dimen/text_size" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Avaible seats"
         android:id="@+id/detailed_available_seats"
         android:layout_above="@+id/detailed_start_date"
         android:layout_centerHorizontal="true"
@@ -83,7 +89,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start date"
         android:id="@+id/detailed_start_date"
         android:layout_above="@+id/detailed_buttons"
         android:layout_centerHorizontal="true"

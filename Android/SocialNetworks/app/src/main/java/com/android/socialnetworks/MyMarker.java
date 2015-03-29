@@ -5,12 +5,13 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Date;
 
 public class MyMarker {
+
+    private String mObjectId;
     private String mTitle;
     private String mCreatorAge;
     private String mCreatorGender;
     private String mCreatorName;
     private String mCreatorNickName;
-
     private String mCreatorAvatarUrl;
     private String mCategory;
     private String mDuration;
@@ -19,20 +20,18 @@ public class MyMarker {
     private Date mStartDate;
     private LatLng mLocation;
 
-    public MyMarker(String title, String creatorAge, String creatorGender, String creatorName, String creatorNickName, String creatorAvatarUrl,
-                    String mCategory, String mDuration, String availableSeats, String description, Date startDate, LatLng location) {
-        this.mTitle = title;
-        this.mCreatorAge = creatorAge;
-        this.mCreatorGender = creatorGender;
-        this.mCreatorName = creatorName;
-        this.mCreatorNickName = creatorNickName;
-        this.mCreatorAvatarUrl = creatorAvatarUrl;
-        this.mCategory = mCategory;
-        this.mDuration = mDuration;
-        this.mAvailableSeats = availableSeats;
-        this.mDescription = description;
-        this.mStartDate = startDate;
+    public MyMarker(String objectId, String category, LatLng location) {
+        this.mObjectId = objectId;
+        this.mCategory = category;
         this.mLocation = location;
+    }
+
+    public String getObjectId() {
+        return mObjectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.mObjectId = objectId;
     }
 
     public String getTitle() {

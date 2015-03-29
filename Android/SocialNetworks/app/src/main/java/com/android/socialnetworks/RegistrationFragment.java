@@ -3,11 +3,13 @@ package com.android.socialnetworks;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,15 +35,17 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.makeramen.RoundedTransformationBuilder;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
 
 import java.io.ByteArrayOutputStream;
@@ -71,6 +75,7 @@ public class RegistrationFragment extends Fragment {
 
     private DatePickerDialog datePickerDialog;
     private Uri outputFileUri;
+    private Uri generalUri;
     private int incrementUserPhoto = 0;
 
     public RegistrationFragment() {
@@ -138,7 +143,7 @@ public class RegistrationFragment extends Fragment {
                     SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
                     for (int i = end - 1; i >= start; i--) {
                         char currentChar = source.charAt(i);
-                        if (!Character.isLetterOrDigit(currentChar)/* && !Character.isSpaceChar(currentChar)*/) {
+                        if (!Character.isLetterOrDigit(currentChar) && currentChar != '_') {
                             sourceAsSpannableBuilder.delete(i, i+1);
                         }
                     }
@@ -147,7 +152,7 @@ public class RegistrationFragment extends Fragment {
                     StringBuilder filteredStringBuilder = new StringBuilder();
                     for (int i = start; i < end; i++) {
                         char currentChar = source.charAt(i);
-                        if (Character.isLetterOrDigit(currentChar) /*|| Character.isSpaceChar(currentChar)*/) {
+                        if (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
                             filteredStringBuilder.append(currentChar);
                         }
                     }
@@ -317,7 +322,6 @@ public class RegistrationFragment extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
                     } else {
                         // do login
-                        //SignUpActivity.showProgress(getString(R.string.progress_dialog_msg_user_creating));
                         signupButton.setText(getString(R.string.progress_bar_loading));
                         progressBar.setVisibility(View.VISIBLE);
                         progressBar.progressiveStart();
@@ -325,7 +329,7 @@ public class RegistrationFragment extends Fragment {
                         ParseUser currentUser = ParseUser.getCurrentUser();
                         if (currentUser == null) {
                             // show the signup or login screen
-                            parseNewUser();
+                            prepareNewUser();
                         }
                     }
                     break;
@@ -375,7 +379,7 @@ public class RegistrationFragment extends Fragment {
         RelativeLayout linearLayout=new RelativeLayout(getActivity());
         aNumberPicker=new NumberPicker(getActivity());
         final String[] values=new String[2];
-        values[0]=getString(R.string.gender_dialog_man_value);
+        values[0]=getString(R.string.gender_dialog_male_value);
         values[1]=getString(R.string.gender_dialog_female_value);
         aNumberPicker.setMaxValue(values.length-1);
         aNumberPicker.setMinValue(0);
@@ -490,54 +494,94 @@ public class RegistrationFragment extends Fragment {
                 else imageUri = outputFileUri;
             }
             else imageUri = data.getData();
-            Transformation transformation = new RoundedTransformationBuilder()
-                .borderColor(Color.WHITE)
-                .borderWidthDp(1)
-                .cornerRadiusDp(200)
-                .oval(false)
-                .build();
-            Picasso.with(getActivity())
-                    .load(imageUri)
-                    .transform(transformation)
-                    .resize(400, 400)
-                    .centerCrop()
-                    .into(avatar, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                            deletePhoto();
-                        }
-                        @Override
-                        public void onError() {
-                        }
-                    });
+            if (imageUri != null) {
+                generalUri = imageUri;
+                Transformation transformation = new RoundedTransformationBuilder()
+                        .borderColor(Color.WHITE)
+                        .borderWidthDp(1)
+                        .cornerRadiusDp(200)
+                        .oval(false)
+                        .build();
+                Picasso.with(getActivity())
+                        .load(imageUri)
+                        .transform(transformation)
+                        .resize(400, 400)
+                        .centerCrop()
+                        .into(avatar, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                deletePhoto();
+                            }
+
+                            @Override
+                            public void onError() {
+                            }
+                        });
+            }
         }
     }
 
-    public void parseNewUser(){
+    public void prepareNewUser(){
+        if (generalUri != null)
+            Picasso.with(getActivity())
+                    .load(generalUri)
+                    .resize(400, 400)
+                    .centerCrop()
+                    .into(target);
+        else {
+            ColorGenerator generator = ColorGenerator.MATERIAL;
+            int color = generator.getColor(editEmail.getText());
+            TextDrawable.IBuilder builder = TextDrawable.builder()
+                    .beginConfig()
+                    .width(400)
+                    .height(400)
+                    .endConfig()
+                    .rect();
+            TextDrawable drawable = builder.build(String.valueOf(editUserName.getText().toString().trim().charAt(0)), color);
+            createNewUser(drawableToBitmap(drawable));
+        }
+    }
+
+    public static Bitmap drawableToBitmap (TextDrawable drawable) {
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private void createNewUser(Bitmap bitmap) {
         final ParseUser user = new ParseUser();
-        user.setUsername(editUserName.getText().toString());
-        user.setPassword(editPassword.getText().toString());
-        user.setEmail(editEmail.getText().toString());
-        user.put("nickname", editUserName.getText().toString());
-        user.put("gender", editGender.getText().toString());
-        user.put("birthday", editBirthday.getText().toString());
-        final ParseFile file = uploadImageToParse();
+        final ParseFile file = uploadImageToParse(bitmap);
         file.saveInBackground(new SaveCallback() {
+            @Override
             public void done(ParseException e) {
-                // Handle success or failure here ...
-                //SignUpActivity.hideProgress();
-                enableAllViews();
-                updateLoginButtonState();
-                progressBar.progressiveStop();
                 if (e == null) {
                     user.put("profilePic", file);
+                    user.setUsername(editUserName.getText().toString());
+                    user.setPassword(editPassword.getText().toString());
+                    user.setEmail(editEmail.getText().toString());
+                    user.put("nickname", editUserName.getText().toString());
+                    if (editGender.getText().toString().equals(getString(R.string.gender_dialog_male_value)))
+                        user.put("gender", "male");
+                    else
+                        user.put("gender", "female");
+                    user.put("birthday", editBirthday.getText().toString());
                     user.signUpInBackground(new SignUpCallback() {
                         public void done(ParseException e) {
+                            progressBar.progressiveStop();
                             if (e != null) {
-                                // Sign up didn't succeed. Look at the ParseException
-                                // to figure out what went wrong
                                 Log.d("SIGNUP_ERROR", "signUpInBackground" + e);
                                 Toast.makeText(getActivity(), "SIGNUP_ERROR: " + e, Toast.LENGTH_LONG).show();
+                                enableAllViews();
+                                updateLoginButtonState();
                             } else {
                                 signupButton.setText(getString(R.string.progress_bar_success));
                                 signupButton.setBackgroundResource(R.drawable.background_success);
@@ -545,21 +589,40 @@ public class RegistrationFragment extends Fragment {
                             }
                         }
                     });
-                } else {
+                }
+                else {
+                    enableAllViews();
+                    updateLoginButtonState();
+                    progressBar.progressiveStop();
                     Toast.makeText(getActivity(), "PHOTO_UPLOADING_ERROR: " + e, Toast.LENGTH_LONG).show();
                     Log.d("PHOTO_UPLOADING_ERROR", "signUpInBackground" + e);
                 }
             }
-        }, new ProgressCallback() {
-            public void done(Integer percentDone) {
-                // Update your progress spinner here. percentDone will be between 0 and 100.
-            }
         });
     }
 
-    private ParseFile uploadImageToParse(){
-        BitmapDrawable bitmapDrawable = ((BitmapDrawable) avatar.getDrawable());
-        Bitmap bitmap = bitmapDrawable .getBitmap();
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    createNewUser(bitmap);
+                }
+            }).start();
+        }
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            enableAllViews();
+            updateLoginButtonState();
+            progressBar.progressiveStop();
+            Toast.makeText(getActivity(), "PHOTO_UPLOADING_ERROR", Toast.LENGTH_LONG).show();
+        }
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+    };
+
+    private ParseFile uploadImageToParse(Bitmap bitmap){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] imageInByte = stream.toByteArray();

@@ -39,18 +39,18 @@
     <string name="password_restore_dialog_toast_success">Письмо было успешно отправлено с инструкциями сброса</string>
 
     <string name="gender_dialog_title">Выберите ваш пол</string>
-    <string name="gender_dialog_man_value">мужчина</string>
+    <string name="gender_dialog_male_value">мужчина</string>
     <string name="gender_dialog_female_value">женщина</string>
 
     <string name="photo_picker_dialog_title">Добавить фото!</string>
     <string name="photo_picker_dialog_take_photo">Сделать снимок</string>
     <string name="photo_picker_dialog_choose_from_gallery">Выбрать из галереи</string>
 
-    <string name="profile_na">нет данных</string>
-    <string name="profile_nickname_na">Псевдоним: нет данных</string>
-    <string name="profile_change_avatar">Изменить аватар</string>
-    <string name="profile_edit_my_info">Править профиль</string>
-    <string name="profile_your_go_events">Ваши GO-События:</string>
+    <string name="profile_na">NA</string>
+    <string name="profile_nickname_na">Псевдоним: NA</string>
+    <string name="profile_change_avatar">Аватар</string>
+    <string name="profile_edit_my_info">Данные</string>
+    <string name="profile_your_go_events">Ваши GO События:</string>
     <string name="profile_nickname_textview">Псевдоним</string>
     <string name="profile_gender_title_textview">"Пол: "</string>
     <string name="profile_age_title_textview">"Возраст: "</string>

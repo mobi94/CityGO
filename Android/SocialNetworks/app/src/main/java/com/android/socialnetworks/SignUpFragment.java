@@ -450,7 +450,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                 user.setUsername("vk" + socialPerson.id);
                 switch(vkPerson.sex){
                     case 0:
-                        user.put("gender", "not presented");
+                        user.put("gender", "NA");
                         break;
                     case 1:
                         user.put("gender", "female");
@@ -487,7 +487,6 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                     signup_button.setText(getString(R.string.progress_bar_success));
                     signup_button.setBackgroundResource(R.drawable.background_success);
                     SignUpActivity.startMainActivity();
-                    //SignUpActivity.hideProgress();
                 }
             }
         });

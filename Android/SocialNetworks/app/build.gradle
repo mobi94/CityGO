@@ -9,6 +9,9 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -34,10 +37,13 @@ dependencies {
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.makeramen:roundedimageview:1.5.0'
     compile 'com.daimajia.slider:library:1.1.2'
-    compile 'com.desarrollodroide:fragmenttransactionextended:1'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.android.support:support-v13:21.0.3'
     compile 'com.github.castorflex.smoothprogressbar:library:1.0.1-SNAPSHOT@aar'
     compile 'com.pnikosis:materialish-progress:1.4'
-    compile 'com.nhaarman.supertooltips:library:3.0.0'
+    compile 'com.leocardz:aelv:1.1@aar'
+    compile 'com.twotoasters.jazzylistview:library:1.2.1'
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
+    compile 'com.appyvet:materialrangebar:1.0'
 }

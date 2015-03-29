@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -16,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -40,31 +43,34 @@ public class EditProfileFragment extends Fragment {
     private EditText editBirthday;
     private EditText editGender;
     private Button okButton;
+    private LinearLayout top;
+    private LinearLayout bottom;
+    private RelativeLayout center;
+    private boolean isFragmentShown = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.change_profile_fragment, container, false);
 
-        LinearLayout top = (LinearLayout) rootView.findViewById(R.id.edit_profile_top);
+        center = (RelativeLayout) rootView.findViewById(R.id.content);
+        top = (LinearLayout) rootView.findViewById(R.id.edit_profile_top);
         top.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.EDIT_PROFILE_FRAGMENT_RESULT = "cancel";
                 getFragmentManager().popBackStackImmediate();
+                setTransparentBackground();
             }
         });
-        LinearLayout bottom = (LinearLayout) rootView.findViewById(R.id.edit_profile_bottom);
+        bottom = (LinearLayout) rootView.findViewById(R.id.edit_profile_bottom);
         bottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.EDIT_PROFILE_FRAGMENT_RESULT = "cancel";
                 getFragmentManager().popBackStackImmediate();
+                setTransparentBackground();
             }
         });
-
-        RelativeLayout content = (RelativeLayout)rootView.findViewById(R.id.content);
-        if (MainActivity.hasNavBar()) content.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f));
-        else content.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, 0.85f));
 
         editNickname = (MaterialEditText)rootView.findViewById(R.id.nickname_profile);
         editNickname.setBackgroundResource(R.drawable.background_normal);
@@ -97,7 +103,7 @@ public class EditProfileFragment extends Fragment {
                     SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
                     for (int i = end - 1; i >= start; i--) {
                         char currentChar = source.charAt(i);
-                        if (!Character.isLetterOrDigit(currentChar)/* && !Character.isSpaceChar(currentChar)*/) {
+                        if (!Character.isLetterOrDigit(currentChar) && currentChar != '_') {
                             sourceAsSpannableBuilder.delete(i, i+1);
                         }
                     }
@@ -106,7 +112,7 @@ public class EditProfileFragment extends Fragment {
                     StringBuilder filteredStringBuilder = new StringBuilder();
                     for (int i = start; i < end; i++) {
                         char currentChar = source.charAt(i);
-                        if (Character.isLetterOrDigit(currentChar) /*|| Character.isSpaceChar(currentChar)*/) {
+                        if (Character.isLetterOrDigit(currentChar)  || currentChar == '_') {
                             filteredStringBuilder.append(currentChar);
                         }
                     }
@@ -118,7 +124,19 @@ public class EditProfileFragment extends Fragment {
         setBirthdayField();
         setGenderField();
 
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (isFragmentShown) setTransparentBackground();
+            }
+        });
         return rootView;
+    }
+
+    private void setTransparentBackground(){
+        top.setBackgroundResource(android.R.color.transparent);
+        bottom.setBackgroundResource(android.R.color.transparent);
+        center.setBackgroundResource(android.R.color.transparent);
     }
 
     private void getProfileData(){
@@ -133,6 +151,7 @@ public class EditProfileFragment extends Fragment {
     private View.OnClickListener buttonsClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            setTransparentBackground();
             switch (view.getId()){
                 case R.id.ok_button:
                     if(!SignUpActivity.isNetworkOn(getActivity().getBaseContext())) {
@@ -142,10 +161,12 @@ public class EditProfileFragment extends Fragment {
                         if (currentUser != null) {
                             updateUserData(currentUser);
                         }
+                        MainActivity.EDIT_PROFILE_FRAGMENT_RESULT = "done";
                         getFragmentManager().popBackStackImmediate();
                     }
                     break;
                 case R.id.cancel_button:
+                    MainActivity.EDIT_PROFILE_FRAGMENT_RESULT = "cancel";
                     getFragmentManager().popBackStackImmediate();
                     break;
             }
@@ -155,7 +176,10 @@ public class EditProfileFragment extends Fragment {
     private void updateUserData(ParseUser currentUser){
         currentUser.put("nickname", editNickname.getText().toString());
         currentUser.put("birthday", editBirthday.getText().toString());
-        currentUser.put("gender", editGender.getText().toString());
+        if (editGender.getText().toString().equals(getString(R.string.gender_dialog_male_value)))
+            currentUser.put("gender", "male");
+        else
+            currentUser.put("gender", "female");
         currentUser.saveInBackground(new SaveCallback() {
             public void done(ParseException e) {
                 if (e != null) {
@@ -241,7 +265,7 @@ public class EditProfileFragment extends Fragment {
         RelativeLayout linearLayout=new RelativeLayout(getActivity());
         aNumberPicker=new NumberPicker(getActivity());
         final String[] values=new String[2];
-        values[0]=getString(R.string.gender_dialog_man_value);
+        values[0]=getString(R.string.gender_dialog_male_value);
         values[1]=getString(R.string.gender_dialog_female_value);
         aNumberPicker.setMaxValue(values.length-1);
         aNumberPicker.setMinValue(0);
@@ -290,4 +314,21 @@ public class EditProfileFragment extends Fragment {
         });
     }
 
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationStart(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationEnd(Animation animation) {
+                if (!isFragmentShown) {
+                    top.setBackgroundResource(R.color.black_alpha);
+                    center.setBackgroundResource(R.color.black_alpha);
+                    bottom.setBackgroundResource(R.color.black_alpha);
+                    isFragmentShown = true;
+                }
+            }
+        });
+        return anim;
+    }
 }

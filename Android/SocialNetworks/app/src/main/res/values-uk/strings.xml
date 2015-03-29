@@ -39,20 +39,18 @@
     <string name="password_restore_dialog_toast_success">Письмо було успішно відправлено з інструкціями скидання</string>
 
     <string name="gender_dialog_title">Виберіть вашу стать</string>
-    <string name="gender_dialog_man_value">Чоловік</string>
+    <string name="gender_dialog_male_value">Чоловік</string>
     <string name="gender_dialog_female_value">Жінка</string>
 
     <string name="photo_picker_dialog_title">Додати фото!</string>
     <string name="photo_picker_dialog_take_photo">зробити знімок</string>
     <string name="photo_picker_dialog_choose_from_gallery">Вибрати з галереї</string>
 
-    <string name="profile_na">немає даних</string>
-    <string name="profile_nickname_na">Псевдонім: немає даних</string>
-    <string name="profile_gender_na">Стать: немає даних</string>
-    <string name="profile_age_na">Вік: немає даних</string>
-    <string name="profile_change_avatar">Змінити аватар</string>
-    <string name="profile_edit_my_info">Правити профіль</string>
-    <string name="profile_your_go_events">Ваші GO-Події:</string>
+    <string name="profile_na">NA</string>
+    <string name="profile_nickname_na">Псевдонім: NA</string>
+    <string name="profile_change_avatar">Аватар</string>
+    <string name="profile_edit_my_info">Дані</string>
+    <string name="profile_your_go_events">Ваші GO Події:</string>
     <string name="profile_nickname_textview">Псевдонім</string>
     <string name="profile_gender_title_textview">"Стать: "</string>
     <string name="profile_age_title_textview">"Вік: "</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="grey_light">#FFCCCCCC</color>
+    <color name="black_alpha">#96000000</color>
     <color name="dark">#4b4b4b</color>
     <color name="red">#ffff0055</color>
     <color name="error">#64e60056</color>

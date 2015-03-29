@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/profile_fragment"
+    android:orientation="vertical"
+    android:background="@drawable/background">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/profile_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="@dimen/avatar_radius"
+                        android:layout_height="@dimen/avatar_radius"
+                        android:id="@+id/profile_avatar"
+                        android:background="@drawable/background_avatar"
+                        android:layout_margin="20dp" />
+                    <com.pnikosis.materialishprogress.ProgressWheel
+                        android:id="@+id/progress_wheel"
+                        android:layout_width="@dimen/avatar_radius"
+                        android:layout_height="@dimen/avatar_radius"
+                        android:layout_margin="20dp"
+                        wheel:matProg_barColor="#FFF"
+                        wheel:matProg_progressIndeterminate="true" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_nickname_na"
+                        android:id="@+id/profile_username"
+                        android:textColor="#FFF"
+                        android:textSize="@dimen/profile_text_size"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="30dp"
+                        android:textStyle="bold"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginRight="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_gender_title_textview"
+                        android:id="@+id/profile_gender_title"
+                        android:textColor="#FFF"
+                        android:textSize="@dimen/profile_text_size"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@+id/profile_username" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_na"
+                        android:id="@+id/profile_gender"
+                        android:textColor="#FFF"
+                        android:textSize="@dimen/profile_text_size"
+                        android:layout_toRightOf="@+id/profile_gender_title"
+                        android:layout_alignBaseline="@+id/profile_gender_title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_age_title_textview"
+                        android:id="@+id/profile_age_title"
+                        android:textColor="#FFF"
+                        android:textSize="@dimen/profile_text_size"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@+id/profile_gender_title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_na"
+                        android:id="@+id/profile_age"
+                        android:textColor="#FFF"
+                        android:textSize="@dimen/profile_text_size"
+                        android:layout_toRightOf="@+id/profile_age_title"
+                        android:layout_alignBaseline="@+id/profile_age_title" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/profile_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_change_avatar"
+                    android:id="@+id/profile_change_avatar"
+                    android:background="@drawable/background_normal_name"
+                    android:textColor="#FFF"
+                    android:textSize="@dimen/profile_text_size"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_your_go_events"
+                    android:id="@+id/profile_events_title"
+                    android:textSize="@dimen/profile_text_size"
+                    android:textColor="#FFF"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_edit_my_info"
+                    android:id="@+id/profile_edit_my_info"
+                    android:background="@drawable/background_normal_name"
+                    android:textColor="#FFF"
+                    android:textSize="@dimen/profile_text_size"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:id="@+id/event_list_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF"
+                android:text="Event list is empty"
+                android:textSize="@dimen/profile_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/event_list_loading_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                wheel:matProg_barColor="#FFF"
+                wheel:matProg_progressIndeterminate="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading..."
+                android:textColor="#FFF"
+                android:textSize="@dimen/profile_text_size" />
+
+        </LinearLayout>
+
+        <com.twotoasters.jazzylistview.JazzyListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/profile_list" />
+
+    </LinearLayout>
+
+</LinearLayout>
