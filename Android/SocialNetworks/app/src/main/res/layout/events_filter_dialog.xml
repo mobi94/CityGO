@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event category"
+        android:textColor="@color/niagara"
         android:id="@+id/filter_category"
         android:layout_gravity="center_horizontal" />
 
@@ -31,52 +32,59 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Love"
                         android:layout_weight="1"
                         android:gravity="center" />
-                    <com.gc.materialdesign.views.Switch
-                        android:id="@+id/switch_love"
+
+                    <com.kyleduo.switchbutton.SwitchButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/niagara"
-                        materialdesign:check="true" />
+                        android:id="@+id/switch_love"
+                        style="@style/MaterialDesignStyle" />
+
                 </LinearLayout>
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Movie"
                         android:layout_weight="1"
                         android:gravity="center" />
-                    <com.gc.materialdesign.views.Switch
-                        android:id="@+id/switch_movie"
+
+                    <com.kyleduo.switchbutton.SwitchButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/niagara"
-                        materialdesign:check="true" />
+                        android:id="@+id/switch_movie"
+                        style="@style/MaterialDesignStyle" />
+
                 </LinearLayout>
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Sport"
                         android:layout_weight="1"
                         android:gravity="center" />
-                    <com.gc.materialdesign.views.Switch
-                        android:id="@+id/switch_sport"
+
+                    <com.kyleduo.switchbutton.SwitchButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/niagara"
-                        materialdesign:check="true" />
+                        android:id="@+id/switch_sport"
+                        style="@style/MaterialDesignStyle" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -91,54 +99,58 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Business"
                         android:layout_weight="1"
                         android:gravity="center" />
-                    <com.gc.materialdesign.views.Switch
-                        android:id="@+id/switch_business"
+
+                    <com.kyleduo.switchbutton.SwitchButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/niagara"
-                        materialdesign:check="true" />
+                        android:id="@+id/switch_business"
+                        style="@style/MaterialDesignStyle" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Coffee"
                         android:layout_weight="1"
                         android:gravity="center" />
-                    <com.gc.materialdesign.views.Switch
-                        android:id="@+id/switch_coffee"
+
+                    <com.kyleduo.switchbutton.SwitchButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/niagara"
-                        materialdesign:check="true" />
+                        android:id="@+id/switch_coffee"
+                        style="@style/MaterialDesignStyle" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Meet"
                         android:layout_weight="1"
                         android:gravity="center" />
-                    <com.gc.materialdesign.views.Switch
-                        android:id="@+id/switch_meet"
+
+                    <com.kyleduo.switchbutton.SwitchButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/niagara"
-                        materialdesign:check="true" />
+                        android:id="@+id/switch_meet"
+                        style="@style/MaterialDesignStyle" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -149,6 +161,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sex"
+        android:textColor="@color/niagara"
         android:id="@+id/filter_gender"
         android:layout_gravity="center_horizontal" />
 
@@ -156,78 +169,103 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Male"
             android:layout_weight="1"
             android:gravity="center" />
-        <com.gc.materialdesign.views.Switch
-            android:id="@+id/switch_male"
+
+        <com.kyleduo.switchbutton.SwitchButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/niagara"
-            materialdesign:check="true" />
+            android:id="@+id/switch_male"
+            style="@style/MaterialDesignStyle" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Female"
             android:layout_weight="1"
             android:gravity="center" />
-        <com.gc.materialdesign.views.Switch
-            android:id="@+id/switch_female"
+
+        <com.kyleduo.switchbutton.SwitchButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/niagara"
-            materialdesign:check="true" />
+            android:id="@+id/switch_female"
+            style="@style/MaterialDesignStyle" />
+
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Age range"
+        android:textColor="@color/niagara"
         android:id="@+id/filter_age"
         android:layout_gravity="center_horizontal" />
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1"
-            android:id="@+id/filter_age_min"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Min age: "
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:id="@+id/filter_age_min"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:layout_marginRight="100dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max age: "
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="40"
+                android:id="@+id/filter_age_max"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <com.appyvet.rangebar.RangeBar
+            android:id="@+id/filter_rangebar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="35"
-            android:id="@+id/filter_age_max"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center_horizontal" />
+            custom:tickStart="1"
+            custom:tickInterval="1"
+            custom:tickEnd="70"
+            custom:barColor="@color/niagara"
+            custom:connectingLineColor="@color/niagara"
+            custom:selectorColor="@color/niagara"
+            custom:pinColor="@color/niagara"
+            custom:tickColor="@android:color/transparent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
 
-    </LinearLayout>
-
-    <com.appyvet.rangebar.RangeBar
-        android:id="@+id/filter_rangebar"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        custom:tickStart="1"
-        custom:tickInterval="1"
-        custom:tickEnd="70"
-        custom:barColor="@color/niagara"
-        custom:connectingLineColor="@color/niagara"
-        custom:selectorColor="@color/niagara"
-        custom:pinColor="@color/niagara"
-        custom:tickColor="@android:color/transparent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+    </RelativeLayout>
 
 </LinearLayout>

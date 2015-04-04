@@ -16,7 +16,9 @@
         android:text="Load markers"
         android:id="@+id/load_markers_button"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp" />
 
 </RelativeLayout>

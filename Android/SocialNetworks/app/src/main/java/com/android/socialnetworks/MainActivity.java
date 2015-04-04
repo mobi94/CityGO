@@ -213,6 +213,15 @@ public class MainActivity extends ActionBarActivity {
         PROFILE_FRAGMENT
     }
 
+    public static enum EventCategories {
+        LOVE,
+        MOVIE,
+        SPORT,
+        BUSINESS,
+        COFFEE,
+        MEET
+    }
+
     public static void setOffEventListToUpdateFlag(UpdatedFrom updatedFrom){
         updatedEventListsCountLeft--;
         if (updatedEventListsCountLeft <= 0) {

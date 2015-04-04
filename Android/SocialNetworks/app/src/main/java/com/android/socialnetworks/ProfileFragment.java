@@ -42,6 +42,7 @@ import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.pnikosis.materialishprogress.ProgressWheel;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.twotoasters.jazzylistview.JazzyHelper;
@@ -77,6 +78,7 @@ public class ProfileFragment extends Fragment {
     private boolean isFirstTime;
     private boolean isEditProfileButtonPressed = false;
     private ArrayList<Integer> listItemHeaderIndexes;
+    private boolean isVisible = false;
 
     private static final String ARG_POSITION = "position";
 
@@ -127,7 +129,7 @@ public class ProfileFragment extends Fragment {
                         || MainActivity.getEventListToUpdateFlag(MainActivity.UpdatedFrom.PROFILE_FRAGMENT)
                         || !MainActivity.getEventListToUpdateFlag(MainActivity.UpdatedFrom.PROFILE_FRAGMENT)
                         || MainActivity.getEventListToDeleteFlag(MainActivity.UpdatedFrom.PROFILE_FRAGMENT)
-                        || !MainActivity.getEventListToDeleteFlag(MainActivity.UpdatedFrom.PROFILE_FRAGMENT)) && isVisible()) {
+                        || !MainActivity.getEventListToDeleteFlag(MainActivity.UpdatedFrom.PROFILE_FRAGMENT)) && isVisible) {
                     int current = getFragmentManager().getBackStackEntryCount();
                     if (current == 1) stackSize = 1;
                     if (current == 0 && stackSize == 1) {
@@ -290,7 +292,7 @@ public class ProfileFragment extends Fragment {
         Date now = new Date();
         boolean isHeaderInList = false;
         listAdapter.clearSectionHeaderItem();
-        for(int i=0; i<listItems.size()-1; i++) {
+        for(int i=0; i<listItems.size(); i++) {
             if (listItems.get(i).getDate().getTime() >= now.getTime() && listItems.get(i+1).getDate().getTime() < now.getTime()
                     || i==0) {
                 if (i==0) {
@@ -346,6 +348,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        isVisible = isVisibleToUser;
         if (isVisibleToUser) {
             if (isFirstTime) {
                 getPhoto();
@@ -593,11 +596,21 @@ public class ProfileFragment extends Fragment {
         public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
             Point size = new Point();
             getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+            final Uri uri = getImageUri(getActivity(), bitmap);
             Picasso.with(getActivity())
-                    .load(getImageUri(getActivity(), bitmap))
+                    .load(uri)
                     .resize(size.x, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()))
                     .centerCrop()
-                    .into(blur);
+                    .into(blur, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            getActivity().getContentResolver().delete(uri, null, null);
+                        }
+                        @Override
+                        public void onError() {
+                            getActivity().getContentResolver().delete(uri, null, null);
+                        }
+                    });
         }
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {}

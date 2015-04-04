@@ -26,11 +26,11 @@ import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gc.materialdesign.views.Switch;
 import com.appyvet.rangebar.RangeBar;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -44,6 +44,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.kyleduo.switchbutton.SwitchButton;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
@@ -51,6 +54,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +68,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
 
     final int RQS_GooglePlayServices = 1;
     //private CameraPosition currentCam;
+    private MyProgressDialog progressDialog;
     private SupportMapFragment map;
     private static final String ARG_POSITION = "position";
     private boolean isLongPressed = false;
@@ -72,6 +77,11 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     private boolean isEventsListPressed = false;
     private boolean isVisible = false;
     private int stackSize = 0;
+
+    private int[] filterAge = {1,35};
+    private boolean[] filterCategories = {true,true,true,true,true,true};
+    private boolean[] filterSex = {true,true};
+    private boolean isFilterDialogUsed = false;
 
     private LocationProvider mLocationProvider;
 
@@ -91,6 +101,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         isLocationShowed = false;
         markersHashMap = new HashMap<>();
         map = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+
+        progressDialog = new MyProgressDialog(getActivity());
 
         mLocationProvider = new LocationProvider(getActivity(), this);
         if (checkGooglePlayServices())
@@ -121,7 +133,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                         }
                         if (isLongPressed) addNewMarker();
                         else if(MainActivity.EVENT_FRAGMENT_RESULT.equals("done") && MainActivity.EVENT_CATEGORY_EDITED)
-                                updateMarkers();
+                            updateMarkers();
                         MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
                         pager.setPagingEnabled(true);
                         map.getMap().getUiSettings().setAllGesturesEnabled(true);
@@ -211,16 +223,76 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    private void updateMarkers() {
+    private void updateMarkers(){
+        if (isFilterDialogUsed) updateMarkersWithFilters();
+        else updateMarkersWithoutFilters();
+    }
+
+    private void updateMarkersWithoutFilters() {
         if(!SignUpActivity.isNetworkOn(getActivity())) {
             Toast.makeText(getActivity(), "Please, check your internet connection", Toast.LENGTH_SHORT).show();
         } else {
+            progressDialog.showProgress("Events data updating...");
             MainActivity.EVENT_CATEGORY_EDITED = false;
             map.getMap().clear();
             if (markersArray != null) markersArray.clear();
             if (markersHashMap != null) markersHashMap.clear();
             markersArray = new ArrayList<>(getEventMarkers());
             plotMarkers(markersArray);
+            progressDialog.hideProgress();
+        }
+    }
+
+    private void updateMarkersWithFilters() {
+        if(!SignUpActivity.isNetworkOn(getActivity())) {
+            Toast.makeText(getActivity(), "Please, check your internet connection", Toast.LENGTH_SHORT).show();
+        } else {
+            progressDialog.showProgress("Events data updating...");
+            float [] distance = new float[1];
+            Location.distanceBetween(
+                    map.getMap().getProjection().getVisibleRegion().farLeft.latitude,
+                    map.getMap().getProjection().getVisibleRegion().farLeft.longitude,
+                    map.getMap().getProjection().getVisibleRegion().farRight.latitude,
+                    map.getMap().getProjection().getVisibleRegion().farRight.longitude,
+                    distance);
+            HashMap<String, Object> params = new HashMap<>();
+            ArrayList<String> categories = new ArrayList<>();
+            for(int i=0; i<filterCategories.length; i++){
+                if(filterCategories[i])
+                    categories.add(Integer.toString(i));
+            }
+            String[] sex = new String[2];
+            if (filterSex[0]) sex[0] = "male";
+            if (filterSex[1]) sex[1] = "female";
+            params.put("category", categories);
+            params.put("gender", Arrays.asList(sex));
+            params.put("minAge", Integer.toString(filterAge[0]));
+            params.put("maxAge", Integer.toString(filterAge[1]));
+            params.put("location", new ParseGeoPoint(map.getMap().getCameraPosition().target.latitude,
+                    map.getMap().getCameraPosition().target.longitude));
+            params.put("radius", distance[0] / 1000);
+            ParseCloud.callFunctionInBackground("getFilteredEvents", params, new FunctionCallback<List<ParseObject>>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e != null) {
+                        Toast.makeText(getActivity(), "UPDATE_EVENT_DATA_ERROR" + e, Toast.LENGTH_SHORT).show();
+                    } else {
+                        MainActivity.EVENT_CATEGORY_EDITED = false;
+                        map.getMap().clear();
+                        if (markersArray != null) markersArray.clear();
+                        else markersArray = new ArrayList<>();
+                        if (markersHashMap != null) markersHashMap.clear();
+                        else markersHashMap = new HashMap<>();
+                        for (ParseObject po : parseObjects) {
+                            LatLng markerLocation = new LatLng(po.getParseGeoPoint("location").getLatitude(),
+                                    po.getParseGeoPoint("location").getLongitude());
+                            markersArray.add(new MyMarker(po.getObjectId(), po.getString("category"), markerLocation));
+                        }
+                        plotMarkers(markersArray);
+                    }
+                    progressDialog.hideProgress();
+                }
+            });
         }
     }
 
@@ -382,11 +454,11 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                     map.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
                         @Override
                         public void onFinish() {
-                            updateMarkers();
+                            updateMarkersWithoutFilters();
                         }
                         @Override
                         public void onCancel() {
-                            updateMarkers();
+                            updateMarkersWithoutFilters();
                         }
                     });/*
                     if (currentCam == null) {
@@ -395,11 +467,11 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                         map.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
                             @Override
                             public void onFinish() {
-                                updateMarkers();
+                                updateMarkersWithoutFilters();
                             }
                             @Override
                             public void onCancel() {
-                                updateMarkers();
+                                updateMarkersWithoutFilters();
                             }
                         });
                     } else {
@@ -562,7 +634,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                         .addToBackStack(null)
                         .commit();
                 return true;
-            case R.id.action_search:
+            case R.id.ic_action_filter:
                 eventsFilterDialog();
                 return true;
         }
@@ -574,17 +646,63 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         alertBw.setTitle("Events search settings");
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.events_filter_dialog, null);
         alertBw.setView(v);
-        alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
 
-        Switch SwitcherLove = (Switch) v.findViewById(R.id.switch_love);
+        SwitchButton switcherLove = (SwitchButton) v.findViewById(R.id.switch_love);
+        SwitchButton switcherMovie = (SwitchButton) v.findViewById(R.id.switch_movie);
+        SwitchButton switcherSport = (SwitchButton) v.findViewById(R.id.switch_sport);
+        SwitchButton switcherBusiness = (SwitchButton) v.findViewById(R.id.switch_business);
+        SwitchButton switcherCoffee = (SwitchButton) v.findViewById(R.id.switch_coffee);
+        SwitchButton switcherMeet = (SwitchButton) v.findViewById(R.id.switch_meet);
+        SwitchButton switcherMale = (SwitchButton) v.findViewById(R.id.switch_male);
+        SwitchButton switcherFemale = (SwitchButton) v.findViewById(R.id.switch_female);
         final TextView rangeMin = (TextView) v.findViewById(R.id.filter_age_min);
         final TextView rangeMax = (TextView) v.findViewById(R.id.filter_age_max);
         RangeBar rangebar = (RangeBar) v.findViewById(R.id.filter_rangebar);
+
+        alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, int which) {
+                isFilterDialogUsed = true;
+                updateMarkers();
+            }
+        });
+        alertBw.setNeutralButton("Reset filters", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                for (int i=0; i<filterCategories.length; i++)
+                    filterCategories[i] = true;
+                for (int i=0; i<filterSex.length; i++)
+                    filterSex[i] = true;
+                filterAge[0]=1;
+                filterAge[1]=35;
+
+                isFilterDialogUsed = false;
+                updateMarkers();
+            }
+        });
+
+        switcherLove.setChecked(filterCategories[MainActivity.EventCategories.LOVE.ordinal()]);
+        switcherMovie.setChecked(filterCategories[MainActivity.EventCategories.MOVIE.ordinal()]);
+        switcherSport.setChecked(filterCategories[MainActivity.EventCategories.SPORT.ordinal()]);
+        switcherBusiness.setChecked(filterCategories[MainActivity.EventCategories.BUSINESS.ordinal()]);
+        switcherCoffee.setChecked(filterCategories[MainActivity.EventCategories.COFFEE.ordinal()]);
+        switcherMeet.setChecked(filterCategories[MainActivity.EventCategories.MEET.ordinal()]);
+
+        switcherLove.setOnCheckedChangeListener(switcherCategoryListener);
+        switcherMovie.setOnCheckedChangeListener(switcherCategoryListener);
+        switcherSport.setOnCheckedChangeListener(switcherCategoryListener);
+        switcherBusiness.setOnCheckedChangeListener(switcherCategoryListener);
+        switcherCoffee.setOnCheckedChangeListener(switcherCategoryListener);
+        switcherMeet.setOnCheckedChangeListener(switcherCategoryListener);
+
+        switcherMale.setOnCheckedChangeListener(switcherSexListener);
+        switcherFemale.setOnCheckedChangeListener(switcherSexListener);
+        switcherMale.setChecked(filterSex[0]);
+        switcherFemale.setChecked(filterSex[1]);
+
+        rangeMin.setText(Integer.toString(filterAge[0]));
+        rangeMax.setText(Integer.toString(filterAge[1]));
+        rangebar.setRangePinsByIndices(filterAge[0], filterAge[1]);
         rangebar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
@@ -592,10 +710,52 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                                               String leftPinValue, String rightPinValue) {
                 rangeMin.setText(leftPinValue);
                 rangeMax.setText(rightPinValue);
+                filterAge[0]=Integer.parseInt(leftPinValue);
+                filterAge[1]=Integer.parseInt(rightPinValue);
             }
         });
 
         AlertDialog alertDialog = alertBw.create();
         alertDialog.show();
     }
+
+    private CompoundButton.OnCheckedChangeListener switcherCategoryListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            switch (buttonView.getId()) {
+                case R.id.switch_love:
+                    filterCategories[MainActivity.EventCategories.LOVE.ordinal()] = isChecked;
+                    break;
+                case R.id.switch_movie:
+                    filterCategories[MainActivity.EventCategories.MOVIE.ordinal()] = isChecked;
+                    break;
+                case R.id.switch_sport:
+                    filterCategories[MainActivity.EventCategories.SPORT.ordinal()] = isChecked;
+                    break;
+                case R.id.switch_business:
+                    filterCategories[MainActivity.EventCategories.BUSINESS.ordinal()] = isChecked;
+                    break;
+                case R.id.switch_coffee:
+                    filterCategories[MainActivity.EventCategories.COFFEE.ordinal()] = isChecked;
+                    break;
+                case R.id.switch_meet:
+                    filterCategories[MainActivity.EventCategories.MEET.ordinal()] = isChecked;
+                    break;
+            }
+        }
+    };
+
+    private CompoundButton.OnCheckedChangeListener switcherSexListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            switch (buttonView.getId()) {
+                case R.id.switch_male:
+                    filterSex[0] = isChecked;
+                    break;
+                case R.id.switch_female:
+                    filterSex[1] = isChecked;
+                    break;
+            }
+        }
+    };
 }
