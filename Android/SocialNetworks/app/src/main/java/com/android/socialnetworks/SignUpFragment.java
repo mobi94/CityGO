@@ -126,7 +126,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
         progressBar = (SmoothProgressBar) rootView.findViewById(R.id.signup_progress_bar);
         progressBar.setVisibility(View.GONE);
         username = (MaterialEditText)rootView.findViewById(R.id.username_edit);
-        username.setBackgroundResource(R.drawable.background_normal_name);
+        username.setBackgroundResource(R.drawable.background_niagara);
         userNameListener();
         password = (MaterialEditText)rootView.findViewById(R.id.password_edit);
         password.setBackgroundResource(R.drawable.background_normal);
@@ -228,7 +228,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUserName(s.toString());
                 if (isUserNameValid) {
-                    username.setBackgroundResource(R.drawable.background_normal_name);
+                    username.setBackgroundResource(R.drawable.background_niagara);
                     username.setFloatingLabelText("     " + getString(R.string.user_name_edit_text));
                 }
                 else {

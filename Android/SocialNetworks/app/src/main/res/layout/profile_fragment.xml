@@ -17,13 +17,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:id="@+id/blur"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:cropToPadding="true" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:id="@+id/blur"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="#5a000000"/>
+
+            </RelativeLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
@@ -135,7 +145,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/profile_change_avatar"
                         android:id="@+id/profile_change_avatar"
-                        android:background="@drawable/background_normal_name"
+                        android:background="@drawable/background_niagara"
+                        android:textAllCaps="false"
                         android:textColor="#FFF"
                         android:textSize="@dimen/profile_text_size"
                         android:layout_marginRight="10dp"
@@ -147,7 +158,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/profile_edit_my_info"
                         android:id="@+id/profile_edit_my_info"
-                        android:background="@drawable/background_normal_name"
+                        android:background="@drawable/background_niagara"
+                        android:textAllCaps="false"
                         android:textColor="#FFF"
                         android:textSize="@dimen/profile_text_size"
                         android:layout_marginLeft="10dp"

@@ -25,6 +25,7 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
@@ -37,6 +38,8 @@ import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.json.JSONArray;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,9 +71,6 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_event_fragment, container, false);
-        String eventUser = getArguments().getString("CURRENT_USER", "");
-        String currentUser = ParseUser.getCurrentUser().getUsername();
-
         setHasOptionsMenu(true);
 
         progressDialog = new MyProgressDialog(getActivity());
@@ -78,7 +78,7 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            if (eventUser.equals(currentUser)) actionBar.setTitle("Edit Go Event");
+            if (getArguments().getString("USED_FOR", "").equals("edit")) actionBar.setTitle("Edit Go Event");
             else actionBar.setTitle("Create Go Event");
         }
 
@@ -383,11 +383,11 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
     private void createParseObject(){
         progressDialog.showProgress("Sending data...");
         final ParseObject goEvent = new ParseObject("GoEvents");
-        String title = editTitle.getText().toString();
+        String title = editTitle.getText().toString().trim();
         String category = eventTypeString;
         String duration = editTemporary.getText().toString();
         String availableSeats = editAvailableSits.getText().toString();
-        String description = editDescription.getText().toString();
+        String description = editDescription.getText().toString().trim();
         String creatorAge = "";
         String creatorGender = "";
         String creatorName = "";
@@ -437,8 +437,11 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         goEvent.put("description", description);
         goEvent.put("startDate", startDate);
         goEvent.put("location", point);
+        goEvent.put("usersRequest", new JSONArray());
+        goEvent.put("usersAccept", new JSONArray());
 
-        MainActivity.newMarker = new MyMarker("", category, location);
+        MainActivity.newMarker = new MyMarker("", category, location, title, creatorName,
+                creatorGender, availableSeats, duration, startDate);
 
         goEvent.saveInBackground(new SaveCallback() {
             @Override
@@ -481,11 +484,11 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
     private void updateParseObject(){
         progressDialog.showProgress("Updating data...");
 
-        final String title = editTitle.getText().toString();
+        final String title = editTitle.getText().toString().trim();
         final String category = eventTypeString;
         final String duration = editTemporary.getText().toString();
         final String availableSeats = editAvailableSits.getText().toString();
-        final String description = editDescription.getText().toString();
+        final String description = editDescription.getText().toString().trim();
         final String startDate = editStartDate.getText().toString();
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -501,13 +504,14 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                         getActivity().getSupportFragmentManager().popBackStack();
                     }
                     else {
-                        if (!title.equals(bufTitle))
+                        if (!title.equals(bufTitle)) {
                             parseObject.put("title", title);
+                            MainActivity.MAP_MARKERS_UPDATE = true;
+                        }
                         if (!category.equals(bufTypeString)) {
                             parseObject.put("category", category);
-                            MainActivity.EVENT_CATEGORY_EDITED = true;
+                            MainActivity.MAP_MARKERS_UPDATE = true;
                         }
-                        else MainActivity.EVENT_CATEGORY_EDITED = false;
                         if (!duration.equals(bufTemporary))
                             parseObject.put("temporary", duration);
                         if (!availableSeats.equals(bufAvailableSits))
@@ -557,61 +561,68 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationEnd(Animation animation) {
                 if (!isFragmentShown) {
-                    if (getArguments().getString("USED_FOR", "").equals("edit")) {
-                        progressDialog.showProgress("Loading...");
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
-                        query.getInBackground(getArguments().getString("MARKER_ID", ""), new GetCallback<ParseObject>() {
-                            @Override
-                            public void done(final ParseObject parseObject, ParseException e) {
-                                if (e == null) {
-                                    eventTypeString = parseObject.getString("category");
-                                    eventType.setImageResource(getMarkerIcon(Integer.parseInt(eventTypeString)));
-                                    editTitle.setText(parseObject.getString("title"));
-                                    editDescription.setText(parseObject.getString("description"));
-                                    editAvailableSits.setText(parseObject.getString("avaibleSeats"));
-                                    SimpleDateFormat format = MainActivity.getFormattedDate(getResources().getConfiguration().locale);
-                                    editStartDate.setText(format.format(parseObject.getDate("startDate")));
-                                    editTemporary.setText(parseObject.getString("temporary"));
-
-                                    bufTypeString = eventTypeString;
-                                    bufTitle = editTitle.getText().toString();
-                                    bufDescription = editDescription.getText().toString();
-                                    bufAvailableSits = editAvailableSits.getText().toString();
-                                    bufStartDate = editStartDate.getText().toString();
-                                    bufTemporary = editTemporary.getText().toString();
-
-                                    deleteEventButton.setVisibility(View.VISIBLE);
-                                    deleteEventButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            parseObject.deleteInBackground(new DeleteCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if (e==null){
-                                                        MainActivity.setOnEventListToDeleteFlag();
-                                                        MainActivity.EVENT_CATEGORY_EDITED = true;
-                                                        MainActivity.EVENT_FRAGMENT_RESULT = "done";
-                                                        MainActivity.markersIdsToDelete.add(parseObject.getObjectId());
-                                                        MainActivity.markersIdsToDeleteForEventsListFragment.add(parseObject.getObjectId());
-                                                        getActivity().getSupportFragmentManager().popBackStack();
-                                                    }
-                                                    else{
-                                                        Toast.makeText(getActivity(), "DELETE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
-
-                                    progressDialog.hideProgress();
-                                    isFragmentShown = true;
-                                } else progressDialog.hideProgress();
-                            }
-                        });
-                    }
+                    MainActivity.disableViewPager((MyViewPager) getActivity().findViewById(R.id.pager),
+                            (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs));
+                    getEventData();
                 }
             }
         });
         return anim;
+    }
+
+    private void getEventData(){
+        if (getArguments().getString("USED_FOR", "").equals("edit")) {
+            progressDialog.showProgress("Loading...");
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
+            query.getInBackground(getArguments().getString("MARKER_ID", ""), new GetCallback<ParseObject>() {
+                @Override
+                public void done(final ParseObject parseObject, ParseException e) {
+                    if (e == null) {
+                        eventTypeString = parseObject.getString("category");
+                        eventType.setImageResource(getMarkerIcon(Integer.parseInt(eventTypeString)));
+                        editTitle.setText(parseObject.getString("title"));
+                        editDescription.setText(parseObject.getString("description"));
+                        editAvailableSits.setText(parseObject.getString("avaibleSeats"));
+                        SimpleDateFormat format = MainActivity.getFormattedDate(getResources().getConfiguration().locale);
+                        editStartDate.setText(format.format(parseObject.getDate("startDate")));
+                        editTemporary.setText(parseObject.getString("temporary"));
+
+                        bufTypeString = eventTypeString;
+                        bufTitle = editTitle.getText().toString();
+                        bufDescription = editDescription.getText().toString();
+                        bufAvailableSits = editAvailableSits.getText().toString();
+                        bufStartDate = editStartDate.getText().toString();
+                        bufTemporary = editTemporary.getText().toString();
+
+                        deleteEventButton.setVisibility(View.VISIBLE);
+                        deleteEventButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                progressDialog.showProgress("Deleting...");
+                                parseObject.deleteInBackground(new DeleteCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e==null){
+                                            MainActivity.setOnEventListToDeleteFlag();
+                                            MainActivity.MAP_MARKERS_UPDATE = true;
+                                            MainActivity.EVENT_FRAGMENT_RESULT = "done";
+                                            MainActivity.markersIdsToDelete.add(parseObject.getObjectId());
+                                            MainActivity.markersIdsToDeleteForEventsListFragment.add(parseObject.getObjectId());
+                                            getActivity().getSupportFragmentManager().popBackStack();
+                                        }
+                                        else{
+                                            Toast.makeText(getActivity(), "DELETE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
+                                        }
+                                        progressDialog.hideProgress();
+                                    }
+                                });
+                            }
+                        });
+                        progressDialog.hideProgress();
+                        isFragmentShown = true;
+                    } else progressDialog.hideProgress();
+                }
+            });
+        }
     }
 }

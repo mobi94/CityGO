@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="white">#ffffffff</color>
     <color name="grey_light">#FFCCCCCC</color>
     <color name="black_alpha">#96000000</color>
     <color name="dark">#4b4b4b</color>
     <color name="red">#ffff0055</color>
     <color name="error">#64e60056</color>
     <color name="niagara">#009A90</color>
+    <color name="niagara_alpha">#96009a90</color>
     <color name="red_orange">#FA3C34</color>
     <color name="success">#00B957</color>
+
+    <color name="love">#969c0307</color>
+    <color name="movie">#96000000</color>
+    <color name="sport">#96718d48</color>
+    <color name="business">#96e3a92b</color>
+    <color name="coffee">#96663a2e</color>
 
     <color name="ColorPrimary">#009A90</color>
     <color name="ColorPrimaryDark">#ff00837a</color>

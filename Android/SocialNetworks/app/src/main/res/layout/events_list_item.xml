@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:text="title"
             android:id="@+id/profile_list_title"
-            android:textColor="#FFF" />
+            android:textColor="#FFF"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -71,7 +72,7 @@
         android:orientation="horizontal"
         android:gravity="center_horizontal"
         android:layout_below="@+id/profile_list_category"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true">
 
         <TextView
@@ -82,9 +83,11 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#FFF"
-            android:background="@drawable/background_normal_name"
+            android:background="@drawable/background_niagara_without_padding"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="15dp" />
+            android:layout_marginRight="15dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -94,10 +97,12 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#FFF"
-            android:background="@drawable/background_normal_name"
+            android:background="@drawable/background_niagara_without_padding"
             android:autoText="false"
             android:layout_marginRight="25dp"
-            android:layout_marginLeft="15dp" />
+            android:layout_marginLeft="15dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
 
     </LinearLayout>
 

@@ -27,6 +27,7 @@ import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -322,6 +323,8 @@ public class EditProfileFragment extends Fragment {
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationEnd(Animation animation) {
                 if (!isFragmentShown) {
+                    MainActivity.disableViewPager((MyViewPager) getActivity().findViewById(R.id.pager),
+                            (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs));
                     top.setBackgroundResource(R.color.black_alpha);
                     center.setBackgroundResource(R.color.black_alpha);
                     bottom.setBackgroundResource(R.color.black_alpha);

@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appyvet.rangebar.RangeBar;
+import com.astuetz.PagerSlidingTabStrip;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -58,10 +59,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import at.markushi.ui.CircleButton;
+
 public class MainFragment extends Fragment implements OnMapReadyCallback, LocationProvider.LocationCallback {
 
-    private ArrayList<MyMarker> markersArray;
-    private HashMap<Marker, MyMarker> markersHashMap;
+    static public ArrayList<MyMarker> markersArray;
+    static public HashMap<Marker, MyMarker> markersHashMap;
 
     private LatLng currentCameraPosition;
     private boolean isLocationShowed;
@@ -78,12 +81,13 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     private boolean isVisible = false;
     private int stackSize = 0;
 
-    private int[] filterAge = {1,35};
-    private boolean[] filterCategories = {true,true,true,true,true,true};
-    private boolean[] filterSex = {true,true};
-    private boolean isFilterDialogUsed = false;
+    static public int[] filterAge = {1,35};
+    static public boolean[] filterCategories = {true,true,true,true,true,true};
+    static public boolean[] filterSex = {true,true};
+    static public boolean isFilterDialogUsed = false;
 
     private LocationProvider mLocationProvider;
+    private CircleButton currentLocationButton;
 
     public static MainFragment newInstance(int position) {
         MainFragment f = new MainFragment();
@@ -104,6 +108,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
 
         progressDialog = new MyProgressDialog(getActivity());
 
+        currentLocationButton = (CircleButton) rootView.findViewById(R.id.buttonFloat);
+
         mLocationProvider = new LocationProvider(getActivity(), this);
         if (checkGooglePlayServices())
             map.getMapAsync(this);
@@ -119,8 +125,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                if ((isEventsListPressed || isLongPressed || isInfoWindowPressedToEdit || MainActivity.EVENT_CATEGORY_EDITED
-                        || !MainActivity.EVENT_CATEGORY_EDITED || isInfoWindowPressedToShow) && isVisible) {
+                if ((isEventsListPressed || isLongPressed || isInfoWindowPressedToEdit || MainActivity.MAP_MARKERS_UPDATE
+                        || !MainActivity.MAP_MARKERS_UPDATE || isInfoWindowPressedToShow) && isVisible) {
                     int current = getFragmentManager().getBackStackEntryCount();
                     if (current == 1) stackSize = 1;
                     if (current == 0 && stackSize == 1) {
@@ -132,10 +138,10 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                             actionBar.setBackgroundDrawable(new ColorDrawable(0xff009A90));
                         }
                         if (isLongPressed) addNewMarker();
-                        else if(MainActivity.EVENT_FRAGMENT_RESULT.equals("done") && MainActivity.EVENT_CATEGORY_EDITED)
+                        else if(MainActivity.EVENT_FRAGMENT_RESULT.equals("done") && MainActivity.MAP_MARKERS_UPDATE)
                             updateMarkers();
-                        MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
-                        pager.setPagingEnabled(true);
+                        MainActivity.enableViewPager((MyViewPager) getActivity().findViewById(R.id.pager),
+                                (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs));
                         map.getMap().getUiSettings().setAllGesturesEnabled(true);
                         isLongPressed = false;
                         isInfoWindowPressedToEdit = false;
@@ -179,15 +185,16 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                 map.getMap().getProjection().getVisibleRegion().farRight.longitude,
                 distance);
         ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
-        query.whereExists("category").whereExists("location").whereWithinKilometers("location", new ParseGeoPoint(
-                        map.getMap().getCameraPosition().target.latitude, map.getMap().getCameraPosition().target.longitude),
-                distance[0] / 1000).setLimit(25);
+        query.whereWithinKilometers("location", new ParseGeoPoint(map.getMap().getCameraPosition().target.latitude,
+                        map.getMap().getCameraPosition().target.longitude), distance[0] / 1000).setLimit(25);
         try {
             List<ParseObject> queryResult = query.find();
             for(ParseObject po : queryResult) {
                 LatLng markerLocation = new LatLng(po.getParseGeoPoint("location").getLatitude(),
                         po.getParseGeoPoint("location").getLongitude());
-                eventMarkers.add(new MyMarker(po.getObjectId(), po.getString("category"), markerLocation));
+                eventMarkers.add(new MyMarker(po.getObjectId(), po.getString("category"), markerLocation,
+                        po.getString("title"), po.getString("creatorName"), po.getString("creatorGender"),
+                        po.getString("avaibleSeats"), po.getString("temporary"), po.getDate("startDate")));
             }
         }
         catch(ParseException e) {
@@ -223,17 +230,12 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    private void updateMarkers(){
-        if (isFilterDialogUsed) updateMarkersWithFilters();
-        else updateMarkersWithoutFilters();
-    }
-
     private void updateMarkersWithoutFilters() {
         if(!SignUpActivity.isNetworkOn(getActivity())) {
             Toast.makeText(getActivity(), "Please, check your internet connection", Toast.LENGTH_SHORT).show();
         } else {
             progressDialog.showProgress("Events data updating...");
-            MainActivity.EVENT_CATEGORY_EDITED = false;
+            MainActivity.MAP_MARKERS_UPDATE = false;
             map.getMap().clear();
             if (markersArray != null) markersArray.clear();
             if (markersHashMap != null) markersHashMap.clear();
@@ -243,11 +245,11 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    private void updateMarkersWithFilters() {
+    private void updateMarkers() {
         if(!SignUpActivity.isNetworkOn(getActivity())) {
             Toast.makeText(getActivity(), "Please, check your internet connection", Toast.LENGTH_SHORT).show();
         } else {
-            progressDialog.showProgress("Events data updating...");
+            progressDialog.showProgress("Loading...");
             float [] distance = new float[1];
             Location.distanceBetween(
                     map.getMap().getProjection().getVisibleRegion().farLeft.latitude,
@@ -257,17 +259,28 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                     distance);
             HashMap<String, Object> params = new HashMap<>();
             ArrayList<String> categories = new ArrayList<>();
-            for(int i=0; i<filterCategories.length; i++){
-                if(filterCategories[i])
-                    categories.add(Integer.toString(i));
-            }
             String[] sex = new String[2];
-            if (filterSex[0]) sex[0] = "male";
-            if (filterSex[1]) sex[1] = "female";
+            int minAge = 1, maxAge = 70;
+            if (isFilterDialogUsed) {
+                for (int i = 0; i < filterCategories.length; i++) {
+                    if (filterCategories[i])
+                        categories.add(Integer.toString(i));
+                }
+                if (filterSex[0]) sex[0] = "male";
+                if (filterSex[1]) sex[1] = "female";
+                minAge = filterAge[0];
+                maxAge = filterAge[1];
+            }
+            else{
+                for (int i = 0; i < 6; i++)
+                    categories.add(Integer.toString(i));
+                sex[0] = "male";
+                sex[1] = "female";
+            }
             params.put("category", categories);
             params.put("gender", Arrays.asList(sex));
-            params.put("minAge", Integer.toString(filterAge[0]));
-            params.put("maxAge", Integer.toString(filterAge[1]));
+            params.put("minAge", Integer.toString(minAge));
+            params.put("maxAge", Integer.toString(maxAge));
             params.put("location", new ParseGeoPoint(map.getMap().getCameraPosition().target.latitude,
                     map.getMap().getCameraPosition().target.longitude));
             params.put("radius", distance[0] / 1000);
@@ -277,7 +290,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                     if (e != null) {
                         Toast.makeText(getActivity(), "UPDATE_EVENT_DATA_ERROR" + e, Toast.LENGTH_SHORT).show();
                     } else {
-                        MainActivity.EVENT_CATEGORY_EDITED = false;
+                        MainActivity.MAP_MARKERS_UPDATE = false;
                         map.getMap().clear();
                         if (markersArray != null) markersArray.clear();
                         else markersArray = new ArrayList<>();
@@ -286,7 +299,9 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                         for (ParseObject po : parseObjects) {
                             LatLng markerLocation = new LatLng(po.getParseGeoPoint("location").getLatitude(),
                                     po.getParseGeoPoint("location").getLongitude());
-                            markersArray.add(new MyMarker(po.getObjectId(), po.getString("category"), markerLocation));
+                            markersArray.add(new MyMarker(po.getObjectId(), po.getString("category"), markerLocation,
+                                    po.getString("title"), po.getString("creatorName"), po.getString("creatorGender"),
+                                    po.getString("avaibleSeats"), po.getString("temporary"), po.getDate("startDate")));
                         }
                         plotMarkers(markersArray);
                     }
@@ -301,7 +316,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         super.setUserVisibleHint(isVisibleToUser);
         isVisible = isVisibleToUser;
         if (isVisibleToUser) {
-            if(MainActivity.EVENT_FRAGMENT_RESULT.equals("done") && MainActivity.EVENT_CATEGORY_EDITED)
+            if(MainActivity.EVENT_FRAGMENT_RESULT.equals("done") && MainActivity.MAP_MARKERS_UPDATE)
                 updateMarkers();
         }
     }
@@ -346,12 +361,24 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         map.getUiSettings().setTiltGesturesEnabled(true);
         map.getUiSettings().setRotateGesturesEnabled(true);
         map.getUiSettings().setScrollGesturesEnabled(true);
-        map.getUiSettings().setZoomControlsEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(false);
         map.getUiSettings().setZoomGesturesEnabled(true);
         map.getUiSettings().setMapToolbarEnabled(false);
-        map.getUiSettings().setMyLocationButtonEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(false);
         map.setMyLocationEnabled(true);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        currentLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Location location = map.getMyLocation();
+                if(location != null) {
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+                    map.animateCamera(cameraUpdate);
+                }
+                else Toast.makeText(getActivity(), "Your current location is undefined", Toast.LENGTH_SHORT).show();
+            }
+        });
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker currentMarker) {
@@ -363,19 +390,9 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
 
                 LinearLayout currentLayout = (LinearLayout) v.findViewById(R.id.map_info);
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
-                try {
-                    ParseObject parseObject = query.get(myMarker.getObjectId());
-                    myMarker.setTitle(parseObject.getString("title"));
-                    myMarker.setCreatorName(parseObject.getString("creatorName"));
-                    myMarker.setCreatorGender(parseObject.getString("creatorGender"));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
                 if (myMarker.getCreatorName().equals(ParseUser.getCurrentUser().getUsername()))
-                    currentLayout.setBackgroundResource(R.drawable.background_normal_name);
-                else currentLayout.setBackgroundResource(R.drawable.background_signup);
+                    currentLayout.setBackgroundResource(R.drawable.background_info_window_creator);
+                else currentLayout.setBackgroundResource(R.drawable.background_info_window_user);
                 mapTitle.setText(myMarker.getTitle());
                 mapCreatorGender.setText(myMarker.getCreatorGender());
 
@@ -398,8 +415,6 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                     if (markersHashMap.get(marker).getCreatorName().equals(currentUser)) {
                         if (!isInfoWindowPressedToEdit) {
                             map.getUiSettings().setAllGesturesEnabled(false);
-                            MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
-                            pager.setPagingEnabled(false);
 
                             NewEventFragment newEventFragment = new NewEventFragment();
                             Bundle bundle = new Bundle();
@@ -420,8 +435,6 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                     }
                     else if (!isInfoWindowPressedToShow) {
                         map.getUiSettings().setAllGesturesEnabled(false);
-                        MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
-                        pager.setPagingEnabled(false);
 
                         DetailedEventFragment detailedEventFragment = new DetailedEventFragment();
                         Bundle bundle = new Bundle();
@@ -490,8 +503,6 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
             public void onMapLongClick(LatLng latLng) {
                 if (!isLongPressed) {
                     map.getUiSettings().setAllGesturesEnabled(false);
-                    MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
-                    pager.setPagingEnabled(false);
 
                     currentCameraPosition = latLng;
                     NewEventFragment newEventFragment = new NewEventFragment();
@@ -527,18 +538,25 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
 
     @Override
     public void handleNewLocation(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
-        map.getMap().animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
-            @Override
-            public void onFinish() {
-                updateMarkers();
-            }
-            @Override
-            public void onCancel() {
-                updateMarkers();
-            }
-        });
+        animateToCurrentLocation(location);
+    }
+
+    private void animateToCurrentLocation(Location location){
+        if (markersArray == null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+            map.getMap().animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    updateMarkers();
+                    markersArray = new ArrayList<>();
+                }
+
+                @Override
+                public void onCancel() {
+                }
+            });
+        }
     }
 
     private boolean checkGooglePlayServices(){
@@ -593,6 +611,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     public void onDestroyView() {
         super.onDestroyView();
         destroyMap();
+        markersArray = null;
+        markersHashMap = null;
     }
 
     @Override
@@ -606,33 +626,29 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_list:
-                isEventsListPressed = true;
-                map.getMap().getUiSettings().setAllGesturesEnabled(false);
-                MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
-                pager.setPagingEnabled(false);
+                if(map.getMap().getMyLocation() != null) {
+                    isEventsListPressed = true;
+                    map.getMap().getUiSettings().setAllGesturesEnabled(false);
 
-                float [] distance = new float[1];
-                Location.distanceBetween(
-                        map.getMap().getProjection().getVisibleRegion().farLeft.latitude,
-                        map.getMap().getProjection().getVisibleRegion().farLeft.longitude,
-                        map.getMap().getProjection().getVisibleRegion().farRight.latitude,
-                        map.getMap().getProjection().getVisibleRegion().farRight.longitude,
-                        distance);
+                    EventsListFragment eventsListFragment = new EventsListFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("LEFT_VISIBLE_REGION_LAT", map.getMap().getProjection().getVisibleRegion().farLeft.latitude);
+                    bundle.putDouble("LEFT_VISIBLE_REGION_LONG", map.getMap().getProjection().getVisibleRegion().farLeft.longitude);
+                    bundle.putDouble("RIGHT_VISIBLE_REGION_LAT", map.getMap().getProjection().getVisibleRegion().farRight.latitude);
+                    bundle.putDouble("RIGHT_VISIBLE_REGION_LONG", map.getMap().getProjection().getVisibleRegion().farRight.longitude);
+                    bundle.putDouble("LOCATION_LAT", map.getMap().getMyLocation().getLatitude());
+                    bundle.putDouble("LOCATION_LONG", map.getMap().getMyLocation().getLongitude());
+                    eventsListFragment.setArguments(bundle);
 
-                EventsListFragment eventsListFragment = new EventsListFragment();
-                Bundle bundle = new Bundle();
-                bundle.putFloatArray("CURRENT_AREA", distance);
-                bundle.putDouble("LOCATION_LAT", map.getMap().getCameraPosition().target.latitude);
-                bundle.putDouble("LOCATION_LONG", map.getMap().getCameraPosition().target.longitude);
-                eventsListFragment.setArguments(bundle);
-
-                getFragmentManager().beginTransaction()
-                        .setCustomAnimations(
-                                R.anim.slide_in_bottom, R.anim.slide_out_bottom,
-                                R.anim.slide_in_bottom, R.anim.slide_out_bottom)
-                        .add(R.id.container, eventsListFragment)
-                        .addToBackStack(null)
-                        .commit();
+                    getFragmentManager().beginTransaction()
+                            .setCustomAnimations(
+                                    R.anim.slide_in_bottom, R.anim.slide_out_bottom,
+                                    R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                            .add(R.id.container, eventsListFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+                else Toast.makeText(getActivity(), "Your current location is undefined", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.ic_action_filter:
                 eventsFilterDialog();
@@ -657,7 +673,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         SwitchButton switcherFemale = (SwitchButton) v.findViewById(R.id.switch_female);
         final TextView rangeMin = (TextView) v.findViewById(R.id.filter_age_min);
         final TextView rangeMax = (TextView) v.findViewById(R.id.filter_age_max);
-        RangeBar rangebar = (RangeBar) v.findViewById(R.id.filter_rangebar);
+        final RangeBar rangebar = (RangeBar) v.findViewById(R.id.filter_rangebar);
 
         alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
             @Override
@@ -669,6 +685,9 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         alertBw.setNeutralButton("Reset filters", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                boolean[] categories = filterCategories.clone();
+                boolean[] sex = filterSex.clone();
+                int[] age = filterAge.clone();
                 for (int i=0; i<filterCategories.length; i++)
                     filterCategories[i] = true;
                 for (int i=0; i<filterSex.length; i++)
@@ -676,8 +695,12 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                 filterAge[0]=1;
                 filterAge[1]=35;
 
-                isFilterDialogUsed = false;
-                updateMarkers();
+                if (!Arrays.equals(categories, filterCategories)
+                        || !Arrays.equals(sex, filterSex)
+                        || !Arrays.equals(age, filterAge)) {
+                    isFilterDialogUsed = false;
+                    updateMarkers();
+                }
             }
         });
 
@@ -702,16 +725,28 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
 
         rangeMin.setText(Integer.toString(filterAge[0]));
         rangeMax.setText(Integer.toString(filterAge[1]));
-        rangebar.setRangePinsByIndices(filterAge[0], filterAge[1]);
+        rangebar.setRangePinsByValue(filterAge[0], filterAge[1]);
         rangebar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
-                                              int rightPinIndex,
-                                              String leftPinValue, String rightPinValue) {
-                rangeMin.setText(leftPinValue);
-                rangeMax.setText(rightPinValue);
-                filterAge[0]=Integer.parseInt(leftPinValue);
-                filterAge[1]=Integer.parseInt(rightPinValue);
+                                              int rightPinIndex, String leftPinValue, String rightPinValue) {
+                int left = Integer.parseInt(leftPinValue);
+                int right = Integer.parseInt(rightPinValue);
+                if (Integer.parseInt(leftPinValue) < 1 || Integer.parseInt(rightPinValue) > 70) {
+                    if (left < 1) left = 1;
+                    if (right > 70) right = 70;
+                    rangebar.setRangePinsByValue(left, right);
+                    rangeMin.setText(Integer.toString(left));
+                    rangeMax.setText(Integer.toString(right));
+                    filterAge[0]=left;
+                    filterAge[1]=right;
+                }
+                else {
+                    rangeMin.setText(leftPinValue);
+                    rangeMax.setText(rightPinValue);
+                    filterAge[0] = Integer.parseInt(leftPinValue);
+                    filterAge[1] = Integer.parseInt(rightPinValue);
+                }
             }
         });
 
@@ -719,7 +754,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         alertDialog.show();
     }
 
-    private CompoundButton.OnCheckedChangeListener switcherCategoryListener = new CompoundButton.OnCheckedChangeListener() {
+    static public CompoundButton.OnCheckedChangeListener switcherCategoryListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             switch (buttonView.getId()) {
@@ -745,7 +780,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     };
 
-    private CompoundButton.OnCheckedChangeListener switcherSexListener = new CompoundButton.OnCheckedChangeListener() {
+    static public CompoundButton.OnCheckedChangeListener switcherSexListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             switch (buttonView.getId()) {

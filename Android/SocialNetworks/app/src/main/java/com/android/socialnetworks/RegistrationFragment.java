@@ -107,7 +107,7 @@ public class RegistrationFragment extends Fragment {
                 .into(avatar);
 
         editUserName = (MaterialEditText)rootView.findViewById(R.id.username_signup);
-        editUserName.setBackgroundResource(R.drawable.background_normal_name);
+        editUserName.setBackgroundResource(R.drawable.background_niagara);
         userNameListener();
         editEmail = (MaterialEditText)rootView.findViewById(R.id.email_signup);
         editEmail.setBackgroundResource(R.drawable.background_normal);
@@ -265,7 +265,7 @@ public class RegistrationFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUserName(s.toString());
                 if (isUserNameValid) {
-                    editUserName.setBackgroundResource(R.drawable.background_normal_name);
+                    editUserName.setBackgroundResource(R.drawable.background_niagara);
                     editUserName.setFloatingLabelText("     " + getString(R.string.user_name_edit_text));
                 }
                 else {

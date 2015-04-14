@@ -25,7 +25,7 @@ public class ListViewAdapter_OLD_ extends ArrayAdapter<String> {
     }
 
     public ListViewAdapter_OLD_(Activity context, String[] categories, String[] titles, String[] availableSeats, String[] dates, String[] times) {
-        super(context, R.layout.profile_event_list, titles);
+        super(context, R.layout.events_list_item, titles);
         this.context = context;
         this.categories = categories;
         this.titles = titles;
@@ -52,7 +52,7 @@ public class ListViewAdapter_OLD_ extends ArrayAdapter<String> {
         // reuse views
         if (rowView == null) {
             LayoutInflater inflater = context.getLayoutInflater();
-            rowView = inflater.inflate(R.layout.profile_event_list, null);
+            rowView = inflater.inflate(R.layout.events_list_item, null);
             // configure view holder
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.image = (ImageView) rowView.findViewById(R.id.profile_list_category);

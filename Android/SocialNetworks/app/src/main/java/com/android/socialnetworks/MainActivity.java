@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.makeramen.RoundedTransformationBuilder;
@@ -46,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
     private static int deletedEventListsCountLeft = 0;
     public static MyMarker newMarker;
     //for map fragment
-    public static boolean EVENT_CATEGORY_EDITED = false;
+    public static boolean MAP_MARKERS_UPDATE = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +76,20 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    static void disableViewPager(MyViewPager pager, PagerSlidingTabStrip tabs){
+        pager.setPagingEnabled(false);
+        tabs.setVisibility(View.GONE);
+    }
+
+    static void enableViewPager(MyViewPager pager, PagerSlidingTabStrip tabs){
+        pager.setPagingEnabled(true);
+        tabs.setVisibility(View.VISIBLE);
+    }
+
     private void initialiseViewPager() {
-        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
+        int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
-        final PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         MyViewPager pager = (MyViewPager) findViewById(R.id.pager);
         pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
         pager.setPageMargin(pageMargin);

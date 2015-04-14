@@ -14,6 +14,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -30,6 +32,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
+import com.gc.materialdesign.widgets.SnackBar;
 import com.leocardz.aelv.library.Aelv;
 import com.parse.FindCallback;
 import com.parse.FunctionCallback;
@@ -133,6 +137,12 @@ public class ProfileFragment extends Fragment {
                     int current = getFragmentManager().getBackStackEntryCount();
                     if (current == 1) stackSize = 1;
                     if (current == 0 && stackSize == 1) {
+                        ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+                        if (actionBar != null) {
+                            actionBar.setHomeButtonEnabled(false);
+                            actionBar.setDisplayHomeAsUpEnabled(false);
+                            actionBar.setTitle(R.string.app_name);
+                        }
                         if (MainActivity.EDIT_PROFILE_FRAGMENT_RESULT.equals("done")) {
                             if (!isDataMatch()) {
                                 getProfile();
@@ -142,8 +152,8 @@ public class ProfileFragment extends Fragment {
                         }
                         updateEventList();
                         enableButtons();
-                        MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
-                        pager.setPagingEnabled(true);
+                        MainActivity.enableViewPager((MyViewPager) getActivity().findViewById(R.id.pager),
+                                (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs));
                         isEditProfileButtonPressed = false;
                         stackSize = 0;
                     }
@@ -290,30 +300,18 @@ public class ProfileFragment extends Fragment {
     private void setSectionHeader(){
         listItemHeaderIndexes = new ArrayList<>();
         Date now = new Date();
-        boolean isHeaderInList = false;
         listAdapter.clearSectionHeaderItem();
-        for(int i=0; i<listItems.size(); i++) {
-            if (listItems.get(i).getDate().getTime() >= now.getTime() && listItems.get(i+1).getDate().getTime() < now.getTime()
-                    || i==0) {
-                if (i==0) {
-                    listAdapter.addSectionHeaderItem(i);
-                    listItemHeaderIndexes.add(i);
-                }
-                else{
-                    listAdapter.addSectionHeaderItem(i+2);
-                    listItemHeaderIndexes.add(i+2);
-                }
-                isHeaderInList = true;
+
+        listAdapter.addSectionHeaderItem(0);
+        listItemHeaderIndexes.add(0);
+        for(int i=0; i<listItems.size()-1; i++) {
+            if (listItems.get(i).getDate().getTime() >= now.getTime() && listItems.get(i+1).getDate().getTime() < now.getTime()) {
+                listAdapter.addSectionHeaderItem(i+2);
+                listItemHeaderIndexes.add(i+2);
             }
         }
-        if (!isHeaderInList) {
-            listAdapter.addSectionHeaderItem(-1);
-        }
-        else{
-            for(int i=0; i<listItemHeaderIndexes.size(); i++) {
-                listItems.add(listItemHeaderIndexes.get(i), new ListItem());
-            }
-        }
+        for(int i=0; i<listItemHeaderIndexes.size(); i++)
+            listItems.add(listItemHeaderIndexes.get(i), new ListItem());
     }
 
     private void deleteEventFromList (){
@@ -376,7 +374,7 @@ public class ProfileFragment extends Fragment {
         listItems = new ArrayList<>();
         setListViewItems(false);
 
-        listAdapter = new ListAdapter(this, getActivity(), R.layout.profile_event_list, listItems);
+        listAdapter = new ListAdapter(this, getActivity(), R.layout.events_list_item, listItems);
 
         listView.setAdapter(listAdapter);
 
@@ -391,22 +389,25 @@ public class ProfileFragment extends Fragment {
     }
 
     private boolean isDataMatch(){
-        boolean isNnicknameCorrect = false;
+        boolean isNicknameCorrect = false;
         boolean isGenderCorrect = false;
         boolean isBirthdayCorrect = false;
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
-            isNnicknameCorrect = userNickName.getText().toString().equals(currentUser.getString("nickname"));
+            isNicknameCorrect = userNickName.getText().toString().equals(currentUser.getString("nickname"));
             isBirthdayCorrect = birthday.equals(currentUser.getString("birthday"));
-            isGenderCorrect = gender.getText().toString().equals(currentUser.getString("gender"));
+            String genderEng;
+            if (gender.getText().toString().equals(getString(R.string.gender_dialog_male_value)))
+                genderEng = "male";
+            else
+                genderEng = "female";
+            isGenderCorrect = genderEng.equals(currentUser.getString("gender"));
         }
-        return isNnicknameCorrect && isGenderCorrect && isBirthdayCorrect;
+        return isNicknameCorrect && isGenderCorrect && isBirthdayCorrect;
     }
 
     private void startEditFragment(){
         disableButtons();
-        MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
-        pager.setPagingEnabled(false);
         EditProfileFragment editProfleFragment = new EditProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putString("NICKNAME", userNickName.getText().toString());
@@ -758,6 +759,49 @@ public class ProfileFragment extends Fragment {
 
     private void updateUserEventsDialog() {
         String message = "Do you want to update your events with new data?";
+        SnackBar snackbar = new SnackBar(getActivity(), message, "Yes", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!SignUpActivity.isNetworkOn(getActivity())) {
+                    Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    progressDialog.showProgress("Events data updating...");
+                    ParseUser currentUser = ParseUser.getCurrentUser();
+                    String creatorAvatarUrl = currentUser.getString("avatarURL");
+                    if (creatorAvatarUrl == null || creatorAvatarUrl.equals("")) {
+                        ParseFile photo = (ParseFile) currentUser.get("profilePic");
+                        creatorAvatarUrl = photo.getUrl();
+                    }
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("creatorName", currentUser.getUsername());
+                    params.put("newCreatorNickName", userNickName.getText());
+                    if (gender.getText().toString().equals(getString(R.string.gender_dialog_male_value)))
+                        params.put("newCreatorGender", "male");
+                    else
+                        params.put("newCreatorGender", "female");
+                    params.put("newCreatorAge", age.getText());
+                    params.put("newCreatorAvatarUrl", creatorAvatarUrl);
+                    ParseCloud.callFunctionInBackground("updateUserEvents", params, new FunctionCallback<Object>() {
+                        @Override
+                        public void done(Object o, ParseException e) {
+                            progressDialog.hideProgress();
+                            if (e != null) Toast.makeText(getActivity(), "UPDATE_EVENT_DATA_ERROR" + e, Toast.LENGTH_SHORT).show();
+                            else {
+                                MainActivity.EVENT_FRAGMENT_RESULT = "done";
+                                MainActivity.MAP_MARKERS_UPDATE = true;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        snackbar.setDismissTimer(7*1000);
+        snackbar.setBackgroundSnackBar(getResources().getColor(R.color.niagara));
+        snackbar.setColorButton(getResources().getColor(R.color.red));
+        snackbar.setMessageTextSize(16);
+        snackbar.show();
+        /*String message = "Do you want to update your events with new data?";
         AlertDialog.Builder alertBw = new AlertDialog.Builder(getActivity());
         alertBw.setTitle("Attention!");
         alertBw.setMessage(message);
@@ -803,6 +847,6 @@ public class ProfileFragment extends Fragment {
             }
         });
         AlertDialog alertDw = alertBw.create();
-        alertDw.show();
+        alertDw.show();*/
     }
 }

@@ -15,7 +15,8 @@
         android:textColor="#FFF"
         android:gravity="center_horizontal"
         android:textStyle="bold"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:minWidth="50dp" />
 
     <TextView
         android:layout_width="match_parent"

@@ -68,7 +68,7 @@ public class ListAdapter extends ArrayAdapter<ListItem> {
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if (getItemViewType(position) == TYPE_ITEM) {
-                convertView = vi.inflate(R.layout.profile_event_list, null);
+                convertView = vi.inflate(R.layout.events_list_item, null);
 
                 RelativeLayout textViewWrap = (RelativeLayout) convertView.findViewById(R.id.profile_list_item);
                 ImageView image = (ImageView) convertView.findViewById(R.id.profile_list_category);
@@ -121,7 +121,18 @@ public class ListAdapter extends ArrayAdapter<ListItem> {
             holder.getButtonShowFollowers().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "ShowFollowers", Toast.LENGTH_SHORT).show();
+                    FollowersFragment followersFragment = new FollowersFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("MARKER_ID", listItem.getObjectId());
+                    followersFragment.setArguments(bundle);
+
+                    fragment.getFragmentManager().beginTransaction()
+                            .setCustomAnimations(
+                                    R.anim.slide_in_bottom, R.anim.slide_out_bottom,
+                                    R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                            .add(R.id.container, followersFragment)
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
             holder.getButtonEditEvent().setOnClickListener(new View.OnClickListener() {

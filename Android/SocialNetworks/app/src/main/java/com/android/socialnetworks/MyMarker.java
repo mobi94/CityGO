@@ -20,10 +20,18 @@ public class MyMarker {
     private Date mStartDate;
     private LatLng mLocation;
 
-    public MyMarker(String objectId, String category, LatLng location) {
+    public MyMarker(String objectId, String category, LatLng location, String title,
+                    String creatorName, String creatorGender, String availableSeats,
+                    String duration, Date startDate) {
         this.mObjectId = objectId;
         this.mCategory = category;
         this.mLocation = location;
+        this.mTitle = title;
+        this.mCreatorName = creatorName;
+        this.mCreatorGender = creatorGender;
+        this.mAvailableSeats = availableSeats;
+        this.mDuration = duration;
+        this.mStartDate = startDate;
     }
 
     public String getObjectId() {
