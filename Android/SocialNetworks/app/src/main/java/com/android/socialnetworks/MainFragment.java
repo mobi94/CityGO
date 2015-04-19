@@ -675,14 +675,14 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         final TextView rangeMax = (TextView) v.findViewById(R.id.filter_age_max);
         final RangeBar rangebar = (RangeBar) v.findViewById(R.id.filter_rangebar);
 
-        alertBw.setPositiveButton(getString(R.string.ok_button), new DialogInterface.OnClickListener() {
+        alertBw.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
                 isFilterDialogUsed = true;
                 updateMarkers();
             }
         });
-        alertBw.setNeutralButton("Reset filters", new DialogInterface.OnClickListener() {
+        alertBw.setNeutralButton("Default", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 boolean[] categories = filterCategories.clone();

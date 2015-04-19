@@ -116,13 +116,13 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
             public void afterTextChanged(Editable s) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()>0  &&  s.length()<=15 && !TextUtils.isEmpty(s.toString().trim())) {
+                if (s.length()>0  &&  s.length()<=25 && !TextUtils.isEmpty(s.toString().trim())) {
                     editTitle.setBackgroundResource(R.drawable.background_normal);
-                    editTitle.setFloatingLabelText("     " + "Title");
+                    editTitle.setFloatingLabelText("");
                 }
                 else {
                     editTitle.setBackgroundResource(R.drawable.background_error);
-                    if (s.length()>15) editTitle.setFloatingLabelText("   " + getString(R.string.user_name_hint_2));
+                    if (s.length()>25) editTitle.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                     else if (TextUtils.isEmpty(s.toString().trim()))
                                 editTitle.setFloatingLabelText("     " + "Shouldn't consist of spaces");
                 }

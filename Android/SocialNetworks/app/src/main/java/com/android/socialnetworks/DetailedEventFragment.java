@@ -194,8 +194,8 @@ public class DetailedEventFragment extends Fragment {
             case "2": return R.drawable.detailed_sport;
             case "3": return R.drawable.detailed_business;
             case "4": return R.drawable.detailed_coffee;
-            case "5": return R.drawable.detailed_coffee;
-            default: return R.drawable.detailed_coffee;
+            case "5": return R.drawable.detailed_meet;
+            default: return R.drawable.detailed_meet;
         }
     }
 
@@ -206,8 +206,8 @@ public class DetailedEventFragment extends Fragment {
             case "2": return 0xff718d48;
             case "3": return 0xffe3a92b;
             case "4": return 0xff663a2e;
-            case "5": return 0xff663a2e;
-            default: return 0xff663a2e;
+            case "5": return 0xff496fb2;
+            default: return 0xff009A90;
         }
     }
 
@@ -218,8 +218,8 @@ public class DetailedEventFragment extends Fragment {
             case "2": return R.drawable.background_button_sport;
             case "3": return R.drawable.background_button_business;
             case "4": return R.drawable.background_button_coffee;
-            case "5": return R.drawable.background_button_coffee;
-            default: return R.drawable.background_button_coffee;
+            case "5": return R.drawable.background_button_meet;
+            default: return R.drawable.background_niagara;
         }
     }
 

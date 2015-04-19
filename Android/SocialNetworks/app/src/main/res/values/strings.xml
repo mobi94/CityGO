@@ -27,7 +27,7 @@
     <string name="gender_edit_text">Gender</string>
 
     <string name="user_name_hint_1">Must contain at least 2 symbols</string>
-    <string name="user_name_hint_2">Must contain at most 15 symbols</string>
+    <string name="user_name_hint_2">Must contain at most 25 symbols</string>
     <string name="password_edit_text_main_hint">Must contain at least 6 symbols</string>
     <string name="password_edit_text_sign_up_hint">6 symbols, including capital letter and digit</string>
     <string name="confirm_password_edit_text_hint">Input your password again</string>

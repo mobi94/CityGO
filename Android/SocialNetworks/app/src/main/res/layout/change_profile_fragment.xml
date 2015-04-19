@@ -56,14 +56,15 @@
             android:singleLine="true"
             app:floatingLabel="highlight"
             app:hideUnderline="true"
+            app:baseColor="#fff"
+            app:primaryColor="#fff"
+            app:floatingLabelText=""
             android:layout_below="@+id/nickname_profile"
             android:layout_centerHorizontal="true"
             android:hint="@string/edit_profile_gender"
-            app:floatingLabelText="@string/edit_profile_gender_hint"
-            app:baseColor="#fff"
-            app:primaryColor="#fff"
             android:textSize="@dimen/text_size"
             android:layout_marginBottom="5dp" />
+        <!--app:floatingLabelText="@string/edit_profile_gender_hint"-->
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="@dimen/layout_width"
@@ -73,12 +74,12 @@
             android:singleLine="true"
             app:floatingLabel="highlight"
             app:hideUnderline="true"
+            app:baseColor="#fff"
+            app:primaryColor="#fff"
+            app:floatingLabelText=""
             android:layout_below="@+id/gender_profile"
             android:layout_centerHorizontal="true"
             android:hint="@string/edit_profile_birthday"
-            app:floatingLabelText="@string/edit_profile_birthday_hint"
-            app:baseColor="#fff"
-            app:primaryColor="#fff"
             android:textSize="@dimen/text_size" />
 
         <Button

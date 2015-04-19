@@ -205,7 +205,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                 validatePassword(s.toString());
                 if (isPasswordValid) {
                     password.setBackgroundResource(R.drawable.background_normal);
-                    password.setFloatingLabelText("     " + getString(R.string.password_edit_text));
+                    password.setFloatingLabelText("");
                 }
                 else {
                     password.setBackgroundResource(R.drawable.background_error);
@@ -229,11 +229,11 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
                 validateUserName(s.toString());
                 if (isUserNameValid) {
                     username.setBackgroundResource(R.drawable.background_niagara);
-                    username.setFloatingLabelText("     " + getString(R.string.user_name_edit_text));
+                    username.setFloatingLabelText("");
                 }
                 else {
                     username.setBackgroundResource(R.drawable.background_error);
-                    if (s.length()<=2) username.setFloatingLabelText("   " + getString(R.string.user_name_hint_1));
+                    if (s.length()<=2) username.setFloatingLabelText("     " + getString(R.string.user_name_hint_1));
                     else username.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                 }
                 updateSigninButtonState();
@@ -242,7 +242,7 @@ public class SignUpFragment extends Fragment implements SocialNetworkManager.OnI
     }
 
     private void validateUserName(String text) {
-        isUserNameValid = (text.length()==0 || text.length()>=2) && text.length()<=15;
+        isUserNameValid = (text.length()==0 || text.length()>=2) && text.length()<=25;
         isUserNameFilled = text.length() != 0;
     }
 

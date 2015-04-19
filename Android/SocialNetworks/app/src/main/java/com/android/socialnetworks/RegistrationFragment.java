@@ -197,7 +197,7 @@ public class RegistrationFragment extends Fragment {
                 validatePassword(s.toString());
                 if (isPasswordValid) {
                     editPassword.setBackgroundResource(R.drawable.background_normal);
-                    editPassword.setFloatingLabelText("     " + getString(R.string.password_edit_text));
+                    editPassword.setFloatingLabelText("");
                 }
                 else {
                     editPassword.setBackgroundResource(R.drawable.background_error);
@@ -210,15 +210,13 @@ public class RegistrationFragment extends Fragment {
 
     private void confirmPasswordListener(){
         editConfirmPassword.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-            }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void afterTextChanged(Editable s) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateConfirmPassword(s.toString());
                 if (isPasswordsMatches) {
                     editConfirmPassword.setBackgroundResource(R.drawable.background_normal);
-                    editConfirmPassword.setFloatingLabelText("     " + getString(R.string.confirm_password_edit_text));
+                    editConfirmPassword.setFloatingLabelText("");
                 }
                 else {
                     editConfirmPassword.setBackgroundResource(R.drawable.background_error);
@@ -232,17 +230,15 @@ public class RegistrationFragment extends Fragment {
     private void emailListener() {
         editEmail.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateEmail(s.toString());
                 if (isEmailValid) {
                     editEmail.setBackgroundResource(R.drawable.background_normal);
-                    editEmail.setFloatingLabelText("     " + getString(R.string.email_edit_text));
+                    editEmail.setFloatingLabelText("");
                 }
                 else {
                     editEmail.setBackgroundResource(R.drawable.background_error);
@@ -256,21 +252,19 @@ public class RegistrationFragment extends Fragment {
     private void userNameListener() {
         editUserName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validateUserName(s.toString());
                 if (isUserNameValid) {
                     editUserName.setBackgroundResource(R.drawable.background_niagara);
-                    editUserName.setFloatingLabelText("     " + getString(R.string.user_name_edit_text));
+                    editUserName.setFloatingLabelText("");
                 }
                 else {
                     editUserName.setBackgroundResource(R.drawable.background_error);
-                    if (s.length()<=2) editUserName.setFloatingLabelText("   " + getString(R.string.user_name_hint_1));
+                    if (s.length()<=2) editUserName.setFloatingLabelText("     " + getString(R.string.user_name_hint_1));
                     else editUserName.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                 }
                 updateLoginButtonState();
@@ -281,7 +275,7 @@ public class RegistrationFragment extends Fragment {
     private void validateEmail(String text) { isEmailValid = Patterns.EMAIL_ADDRESS.matcher(text).matches();
     }
 
-    private void validateUserName(String text) { isUserNameValid = text.length()>=2 && text.length()<=15;
+    private void validateUserName(String text) { isUserNameValid = text.length()>=2 && text.length()<=25;
     }
 
     private void validatePassword(String text) {

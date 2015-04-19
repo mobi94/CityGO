@@ -89,9 +89,12 @@ public class EditProfileFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if(bundle != null){
-            editNickname.setText(bundle.getString("NICKNAME", ""));
-            editGender.setText(bundle.getString("GENDER", ""));
-            editBirthday.setText(bundle.getString("BIRTHDAY", ""));
+            String nick=bundle.getString("NICKNAME", "");
+            String gender=bundle.getString("GENDER", "");
+            String birthday=bundle.getString("BIRTHDAY", "");
+            if (!nick.equals(getString(R.string.profile_na))) editNickname.setText(nick);
+            if (!gender.equals(getString(R.string.profile_na))) editGender.setText(gender);
+            if (!birthday.equals(getString(R.string.profile_na))) editBirthday.setText(birthday);
         }
         else getProfileData();
 
@@ -201,14 +204,14 @@ public class EditProfileFragment extends Fragment {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()>=2 && s.length()<=15) {
+                if (s.length()>=2 && s.length()<=25) {
                     editNickname.setBackgroundResource(R.drawable.background_normal);
-                    editNickname.setFloatingLabelText("     " + getString(R.string.edit_profile_nickname));
+                    editNickname.setFloatingLabelText("");
                     okButton.setEnabled(true);
                 }
                 else {
                     editNickname.setBackgroundResource(R.drawable.background_error);
-                    if (s.length()<=2) editNickname.setFloatingLabelText("   " + getString(R.string.user_name_hint_1));
+                    if (s.length()<=2) editNickname.setFloatingLabelText("     " + getString(R.string.user_name_hint_1));
                     else editNickname.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                     okButton.setEnabled(false);
                 }
@@ -323,8 +326,6 @@ public class EditProfileFragment extends Fragment {
             public void onAnimationRepeat(Animation animation) {}
             public void onAnimationEnd(Animation animation) {
                 if (!isFragmentShown) {
-                    MainActivity.disableViewPager((MyViewPager) getActivity().findViewById(R.id.pager),
-                            (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs));
                     top.setBackgroundResource(R.color.black_alpha);
                     center.setBackgroundResource(R.color.black_alpha);
                     bottom.setBackgroundResource(R.color.black_alpha);
