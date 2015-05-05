@@ -12,6 +12,7 @@ android {
 
         renderscriptTargetApi 22
         renderscriptSupportModeEnabled true
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -25,28 +26,26 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile fileTree(include: 'Parse-*.jar', dir: 'libs')
+    compile project(':switchButton')
+    compile 'com.android.support:multidex:1.0.0'
     compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:recyclerview-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.github.asne:asne-vk:0.3.3'
     compile 'com.github.asne:asne-twitter:0.3.3'
     compile 'com.github.asne:asne-facebook:0.3.3'
+    compile 'com.github.castorflex.smoothprogressbar:library:1.0.1-SNAPSHOT@aar'
+    compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
+    compile 'com.github.markushi:circlebutton:1.1'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.parse.bolts:bolts-android:1.1.2'
     compile 'com.rengwuxian.materialedittext:library:1.8.2'
-    compile 'com.android.support:support-v4:22.0.0'
-    compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.makeramen:roundedimageview:1.5.0'
-    compile 'com.daimajia.slider:library:1.1.2'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    compile 'com.android.support:support-v13:21.0.3'
-    compile 'com.github.castorflex.smoothprogressbar:library:1.0.1-SNAPSHOT@aar'
     compile 'com.pnikosis:materialish-progress:1.4'
     compile 'com.leocardz:aelv:1.1@aar'
     compile 'com.twotoasters.jazzylistview:library:1.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
     compile 'com.appyvet:materialrangebar:1.0'
-    compile project(':switchButton')
-    compile 'com.github.markushi:circlebutton:1.1'
-    compile 'com.android.support:recyclerview-v7:22.0.0'
 }

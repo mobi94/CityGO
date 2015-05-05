@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.daimajia.slider.library.SliderLayout;
+/*import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
-
+*/
 import java.util.LinkedHashMap;
 
 public class TutorialActivity extends Activity implements View.OnClickListener {
@@ -27,7 +27,7 @@ public class TutorialActivity extends Activity implements View.OnClickListener {
         Button logoutButton = (Button) findViewById(R.id.skip_button);
         logoutButton.setOnClickListener(this);
 
-        SliderLayout sliderShow = (SliderLayout) findViewById(R.id.slider);
+        /*SliderLayout sliderShow = (SliderLayout) findViewById(R.id.slider);
         LinkedHashMap<String,String> url_maps = new LinkedHashMap<>();
         url_maps.put("1", "http://fc01.deviantart.net/fs27/i/2008/075/9/1/BE_ABROAD_Poster_by_thedesolateone.jpg");
         url_maps.put("2", "http://fc04.deviantart.net/fs16/f/2007/149/b/9/New_TechSupport_poster_by_Crittz.jpg");
@@ -41,7 +41,7 @@ public class TutorialActivity extends Activity implements View.OnClickListener {
                     .image(url_maps.get(name))
                     .setScaleType(BaseSliderView.ScaleType.Fit);
             sliderShow.addSlider(sliderView);
-        }
+        }*/
     }
 
     @Override

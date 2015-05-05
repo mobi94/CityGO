@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -53,6 +54,12 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,6 +121,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         if (checkGooglePlayServices())
             map.getMapAsync(this);
 
+        signUpQuickBloxUser(getActivity());
+
         Button loadMarkers = (Button) rootView.findViewById(R.id.load_markers_button);
         loadMarkers.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +162,70 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
             }
         });
         return rootView;
+    }
+
+    private void signUpQuickBloxUser(final Context context) {
+        String userName = ParseUser.getCurrentUser().getUsername();
+        final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
+        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+            @Override
+            public void onSuccess(QBSession session, Bundle params) {
+                user.setFullName(ParseUser.getCurrentUser().getString("nickname"));
+                user.setId(session.getUserId());
+                QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+                    @Override
+                    public void onSuccess(QBUser user, Bundle args) {
+                        logInToQuickBloxChat(user, context);
+                    }
+                    @Override
+                    public void onError(List<String> errors) {
+                        Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
+                        if (errors.get(0).equals("login has already been taken")) {
+                            QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+                                @Override
+                                public void onSuccess(QBSession session, Bundle params) {
+                                    logInToQuickBloxChat(user, context);
+                                }
+                                @Override
+                                public void onError(List<String> errors) {
+                                    Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
+                                    //Toast.makeText(context, "QuickBlox error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                        //else
+                            //Toast.makeText(context, "QuickBlox error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            @Override
+            public void onError(List<String> errors) {
+            }
+        });
+    }
+
+    private void logInToQuickBloxChat(QBUser user, final Context context) {
+        QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(context);
+            chatService = QBChatService.getInstance();
+            chatService.login(user, new QBEntityCallbackImpl() {
+                @Override
+                public void onSuccess() {
+                    Log.d("Chat login success", "Chat login success");
+                    Looper.prepare();
+                    Toast.makeText(context, "Chat login success", Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+                @Override
+                public void onError(List errors) {
+                    Log.d("Chat login error", errors.get(0).toString());
+                    Looper.prepare();
+                    Toast.makeText(context, "Chat login error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            });
+        }
     }
 
     private boolean isMarkerOnArray(List<MyMarker> array, LatLng m) {

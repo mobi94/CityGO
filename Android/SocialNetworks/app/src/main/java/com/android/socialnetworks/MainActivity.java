@@ -18,6 +18,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.makeramen.RoundedTransformationBuilder;
 import com.parse.Parse;
 import com.parse.ParseUser;
+import com.quickblox.core.QBSettings;
 import com.squareup.picasso.Transformation;
 
 import java.text.DateFormat;
@@ -56,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         Parse.initialize(this, "OZYscvQi1cKHCP0vo6hPbbGAPvWs6M6vuMvrMRHi", "CTt2KMlNavNfboR5Tt0f8bA0I0h38ZgCFPtE6I5s");
+        QBSettings.getInstance().fastConfigInit("21742", "OHjwDjYZG58QChy", "7-QuGgDaATdY8fR");
 
         if (isFirstTime()) {
             startActivity(new Intent(this, TutorialActivity.class));
