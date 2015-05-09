@@ -37,12 +37,20 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBGroupChatManager;
+import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.core.QBEntityCallbackImpl;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class NewEventFragment extends Fragment implements DateTimePicker.OnDateTimeSetListener{
@@ -103,7 +111,6 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         setTemporary();
         deleteEventButton = (Button)rootView.findViewById(R.id.event_delete_button);
         deleteEventButton.setVisibility(View.GONE);
-
 
         return rootView;
     }
@@ -350,13 +357,13 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                 } else {
                     if (getArguments().getString("USED_FOR", "").equals("edit")){
                         if (isEditFieldsEdited()) {
-                            if (isEditFieldsFilled()) updateParseObject();
+                            if (isEditFieldsFilled()) updateEvent();
                             else Toast.makeText(getActivity(), "You must fill all necessary fields!", Toast.LENGTH_SHORT).show();
                         }
                         else getActivity().getSupportFragmentManager().popBackStack();
                     }
                     else {
-                        if (isEditFieldsFilled()) createParseObject();
+                        if (isEditFieldsFilled()) createGroupChatAndEvent();
                         else Toast.makeText(getActivity(), "You must fill all necessary fields!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -380,8 +387,43 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                 || !editDescription.getText().toString().equals(bufDescription);
     }
 
-    private void createParseObject(){
+    private void createGroupChatAndEvent(){
         progressDialog.showProgress("Sending data...");
+        QBDialog dialog = new QBDialog();
+        dialog.setName(editTitle.getText().toString().trim());
+        dialog.setPhoto(eventTypeString);
+        dialog.setType(QBDialogType.GROUP);
+
+        QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(getActivity());
+        }
+        chatService = QBChatService.getInstance();
+        QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
+        groupChatManager.createDialog(dialog, new QBEntityCallbackImpl<QBDialog>() {
+            @Override
+            public void onSuccess(QBDialog dialog, Bundle args) {
+                JSONObject chatDialogProperties = new JSONObject();
+                try {
+                    chatDialogProperties.put("dialogID", dialog.getDialogId());
+                    chatDialogProperties.put("dialogName", dialog.getName());
+                    chatDialogProperties.put("roomJID", dialog.getRoomJid());
+                    chatDialogProperties.put("roomName", "");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                createEvent(chatDialogProperties);
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                progressDialog.hideProgress();
+                Toast.makeText(getActivity(), "CREATE_EVENT_ERROR: " + errors, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void createEvent(JSONObject chatDialogProperties){
         final ParseObject goEvent = new ParseObject("GoEvents");
         String title = editTitle.getText().toString().trim();
         String category = eventTypeString;
@@ -443,6 +485,8 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         MainActivity.newMarker = new MyMarker("", category, location, title, creatorName,
                 creatorGender, availableSeats, duration, startDate);
 
+        goEvent.put("chatDialog", chatDialogProperties);
+
         goEvent.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -481,7 +525,7 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         });
     }
 
-    private void updateParseObject(){
+    private void updateEvent(){
         progressDialog.showProgress("Updating data...");
 
         final String title = editTitle.getText().toString().trim();

@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,11 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.pnikosis.materialishprogress.ProgressWheel;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.model.QBUser;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -44,6 +50,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class DetailedEventFragment extends Fragment {
 
@@ -108,7 +115,7 @@ public class DetailedEventFragment extends Fragment {
         if (!SignUpActivity.isNetworkOn(getActivity())) {
             Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
         } else {
-            ParseUser currentUser = ParseUser.getCurrentUser();
+            final ParseUser currentUser = ParseUser.getCurrentUser();
             if (isInJSONArray(usersAccept, currentUser)) {
                 Toast.makeText(getActivity(), "Going to chat coming soon...", Toast.LENGTH_SHORT).show();
                 goToChatButton.setText("Go to chat");
@@ -122,54 +129,77 @@ public class DetailedEventFragment extends Fragment {
                     }
                     else {
                         progressDialog.showProgress("Loading...");
-                        String creatorAvatarUrl = currentUser.getString("avatarURL");
-                        if (creatorAvatarUrl == null || creatorAvatarUrl.equals("")) {
-                            ParseFile photo = (ParseFile) currentUser.get("profilePic");
-                            creatorAvatarUrl = photo.getUrl();
-                        }
-                        JSONObject userRequestInfo = new JSONObject();
-                        try {
-                            userRequestInfo.put("nickname", currentUser.getString("nickname"));
-                            userRequestInfo.put("userAvatar", creatorAvatarUrl);
-                            userRequestInfo.put("username", currentUser.getString("username"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("objectID", objectId);
-                        params.put("userRequestInfo", userRequestInfo);
-                        ParseCloud.callFunctionInBackground("sendFollowRequest", params, new FunctionCallback<Object>() {
-                            @Override
-                            public void done(Object o, ParseException e) {
-                                if (e != null) {
-                                    Toast.makeText(getActivity(), "FOLLOW_REQUEST_ERROR" + e, Toast.LENGTH_SHORT).show();
-                                    progressDialog.hideProgress();
-                                } else {
-                                    Toast.makeText(getActivity(), "Request was sent. Wait for confirmation", Toast.LENGTH_SHORT).show();
-                                    ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
-                                    query.getInBackground(objectId, new GetCallback<ParseObject>() {
-                                        @Override
-                                        public void done(ParseObject parseObject, ParseException e) {
-                                            if (e == null) {
-                                                seats = Integer.parseInt(parseObject.getString("avaibleSeats"));
-                                                if (seats <= 0)
-                                                    availableSeats.setText("No available seats");
-                                                else
-                                                    availableSeats.setText("Available seats: " + seats);
-                                                goToChatButton.setText("On pending...");
-                                                goToChatButton.setEnabled(false);
-                                            } else
-                                                Toast.makeText(getActivity(), "FOLLOW_REQUEST_ERROR" + e, Toast.LENGTH_SHORT).show();
-                                            progressDialog.hideProgress();
-                                        }
-                                    });
+
+                        QBUser user = MainActivity.qbUser;
+                        if(user != null) {
+                            QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+                                @Override
+                                public void onSuccess(QBSession session, Bundle params) {
+                                    String userChatID = "";
+                                    userChatID = session.getUserId().toString();
+                                    sendFollowRequest(currentUser, userChatID);
                                 }
-                            }
-                        });
+
+                                @Override
+                                public void onError(List<String> errors) {
+                                    Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
+                                    progressDialog.hideProgress();
+                                }
+                            });
+                        }
                     }
                 }
             }
         }
+    }
+
+    private void sendFollowRequest(ParseUser currentUser, String userChatID){
+        String creatorAvatarUrl = currentUser.getString("avatarURL");
+        if (creatorAvatarUrl == null || creatorAvatarUrl.equals("")) {
+            ParseFile photo = (ParseFile) currentUser.get("profilePic");
+            creatorAvatarUrl = photo.getUrl();
+        }
+        JSONObject userRequestInfo = new JSONObject();
+        try {
+            userRequestInfo.put("nickname", currentUser.getString("nickname"));
+            userRequestInfo.put("userAvatar", creatorAvatarUrl);
+            userRequestInfo.put("username", currentUser.getString("username"));
+            userRequestInfo.put("userChatID", userChatID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("objectID", objectId);
+        params.put("userRequestInfo", userRequestInfo);
+        ParseCloud.callFunctionInBackground("sendFollowRequest", params, new FunctionCallback<Object>() {
+            @Override
+            public void done(Object o, ParseException e) {
+                if (e != null) {
+                    Toast.makeText(getActivity(), "FOLLOW_REQUEST_ERROR" + e, Toast.LENGTH_SHORT).show();
+                    progressDialog.hideProgress();
+                } else {
+                    Toast.makeText(getActivity(), "Request was sent. Wait for confirmation", Toast.LENGTH_SHORT).show();
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
+                    query.getInBackground(objectId, new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject parseObject, ParseException e) {
+                            if (e == null) {
+                                seats = Integer.parseInt(parseObject.getString("avaibleSeats"));
+                                if (seats <= 0)
+                                    availableSeats.setText("No available seats");
+                                else
+                                    availableSeats.setText("Available seats: " + seats);
+                                goToChatButton.setText("On pending...");
+                                goToChatButton.setEnabled(false);
+                            } else
+                                Toast.makeText(getActivity(), "FOLLOW_REQUEST_ERROR" + e, Toast.LENGTH_SHORT).show();
+                            progressDialog.hideProgress();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private boolean isInJSONArray(JSONArray jsonArray, ParseUser currentUser){

@@ -61,6 +61,8 @@ import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
+import org.jivesoftware.smack.SmackException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -165,67 +167,133 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     }
 
     private void signUpQuickBloxUser(final Context context) {
-        String userName = ParseUser.getCurrentUser().getUsername();
-        final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
-        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+
             @Override
             public void onSuccess(QBSession session, Bundle params) {
+                String userName = ParseUser.getCurrentUser().getUsername();
+                final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
                 user.setFullName(ParseUser.getCurrentUser().getString("nickname"));
-                user.setId(session.getUserId());
+
                 QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+
                     @Override
-                    public void onSuccess(QBUser user, Bundle args) {
-                        logInToQuickBloxChat(user, context);
+                    public void onSuccess(final QBUser qbUser, Bundle args) {
+                        Log.d("QuickBlox_SIGNUP", "Success");
+
+                        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+                            @Override
+                            public void onSuccess(QBSession session, Bundle params) {
+                                user.setId(session.getUserId());
+                                MainActivity.qbUser = user;
+                                logInToQuickBloxChat(user, context);
+                            }
+
+                            @Override
+                            public void onError(List<String> errors) {
+                                Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
+                            }
+                        });
                     }
+
                     @Override
                     public void onError(List<String> errors) {
                         Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
                         if (errors.get(0).equals("login has already been taken")) {
+
                             QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
                                 @Override
                                 public void onSuccess(QBSession session, Bundle params) {
+                                    user.setId(session.getUserId());
+                                    MainActivity.qbUser = user;
                                     logInToQuickBloxChat(user, context);
                                 }
+
                                 @Override
                                 public void onError(List<String> errors) {
-                                    Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
-                                    //Toast.makeText(context, "QuickBlox error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                                    Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
                                 }
                             });
                         }
-                        //else
-                            //Toast.makeText(context, "QuickBlox error:" + errors.get(0), Toast.LENGTH_LONG).show();
                     }
                 });
             }
+
             @Override
             public void onError(List<String> errors) {
+                Log.d("CreateSessionError", errors.get(0));
             }
         });
+
+
+      /*  String userName = ParseUser.getCurrentUser().getUsername();
+        final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
+        user.setFullName(ParseUser.getCurrentUser().getString("nickname"));
+
+        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+            @Override
+            public void onSuccess(QBSession session, Bundle params) {
+                user.setId(session.getUserId());
+
+                QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+
+                    @Override
+                    public void onSuccess(QBUser user, Bundle args) {
+                        logInToQuickBloxChat(user, context);
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
+                        if (errors.get(0).equals("login has already been taken")) {
+                            logInToQuickBloxChat(user, context);
+                        }
+                        //else
+                        //Toast.makeText(context, "QuickBlox error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Log.d("QuickBlox_SIGNUP_ERROR", "createSessionError"+errors.get(0));
+            }
+        });*/
     }
 
     private void logInToQuickBloxChat(QBUser user, final Context context) {
-        QBChatService chatService;
+        final QBChatService chatService;
         if (!QBChatService.isInitialized()) {
             QBChatService.init(context);
-            chatService = QBChatService.getInstance();
-            chatService.login(user, new QBEntityCallbackImpl() {
-                @Override
-                public void onSuccess() {
-                    Log.d("Chat login success", "Chat login success");
-                    Looper.prepare();
-                    Toast.makeText(context, "Chat login success", Toast.LENGTH_LONG).show();
-                    Looper.loop();
-                }
-                @Override
-                public void onError(List errors) {
-                    Log.d("Chat login error", errors.get(0).toString());
-                    Looper.prepare();
-                    Toast.makeText(context, "Chat login error:" + errors.get(0), Toast.LENGTH_LONG).show();
-                    Looper.loop();
-                }
-            });
         }
+        chatService = QBChatService.getInstance();
+        chatService.login(user, new QBEntityCallbackImpl() {
+
+            @Override
+            public void onSuccess() {
+                Log.d("Chat_login_success", "Chat login success");
+                //MainActivity.chatService = chatService;
+                try {
+                    chatService.startAutoSendPresence(60);
+                } catch (SmackException.NotLoggedInException e) {
+                    e.printStackTrace();
+                }
+                Looper.prepare();
+                Toast.makeText(context, "Chat login success", Toast.LENGTH_LONG).show();
+                Looper.loop();
+            }
+
+            @Override
+            public void onError(List errors) {
+                Log.d("Chat_login_error", errors.get(0).toString());
+                Looper.prepare();
+                Toast.makeText(context, "Chat login error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                Looper.loop();
+            }
+        });
     }
 
     private boolean isMarkerOnArray(List<MyMarker> array, LatLng m) {
@@ -601,6 +669,9 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     public void onResume() {
         super.onResume();
         mLocationProvider.connect();
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(getActivity());
+        }
     }
 
     @Override

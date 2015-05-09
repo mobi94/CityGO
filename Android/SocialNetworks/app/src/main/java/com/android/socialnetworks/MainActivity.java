@@ -18,7 +18,9 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.makeramen.RoundedTransformationBuilder;
 import com.parse.Parse;
 import com.parse.ParseUser;
+import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBSettings;
+import com.quickblox.users.model.QBUser;
 import com.squareup.picasso.Transformation;
 
 import java.text.DateFormat;
@@ -49,6 +51,8 @@ public class MainActivity extends ActionBarActivity {
     public static MyMarker newMarker;
     //for map fragment
     public static boolean MAP_MARKERS_UPDATE = false;
+
+    public static QBUser qbUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
