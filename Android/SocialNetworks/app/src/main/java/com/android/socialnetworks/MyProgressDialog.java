@@ -6,6 +6,7 @@ import android.content.Context;
 public class MyProgressDialog {
 
     private static ProgressDialog pd;
+    private boolean isShowing = false;
     Context context;
 
     MyProgressDialog(Context context){
@@ -13,15 +14,21 @@ public class MyProgressDialog {
     }
 
     protected void showProgress(String message) {
-        pd = new android.app.ProgressDialog(context);
-        pd.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
-        pd.setMessage(message);
-        pd.setCancelable(false);
-        pd.setCanceledOnTouchOutside(false);
-        pd.show();
+        if (!isShowing) {
+            pd = new android.app.ProgressDialog(context);
+            pd.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
+            pd.setMessage(message);
+            pd.setCancelable(false);
+            pd.setCanceledOnTouchOutside(false);
+            pd.show();
+            isShowing = true;
+        }
     }
 
     protected void hideProgress() {
-        pd.dismiss();
+        if (isShowing) {
+            pd.dismiss();
+            isShowing = false;
+        }
     }
 }

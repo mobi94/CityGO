@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBGroupChatManager;
+import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBDialogType;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.squareup.picasso.Picasso;
 import com.twotoasters.jazzylistview.JazzyHelper;
 import com.twotoasters.jazzylistview.JazzyListView;
@@ -46,6 +54,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FollowersFragment extends Fragment {
 
@@ -114,7 +123,8 @@ public class FollowersFragment extends Fragment {
                                 String userName = usersRequest.getJSONObject(i).optString("username");
                                 String nickName = usersRequest.getJSONObject(i).optString("nickname");
                                 String avatarUrl = usersRequest.getJSONObject(i).optString("userAvatar");
-                                followersItems.add(new FollowersItem(avatarUrl, nickName, userName));
+                                String userChatID = usersRequest.getJSONObject(i).optString("userChatID");
+                                followersItems.add(new FollowersItem(avatarUrl, nickName, userName, userChatID));
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
@@ -166,12 +176,14 @@ public class FollowersFragment extends Fragment {
         private String avatarUrl;
         private String nickName;
         private String userName;
+        private String userChatID;
 
-        public FollowersItem(String avatarUrl, String nickName, String userName) {
+        public FollowersItem(String avatarUrl, String nickName, String userName, String userChatID) {
             super();
             this.avatarUrl = avatarUrl;
             this.nickName = nickName;
             this.userName = userName;
+            this.userChatID = userChatID;
         }
 
         public String getAvatarUrl() {
@@ -196,6 +208,14 @@ public class FollowersFragment extends Fragment {
 
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+
+        public String getUserChatID() {
+            return userChatID;
+        }
+
+        public void setUserChatID(String userChatID) {
+            this.userChatID = userChatID;
         }
     }
 
@@ -277,15 +297,18 @@ public class FollowersFragment extends Fragment {
                                 newAcceptedFollower.put("nickname", followersItem.getNickName());
                                 newAcceptedFollower.put("userAvatar", followersItem.getAvatarUrl());
                                 newAcceptedFollower.put("username", followersItem.getUserName());
+                                newAcceptedFollower.put("userChatID", followersItem.getUserChatID());
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
                             parseObject.add("usersAccept", newAcceptedFollower);
+                            updateChatDialog(parseObject, followersItem);
                         }
-
-                        int availableSeats = Integer.parseInt(parseObject.getString("avaibleSeats"));
-                        availableSeats++;
-                        parseObject.put("avaibleSeats", Integer.toString(availableSeats));
+                        else {
+                            int availableSeats = Integer.parseInt(parseObject.getString("avaibleSeats"));
+                            availableSeats++;
+                            parseObject.put("avaibleSeats", Integer.toString(availableSeats));
+                        }
 
                         JSONArray requestedFollowers = parseObject.getJSONArray("usersRequest");
                         JSONArray updatedRequestedFollowers = new JSONArray();
@@ -302,6 +325,7 @@ public class FollowersFragment extends Fragment {
                         }
                         parseObject.put("usersRequest", updatedRequestedFollowers);
                         followersAdapter.notifyDataSetChanged();
+
                         parseObject.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -329,5 +353,35 @@ public class FollowersFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void updateChatDialog(ParseObject parseObject, FollowersItem followersItem){
+        String userChatId = followersItem.getUserChatID();
+        QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
+        requestBuilder.push("occupants_ids", Integer.parseInt(userChatId));
+
+        String dialogId = parseObject.getJSONObject("chatDialog").optString("dialogID");
+        QBDialog dialog = new QBDialog(dialogId);
+        /*dialog.setDialogId(dialogId);
+        dialog.setName(parseObject.getString("title"));
+        dialog.setPhoto(parseObject.getString("category"));
+        dialog.setType(QBDialogType.GROUP);*/
+        QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(getActivity());
+        }
+        chatService = QBChatService.getInstance();
+        QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
+        groupChatManager.updateDialog(dialog, requestBuilder, new QBEntityCallbackImpl<QBDialog>() {
+            @Override
+            public void onSuccess(QBDialog dialog, Bundle args) {
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Log.d("ACCEPTING_ERROR", errors.get(0));
+                Toast.makeText(getActivity(), "ACCEPTING_ERROR: " + errors, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

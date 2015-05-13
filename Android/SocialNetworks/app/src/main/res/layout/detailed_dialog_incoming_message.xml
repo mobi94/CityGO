@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="5dp" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/dialog_opponent_avatar"
+            android:background="@drawable/background_avatar" />
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/dialog_avatar_progress"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            wheel:matProg_barColor="#FFF"
+            wheel:matProg_progressIndeterminate="true"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/singleMessageContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bubble_flat_incoming" >
+
+        <TextView
+            android:id="@+id/dialog_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Nickname"
+            android:singleLine="true"
+            android:layout_marginBottom="5dp"
+            android:textStyle="bold"
+            android:maxWidth="190dp"
+            android:textColor="@color/niagara" />
+
+        <TextView
+            android:id="@+id/dialog_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Message"
+            android:gravity="center_vertical"
+            android:inputType="textCapSentences|textMultiLine"
+            android:singleLine="false"
+            android:scrollHorizontally="false"
+            android:maxWidth="190dp" />
+
+     </LinearLayout>
+
+    <TextView
+        android:id="@+id/dialog_time"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Time"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textStyle="italic" />
+
+</LinearLayout>

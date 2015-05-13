@@ -42,6 +42,7 @@ import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.users.model.QBUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
@@ -389,6 +390,10 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
 
     private void createGroupChatAndEvent(){
         progressDialog.showProgress("Sending data...");
+
+        QBUser user = MainActivity.qbUser;
+        if (user == null) MainActivity.signUpQuickBloxUser(getActivity());
+
         QBDialog dialog = new QBDialog();
         dialog.setName(editTitle.getText().toString().trim());
         dialog.setPhoto(eventTypeString);
@@ -562,7 +567,7 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                             parseObject.put("avaibleSeats", availableSeats);
                         if (!description.equals(bufDescription))
                             parseObject.put("description", description);
-                        final SimpleDateFormat format = MainActivity.getFormattedDate(getResources().getConfiguration().locale);
+                        SimpleDateFormat format = MainActivity.getFormattedDate(getResources().getConfiguration().locale);
                         if (!startDate.equals(bufStartDate))
                             try {
                                 parseObject.put("startDate", format.parse(startDate));

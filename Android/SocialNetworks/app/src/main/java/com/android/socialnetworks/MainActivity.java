@@ -1,33 +1,44 @@
 package com.android.socialnetworks;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.makeramen.RoundedTransformationBuilder;
 import com.parse.Parse;
 import com.parse.ParseUser;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.QBSettings;
+import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 import com.squareup.picasso.Transformation;
+
+import org.jivesoftware.smack.SmackException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -58,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_tool_bar);
         setSupportActionBar(toolbar);
         Parse.initialize(this, "OZYscvQi1cKHCP0vo6hPbbGAPvWs6M6vuMvrMRHi", "CTt2KMlNavNfboR5Tt0f8bA0I0h38ZgCFPtE6I5s");
         QBSettings.getInstance().fastConfigInit("21742", "OHjwDjYZG58QChy", "7-QuGgDaATdY8fR");
@@ -77,6 +88,7 @@ public class MainActivity extends ActionBarActivity {
                 /*getFragmentManager().beginTransaction()
                         .add(R.id.container, new MainFragment())
                         .commit();*/
+                signUpQuickBloxUser(this);
                 initialiseViewPager();
             }
         }
@@ -208,9 +220,9 @@ public class MainActivity extends ActionBarActivity {
 
     public static SimpleDateFormat getFormattedDate(Locale locale) {
         if (locale != Locale.US)
-            return new SimpleDateFormat("d MMMM, yyyy 'на' HH:mm");
+            return new SimpleDateFormat("d MMMM, yyyy 'на' HH:mm", locale);
         else
-            return new SimpleDateFormat("MMMM dd, yyyy 'at' h:mm a");
+            return new SimpleDateFormat("MMMM dd, yyyy 'at' h:mm a", locale);
     }
 
     public static void setOnEventListToUpdateFlag(){
@@ -297,5 +309,135 @@ public class MainActivity extends ActionBarActivity {
                 return deletedFromProfileFragment;
             default: return false;
         }
+    }
+
+    static public void signUpQuickBloxUser(final Context context) {
+        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+
+            @Override
+            public void onSuccess(QBSession session, Bundle params) {
+                String userName = ParseUser.getCurrentUser().getUsername();
+                final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
+                user.setFullName(ParseUser.getCurrentUser().getString("nickname"));
+
+                QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+
+                    @Override
+                    public void onSuccess(final QBUser qbUser, Bundle args) {
+                        Log.d("QuickBlox_SIGNUP", "Success");
+
+                        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+                            @Override
+                            public void onSuccess(QBSession session, Bundle params) {
+                                user.setId(session.getUserId());
+                                MainActivity.qbUser = user;
+                                logInToQuickBloxChat(user, context);
+                            }
+
+                            @Override
+                            public void onError(List<String> errors) {
+                                Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
+                        if (errors.get(0).equals("login has already been taken")) {
+
+                            QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+                                @Override
+                                public void onSuccess(QBSession session, Bundle params) {
+                                    user.setId(session.getUserId());
+                                    MainActivity.qbUser = user;
+                                    logInToQuickBloxChat(user, context);
+                                }
+
+                                @Override
+                                public void onError(List<String> errors) {
+                                    Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Log.d("CreateSessionError", errors.get(0));
+            }
+        });
+
+
+      /*  String userName = ParseUser.getCurrentUser().getUsername();
+        final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
+        user.setFullName(ParseUser.getCurrentUser().getString("nickname"));
+
+        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+            @Override
+            public void onSuccess(QBSession session, Bundle params) {
+                user.setId(session.getUserId());
+
+                QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+
+                    @Override
+                    public void onSuccess(QBUser user, Bundle args) {
+                        logInToQuickBloxChat(user, context);
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
+                        if (errors.get(0).equals("login has already been taken")) {
+                            logInToQuickBloxChat(user, context);
+                        }
+                        //else
+                        //Toast.makeText(context, "QuickBlox error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Log.d("QuickBlox_SIGNUP_ERROR", "createSessionError"+errors.get(0));
+            }
+        });*/
+    }
+
+    static public void logInToQuickBloxChat(QBUser user, final Context context) {
+        final QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(context);
+        }
+        chatService = QBChatService.getInstance();
+        chatService.login(user, new QBEntityCallbackImpl() {
+
+            @Override
+            public void onSuccess() {
+                Log.d("Chat_login_success", "Chat login success");
+                //MainActivity.chatService = chatService;
+                try {
+                    chatService.startAutoSendPresence(60);
+                } catch (SmackException.NotLoggedInException e) {
+                    e.printStackTrace();
+                }
+                Looper.prepare();
+                Toast.makeText(context, "Chat login success", Toast.LENGTH_LONG).show();
+                Looper.loop();
+            }
+
+            @Override
+            public void onError(List errors) {
+                Log.d("Chat_login_error", errors.get(0).toString());
+                Looper.prepare();
+                Toast.makeText(context, "Chat login error:" + errors.get(0), Toast.LENGTH_LONG).show();
+                Looper.loop();
+            }
+        });
     }
 }

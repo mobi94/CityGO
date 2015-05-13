@@ -60,6 +60,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".DetailedDialogActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden|screenSize" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

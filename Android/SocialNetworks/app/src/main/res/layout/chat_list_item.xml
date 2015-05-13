@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:gravity="center_vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="3dp" >
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/chat_dialog_type"
+                android:background="@drawable/background_avatar" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/chat_dialog_unread"
+                android:text="1000"
+                android:background="@drawable/background_dialog_counter"
+                android:layout_alignBottom="@+id/chat_dialog_type"
+                android:layout_alignRight="@+id/chat_dialog_type"
+                android:textSize="10sp"
+                android:gravity="center" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="3dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:id="@+id/chat_dialog_title"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last message"
+                android:id="@+id/chat_dialog_last_messaage"
+                android:textColor="#FFF"
+                android:layout_marginBottom="5dp"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Past time"
+                android:id="@+id/chat_dialog_past_time"
+                android:textColor="#FFF" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:background="#FFF" />
+
+</LinearLayout>

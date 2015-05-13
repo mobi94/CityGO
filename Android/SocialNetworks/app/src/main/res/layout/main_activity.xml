@@ -7,13 +7,13 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/tool_bar"
+        android:id="@+id/main_tool_bar"
         layout="@layout/tool_bar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tool_bar"
+        android:layout_below="@+id/main_tool_bar"
         android:id="@+id/container"
         tools:context=".MainActivity">
 

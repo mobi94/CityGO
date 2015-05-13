@@ -1,6 +1,7 @@
 package com.android.socialnetworks;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -70,6 +71,7 @@ public class DetailedEventFragment extends Fragment {
     private int seats;
     private JSONArray usersRequest;
     private JSONArray usersAccept;
+    private JSONObject userDialogData;
     private RecyclerView recyclerView;
 
     @Override
@@ -111,14 +113,37 @@ public class DetailedEventFragment extends Fragment {
         return rootView;
     }
 
+    private void goToChat(){
+        QBUser user = MainActivity.qbUser;
+        if (user == null) MainActivity.signUpQuickBloxUser(getActivity());
+        else {
+            Intent intent = new Intent(getActivity(), DetailedDialogActivity.class);
+            try {
+                intent.putExtra("RoomJid", (String)userDialogData.get("roomJID"));
+                intent.putExtra("DialogId",(String)userDialogData.get("dialogID"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            intent.putExtra("UserNickName", user.getFullName());
+
+            ParseUser parseUser = ParseUser.getCurrentUser();
+            String creatorAvatarUrl = parseUser.getString("avatarURL");
+            if (creatorAvatarUrl == null || creatorAvatarUrl.equals("")) {
+                ParseFile photo = (ParseFile) parseUser.get("profilePic");
+                creatorAvatarUrl = photo.getUrl();
+            }
+            intent.putExtra("UserAvatarUrl", creatorAvatarUrl);
+            startActivity(intent);
+        }
+    }
+
     private void addToFollowers(){
         if (!SignUpActivity.isNetworkOn(getActivity())) {
             Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
         } else {
             final ParseUser currentUser = ParseUser.getCurrentUser();
             if (isInJSONArray(usersAccept, currentUser)) {
-                Toast.makeText(getActivity(), "Going to chat coming soon...", Toast.LENGTH_SHORT).show();
-                goToChatButton.setText("Go to chat");
+                goToChat();
             } else {
                 if (isInJSONArray(usersRequest, currentUser)) {
                     goToChatButton.setText("On pending...");
@@ -131,22 +156,10 @@ public class DetailedEventFragment extends Fragment {
                         progressDialog.showProgress("Loading...");
 
                         QBUser user = MainActivity.qbUser;
-                        if(user != null) {
-                            QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
-
-                                @Override
-                                public void onSuccess(QBSession session, Bundle params) {
-                                    String userChatID = "";
-                                    userChatID = session.getUserId().toString();
-                                    sendFollowRequest(currentUser, userChatID);
-                                }
-
-                                @Override
-                                public void onError(List<String> errors) {
-                                    Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
-                                    progressDialog.hideProgress();
-                                }
-                            });
+                        if (user == null) MainActivity.signUpQuickBloxUser(getActivity());
+                        else {
+                            String userChatID = user.getId().toString();
+                            sendFollowRequest(currentUser, userChatID);
                         }
                     }
                 }
@@ -333,6 +346,7 @@ public class DetailedEventFragment extends Fragment {
                     goToDirectButton.setBackgroundResource(getEventDrawable(category));
 
                     objectId = parseObject.getObjectId();
+                    userDialogData = parseObject.getJSONObject("chatDialog");
                     usersRequest = parseObject.getJSONArray("usersRequest");
                     usersAccept = parseObject.getJSONArray("usersAccept");
                     if (isInJSONArray(usersAccept, ParseUser.getCurrentUser())) goToChatButton.setText("Go to chat");

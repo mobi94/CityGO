@@ -199,20 +199,23 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()>=2 && s.length()<=25) {
+                if (s.length() >= 2 && s.length() <= 25) {
                     editNickname.setBackgroundResource(R.drawable.background_normal);
                     editNickname.setFloatingLabelText("");
                     okButton.setEnabled(true);
-                }
-                else {
+                } else {
                     editNickname.setBackgroundResource(R.drawable.background_error);
-                    if (s.length()<=2) editNickname.setFloatingLabelText("     " + getString(R.string.user_name_hint_1));
-                    else editNickname.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
+                    if (s.length() <= 2)
+                        editNickname.setFloatingLabelText("     " + getString(R.string.user_name_hint_1));
+                    else
+                        editNickname.setFloatingLabelText("     " + getString(R.string.user_name_hint_2));
                     okButton.setEnabled(false);
                 }
             }
@@ -230,18 +233,18 @@ public class EditProfileFragment extends Fragment {
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.getDatePicker().setMaxDate(newCalendar.getTimeInMillis());
-        Date date = null;
-        try {
-            date = dateFormatter.parse(editBirthday.getText().toString());
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
+        Date date = new Date();
+        if (!editBirthday.getText().toString().equals("")) {
+            try {
+                date = dateFormatter.parse(editBirthday.getText().toString());
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
         }
         Calendar birthDay = Calendar.getInstance();
-        if (date != null) {
-            birthDay.setTimeInMillis(date.getTime());
-        }
-        datePickerDialog.getDatePicker().init(birthDay.getTime().getYear()+1900, birthDay.getTime().getMonth(),
-                birthDay.getTime().getDay(), datePickerDialog);
+        birthDay.setTimeInMillis(date.getTime());
+        datePickerDialog.getDatePicker().init(birthDay.get(Calendar.YEAR), birthDay.get(Calendar.MONTH),
+                birthDay.get(Calendar.DAY_OF_MONTH), datePickerDialog);
         editBirthday.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
