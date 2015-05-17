@@ -79,8 +79,9 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     private boolean isLocationShowed;
 
     final int RQS_GooglePlayServices = 1;
-    //private CameraPosition currentCam;
+
     private MyProgressDialog progressDialog;
+
     private SupportMapFragment map;
     private static final String ARG_POSITION = "position";
     private boolean isLongPressed = false;
@@ -161,7 +162,115 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                 }
             }
         });
+
+        if(!SignUpActivity.isNetworkOn(getActivity())) {
+            Toast.makeText(getActivity(), "Please, check your internet connection and press \"login to chat\" button", Toast.LENGTH_LONG).show();
+        } else signUpQuickBloxUser(getActivity());
+
         return rootView;
+    }
+
+    private void signUpQuickBloxUser(final Context context) {
+        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+
+            @Override
+            public void onSuccess(QBSession session, Bundle params) {
+                String userName = ParseUser.getCurrentUser().getUsername();
+                final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
+                user.setFullName(ParseUser.getCurrentUser().getString("nickname"));
+
+                final MyProgressDialog qbProgressDialog = new MyProgressDialog(context);
+                qbProgressDialog.showProgress("QBUser signup...");
+                QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+
+                    @Override
+                    public void onSuccess(final QBUser qbUser, Bundle args) {
+                        Log.d("QuickBlox_SIGNUP", "Success");
+
+                        QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+                            @Override
+                            public void onSuccess(QBSession session, Bundle params) {
+                                user.setId(session.getUserId());
+                                MainActivity.qbUser = user;
+                                qbProgressDialog.hideProgress();
+                                logInToQuickBloxChat(user, context);
+                            }
+
+                            @Override
+                            public void onError(List<String> errors) {
+                                qbProgressDialog.hideProgress();
+                                Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(List<String> errors) {
+                        Log.d("QuickBlox_SIGNUP_ERROR", errors.get(0));
+                        if (errors.get(0).equals("login has already been taken")) {
+
+                            QBAuth.createSession(user, new QBEntityCallbackImpl<QBSession>() {
+
+                                @Override
+                                public void onSuccess(QBSession session, Bundle params) {
+                                    user.setId(session.getUserId());
+                                    MainActivity.qbUser = user;
+                                    qbProgressDialog.hideProgress();
+                                    logInToQuickBloxChat(user, context);
+                                }
+
+                                @Override
+                                public void onError(List<String> errors) {
+                                    qbProgressDialog.hideProgress();
+                                    Log.d("QuickBlox_ERROR", "createUserSessionError" + errors.get(0));
+                                }
+                            });
+                        }else qbProgressDialog.hideProgress();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Log.d("CreateSessionError", errors.get(0));
+            }
+        });
+    }
+
+    private void logInToQuickBloxChat(QBUser user, final Context context) {
+        final MyProgressDialog qbProgressDialog = new MyProgressDialog(context);
+        qbProgressDialog.showProgress("Login to chat...");
+        final QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(context);
+        }
+        chatService = QBChatService.getInstance();
+        chatService.login(user, new QBEntityCallbackImpl() {
+
+            @Override
+            public void onSuccess() {
+                Log.d("Chat_login_success", "Chat login success");
+                try {
+                    chatService.startAutoSendPresence(60);
+                } catch (SmackException.NotLoggedInException e) {
+                    e.printStackTrace();
+                }
+                qbProgressDialog.hideProgress();
+                Looper.prepare();
+                Toast.makeText(context, "Chat login success", Toast.LENGTH_LONG).show();
+                Looper.loop();
+            }
+
+            @Override
+            public void onError(List errors) {
+                Log.d("Chat_login_error", errors.get(0).toString());
+                qbProgressDialog.hideProgress();
+                Looper.prepare();
+                Toast.makeText(context, "Chat login error: " + errors.get(0), Toast.LENGTH_LONG).show();
+                Looper.loop();
+            }
+        });
     }
 
     private boolean isMarkerOnArray(List<MyMarker> array, LatLng m) {
@@ -331,7 +440,6 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
     }
 
     private void animateMarker(final Marker marker){
-
         //Make the marker bounce
         final Handler handler = new Handler();
 

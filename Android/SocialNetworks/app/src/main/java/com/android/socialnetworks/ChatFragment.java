@@ -37,7 +37,7 @@ public class ChatFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ArrayList<ChatDialog> chatDialogs = new ArrayList<>();
     private ListAdapterHolder adapter;
-    static public boolean isAnyMessageSent = false;
+    static public boolean needToUpdateDialogs = false;
 
 
     public static ChatFragment newInstance(int position) {
@@ -68,10 +68,9 @@ public class ChatFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (isAnyMessageSent && isVisible) {
+        if (isVisible && needToUpdateDialogs && !isFirstTime) {
             updateDialogsList();
-            enableAllViews();
-            isAnyMessageSent = false;
+            needToUpdateDialogs = false;
         }
     }
 
@@ -84,7 +83,10 @@ public class ChatFragment extends Fragment {
                 getDialogs();
                 isFirstTime = false;
             }
-            //else updateDialogsList();
+            else if(needToUpdateDialogs) {
+                updateDialogsList();
+                needToUpdateDialogs = false;
+            }
         }
     }
 
@@ -136,13 +138,12 @@ public class ChatFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if(SignUpActivity.isNetworkOn(context)) {
-                        disableAllViews();
-
                         int itemPosition = recyclerView.getChildAdapterPosition(v);
                         Intent intent = new Intent(context, DetailedDialogActivity.class);
                         intent.putExtra("RoomJid", chatDialogs.get(itemPosition).getRoomJid());
                         intent.putExtra("DialogId", chatDialogs.get(itemPosition).getDialogId());
                         intent.putExtra("UserNickName", MainActivity.qbUser.getFullName());
+                        intent.putExtra("UnreadCount", chatDialogs.get(itemPosition).getUnread());
 
                         ParseUser parseUser = ParseUser.getCurrentUser();
                         String creatorAvatarUrl = parseUser.getString("avatarURL");
@@ -152,7 +153,7 @@ public class ChatFragment extends Fragment {
                         }
                         intent.putExtra("UserAvatarUrl", creatorAvatarUrl);
                         startActivity(intent);
-                    /*getFragmentManager().beginTransaction()
+                        /*getFragmentManager().beginTransaction()
                             .setCustomAnimations(
                                     R.anim.slide_in_right, R.anim.slide_out_right,
                                     R.anim.slide_in_right, R.anim.slide_out_right)
@@ -221,27 +222,29 @@ public class ChatFragment extends Fragment {
         private void getChatDialogs(){
             final LinearLayout dialogListEmpty = (LinearLayout) getActivity().findViewById(R.id.chat_fragment_empty);
             final LinearLayout dialogListLoadingProgress = (LinearLayout) getActivity().findViewById(R.id.chat_fragment_loading_progress);
-            LinearLayout dialogListNoNetwork = (LinearLayout) getActivity().findViewById(R.id.chat_fragment_no_network);
+            final LinearLayout dialogListNoNetwork = (LinearLayout) getActivity().findViewById(R.id.chat_fragment_no_network);
             if(!SignUpActivity.isNetworkOn(context)) {
                 if (chatDialogs.size() == 0) {
-                    if (dialogListEmpty.getVisibility() == View.VISIBLE)
-                        dialogListEmpty.setVisibility(View.GONE);
-                    if (dialogListLoadingProgress.getVisibility() == View.VISIBLE)
-                        dialogListLoadingProgress.setVisibility(View.GONE);
+                    dialogListEmpty.setVisibility(View.GONE);
+                    dialogListLoadingProgress.setVisibility(View.GONE);
                     dialogListNoNetwork.setVisibility(View.VISIBLE);
                 }
                 else Toast.makeText(context, "Please, check your internet connection", Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setEnabled(true);
             } else {
-                if (dialogListEmpty.getVisibility() == View.VISIBLE)
-                    dialogListEmpty.setVisibility(View.GONE);
-                if (dialogListNoNetwork.getVisibility() == View.VISIBLE)
-                    dialogListNoNetwork.setVisibility(View.GONE);
-                dialogListLoadingProgress.setVisibility(View.VISIBLE);
-                QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
-
                 QBUser user = MainActivity.qbUser;
-                if (user == null) MainActivity.signUpQuickBloxUser(context);
+                if (user == null) {
+                    Toast.makeText(getActivity(), "You're not logged into the chat.\nPress \"login to chat\" button", Toast.LENGTH_LONG).show();
+                    swipeRefreshLayout.setEnabled(true);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
                 else {
+                    dialogListEmpty.setVisibility(View.GONE);
+                    dialogListNoNetwork.setVisibility(View.GONE);
+                    dialogListLoadingProgress.setVisibility(View.VISIBLE);
+
+                    QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
+
                     int userId = user.getId();
                     requestBuilder.in("occupants_ids", userId);
 
@@ -251,8 +254,8 @@ public class ChatFragment extends Fragment {
                             swipeRefreshLayout.setEnabled(true);
                             swipeRefreshLayout.setRefreshing(false);
                             if (dialogs.size() == 0) {
-                                if (dialogListLoadingProgress.getVisibility() == View.VISIBLE)
-                                    dialogListLoadingProgress.setVisibility(View.GONE);
+                                dialogListNoNetwork.setVisibility(View.GONE);
+                                dialogListLoadingProgress.setVisibility(View.GONE);
                                 dialogListEmpty.setVisibility(View.VISIBLE);
                             } else {
                                 for(QBDialog qbDialog: dialogs) {
@@ -270,6 +273,7 @@ public class ChatFragment extends Fragment {
                         public void onError(List<String> errors) {
                             swipeRefreshLayout.setEnabled(true);
                             swipeRefreshLayout.setRefreshing(false);
+                            dialogListLoadingProgress.setVisibility(View.GONE);
                             Toast.makeText(context, "UPDATE_DIALOG_LIST_ERROR: " + errors, Toast.LENGTH_LONG).show();
                         }
                     });

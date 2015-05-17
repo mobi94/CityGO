@@ -3,6 +3,7 @@ package com.android.socialnetworks;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.FunctionCallback;
 import com.parse.GetCallback;
 import com.parse.ParseCloud;
@@ -72,6 +74,7 @@ public class DetailedEventFragment extends Fragment {
     private JSONArray usersRequest;
     private JSONArray usersAccept;
     private JSONObject userDialogData;
+    private LatLng eventLocation;
     private RecyclerView recyclerView;
 
     @Override
@@ -109,13 +112,19 @@ public class DetailedEventFragment extends Fragment {
             }
         });
         goToDirectButton = (Button) rootView.findViewById(R.id.detailed_direct_button);
+        goToDirectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToDirect();
+            }
+        });
 
         return rootView;
     }
 
     private void goToChat(){
         QBUser user = MainActivity.qbUser;
-        if (user == null) MainActivity.signUpQuickBloxUser(getActivity());
+        if (user == null) Toast.makeText(getActivity(), "You're not logged into the chat.\nPress \"login to chat\" button", Toast.LENGTH_LONG).show();
         else {
             Intent intent = new Intent(getActivity(), DetailedDialogActivity.class);
             try {
@@ -137,6 +146,19 @@ public class DetailedEventFragment extends Fragment {
         }
     }
 
+    private void goToDirect(){
+        if (!SignUpActivity.isNetworkOn(getActivity())) {
+            Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
+        } else {
+            String latitude = Double.toString(eventLocation.latitude);
+            String longtitude = Double.toString(eventLocation.longitude);
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longtitude + "&mode=w");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            startActivity(mapIntent);
+        }
+    }
+
     private void addToFollowers(){
         if (!SignUpActivity.isNetworkOn(getActivity())) {
             Toast.makeText(getActivity(), getString(R.string.toast_no_network_connection), Toast.LENGTH_SHORT).show();
@@ -153,11 +175,10 @@ public class DetailedEventFragment extends Fragment {
                         goToChatButton.setEnabled(false);
                     }
                     else {
-                        progressDialog.showProgress("Loading...");
-
                         QBUser user = MainActivity.qbUser;
-                        if (user == null) MainActivity.signUpQuickBloxUser(getActivity());
+                        if (user == null) Toast.makeText(getActivity(), "You're not logged into the chat.\nPress \"login to chat\" button", Toast.LENGTH_LONG).show();
                         else {
+                            progressDialog.showProgress("Loading...");
                             String userChatID = user.getId().toString();
                             sendFollowRequest(currentUser, userChatID);
                         }
@@ -360,6 +381,9 @@ public class DetailedEventFragment extends Fragment {
                         recyclerView.setLayoutManager(layoutManager);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                     //}
+
+                    eventLocation = new LatLng(parseObject.getParseGeoPoint("location").getLatitude(),
+                            parseObject.getParseGeoPoint("location").getLongitude());
 
                     String creatorAvatarUrl = parseObject.getString("creatorAvatarUrl");
                     if (creatorAvatarUrl != null && !creatorAvatarUrl.equals("")) {

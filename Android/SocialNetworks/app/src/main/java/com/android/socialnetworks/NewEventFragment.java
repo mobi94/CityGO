@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +43,7 @@ import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.quickblox.users.model.QBUser;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -75,6 +77,8 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
 
     private MyProgressDialog progressDialog;
     private boolean isFragmentShown = false;
+
+    private JSONObject userDialogData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -389,43 +393,45 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
     }
 
     private void createGroupChatAndEvent(){
-        progressDialog.showProgress("Sending data...");
-
         QBUser user = MainActivity.qbUser;
-        if (user == null) MainActivity.signUpQuickBloxUser(getActivity());
+        if (user == null) Toast.makeText(getActivity(), "You're not logged into the chat.\nPress \"login to chat\" button", Toast.LENGTH_LONG).show();
+        else {
+            progressDialog.showProgress("Sending data...");
 
-        QBDialog dialog = new QBDialog();
-        dialog.setName(editTitle.getText().toString().trim());
-        dialog.setPhoto(eventTypeString);
-        dialog.setType(QBDialogType.GROUP);
+            QBDialog dialog = new QBDialog();
+            dialog.setName(editTitle.getText().toString().trim());
+            dialog.setPhoto(eventTypeString);
+            dialog.setType(QBDialogType.GROUP);
 
-        QBChatService chatService;
-        if (!QBChatService.isInitialized()) {
-            QBChatService.init(getActivity());
-        }
-        chatService = QBChatService.getInstance();
-        QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
-        groupChatManager.createDialog(dialog, new QBEntityCallbackImpl<QBDialog>() {
-            @Override
-            public void onSuccess(QBDialog dialog, Bundle args) {
-                JSONObject chatDialogProperties = new JSONObject();
-                try {
-                    chatDialogProperties.put("dialogID", dialog.getDialogId());
-                    chatDialogProperties.put("dialogName", dialog.getName());
-                    chatDialogProperties.put("roomJID", dialog.getRoomJid());
-                    chatDialogProperties.put("roomName", "");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            QBChatService chatService;
+            if (!QBChatService.isInitialized()) {
+                QBChatService.init(getActivity());
+            }
+            chatService = QBChatService.getInstance();
+            QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
+            groupChatManager.createDialog(dialog, new QBEntityCallbackImpl<QBDialog>() {
+                @Override
+                public void onSuccess(QBDialog dialog, Bundle args) {
+                    JSONObject chatDialogProperties = new JSONObject();
+                    try {
+                        chatDialogProperties.put("dialogID", dialog.getDialogId());
+                        chatDialogProperties.put("dialogName", dialog.getName());
+                        chatDialogProperties.put("roomJID", dialog.getRoomJid());
+                        chatDialogProperties.put("roomName", "");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    ChatFragment.needToUpdateDialogs = true;
+                    createEvent(chatDialogProperties);
                 }
-                createEvent(chatDialogProperties);
-            }
 
-            @Override
-            public void onError(List<String> errors) {
-                progressDialog.hideProgress();
-                Toast.makeText(getActivity(), "CREATE_EVENT_ERROR: " + errors, Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onError(List<String> errors) {
+                    progressDialog.hideProgress();
+                    Toast.makeText(getActivity(), "CREATE_EVENT_ERROR: " + errors, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void createEvent(JSONObject chatDialogProperties){
@@ -546,6 +552,7 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
             relation.getQuery().getInBackground(getArguments().getString("MARKER_ID", ""), new GetCallback<ParseObject>() {
                 @Override
                 public void done(final ParseObject parseObject, ParseException e) {
+                    boolean needUpdateEventDialog = false;
                     if (e != null) {
                         Toast.makeText(getActivity(), "UPDATE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
                         progressDialog.hideProgress();
@@ -556,11 +563,16 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                         if (!title.equals(bufTitle)) {
                             parseObject.put("title", title);
                             MainActivity.MAP_MARKERS_UPDATE = true;
+                            needUpdateEventDialog = true;
                         }
                         if (!category.equals(bufTypeString)) {
                             parseObject.put("category", category);
                             MainActivity.MAP_MARKERS_UPDATE = true;
+                            needUpdateEventDialog = true;
                         }
+
+                        if (needUpdateEventDialog) updateChatDialog(title, category);
+
                         if (!duration.equals(bufTemporary))
                             parseObject.put("temporary", duration);
                         if (!availableSeats.equals(bufAvailableSits))
@@ -600,6 +612,67 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
             progressDialog.hideProgress();
             getActivity().getSupportFragmentManager().popBackStack();
         }
+    }
+
+    private void updateChatDialog(String title, String category) {
+        QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
+        String dialogId = null;
+        try {
+            dialogId = userDialogData.getString("dialogID");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        QBDialog dialog = new QBDialog(dialogId);
+        dialog.setName(title);
+        dialog.setPhoto(category);
+        QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(getActivity());
+        }
+        chatService = QBChatService.getInstance();
+        QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
+        groupChatManager.updateDialog(dialog, requestBuilder, new QBEntityCallbackImpl<QBDialog>() {
+            @Override
+            public void onSuccess(QBDialog dialog, Bundle args) {
+                ChatFragment.needToUpdateDialogs = true;
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Log.d("UPDATE_EVENT_CHAT_ERROR", errors.get(0));
+                Toast.makeText(getActivity(), "Update event chat error: " + errors, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deleteChatDialog() {
+        String dialogId = null;
+        try {
+            dialogId = userDialogData.getString("dialogID");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(getActivity());
+        }
+        chatService = QBChatService.getInstance();
+        QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
+        groupChatManager.deleteDialog(dialogId, new QBEntityCallbackImpl<Void>() {
+            @Override
+            public void onSuccess() {
+                ChatFragment.needToUpdateDialogs = true;
+                progressDialog.hideProgress();
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                progressDialog.hideProgress();
+                Log.d("DELETE_EVENT_CHAT_ERROR", errors.get(0));
+                Toast.makeText(getActivity(), "Delete event chat error: " + errors, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -643,6 +716,8 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                         bufStartDate = editStartDate.getText().toString();
                         bufTemporary = editTemporary.getText().toString();
 
+                        userDialogData = parseObject.getJSONObject("chatDialog");
+
                         deleteEventButton.setVisibility(View.VISIBLE);
                         deleteEventButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -657,12 +732,12 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                                             MainActivity.EVENT_FRAGMENT_RESULT = "done";
                                             MainActivity.markersIdsToDelete.add(parseObject.getObjectId());
                                             MainActivity.markersIdsToDeleteForEventsListFragment.add(parseObject.getObjectId());
-                                            getActivity().getSupportFragmentManager().popBackStack();
+                                            deleteChatDialog();
                                         }
                                         else{
-                                            Toast.makeText(getActivity(), "DELETE_EVENT_ERROR: " + e, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getActivity(), "Delete event error: " + e, Toast.LENGTH_LONG).show();
+                                            progressDialog.hideProgress();
                                         }
-                                        progressDialog.hideProgress();
                                     }
                                 });
                             }

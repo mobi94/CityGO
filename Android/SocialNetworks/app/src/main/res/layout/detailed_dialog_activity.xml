@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFF"
+            android:textColor="@color/niagara"
             android:text="No Messages"
             android:textSize="@dimen/profile_text_size" />
 
@@ -51,21 +51,20 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/dialog_messages_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:layout_below="@+id/dialog_tool_bar">
-    </android.support.v7.widget.RecyclerView>
-
     <RelativeLayout
         android:id="@+id/form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
+
+        <View
+            android:id="@+id/dialog_form_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignTop="@+id/chatText"
+            android:background="#FFF" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -79,8 +78,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/buttonSend"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="5dp"
             android:layout_alignParentBottom="true" />
 
@@ -90,13 +88,20 @@
             android:id="@+id/buttonSend"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentBottom="false"
             android:src="@drawable/ic_action_send_now"
             android:background="@android:color/transparent"
             android:adjustViewBounds="true"
-            android:layout_alignTop="@+id/chatText"
             android:layout_alignBottom="@+id/chatText" />
 
     </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dialog_messages_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:layout_below="@+id/dialog_tool_bar">
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

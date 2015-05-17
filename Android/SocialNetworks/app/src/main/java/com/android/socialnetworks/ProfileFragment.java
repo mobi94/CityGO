@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -47,17 +48,15 @@ import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.pnikosis.materialishprogress.ProgressWheel;
+import com.quickblox.auth.QBAuth;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.users.QBUsers;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.twotoasters.jazzylistview.JazzyHelper;
 import com.twotoasters.jazzylistview.JazzyListView;
-
-import org.jivesoftware.smack.SmackException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -756,37 +755,42 @@ public class ProfileFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                ParseUser.logOut();
-                logoutFromQuickBloxChat();
-                startActivity(new Intent(getActivity(), SignUpActivity.class));
-                getActivity().finish();
+                logoutFromQBChatAndParse();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void logoutFromQuickBloxChat(){
-        //QBChatService chatService = MainActivity.chatService;
+    private void logoutFromQBChatAndParse(){
         final QBChatService chatService;
         if (!QBChatService.isInitialized()) {
             QBChatService.init(getActivity());
         }
         chatService = QBChatService.getInstance();
         if(chatService != null) {
-            if (chatService.isLoggedIn()) {
-                chatService.logout(new QBEntityCallbackImpl() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d("Chat_logout_success", "Chat_logout_success");
-                        chatService.destroy();
-                    }
-                    @Override
-                    public void onError(final List error) {
-                        Log.d("Chat_logout_error", error.get(0).toString());
-                    }
-                });
-            }
+            chatService.logout(new QBEntityCallbackImpl() {
+                @Override
+                public void onSuccess() {
+                    //QBAuth.deleteSession();
+                    chatService.destroy();
+                    Log.d("Chat_logout_success", "Chat_logout_success");
+                }
+                @Override
+                public void onError(final List errors) {
+                    Log.d("Chat_logout_error", errors.get(0).toString());
+                    Looper.prepare();
+                    Toast.makeText(getActivity(), "Chat logout error: " + errors.get(0), Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            });
         }
+        logoutFromParse();
+    }
+
+    private void logoutFromParse(){
+        ParseUser.logOut();
+        startActivity(new Intent(getActivity(), SignUpActivity.class));
+        getActivity().finish();
     }
 
     private void updateUserEventsDialog() {

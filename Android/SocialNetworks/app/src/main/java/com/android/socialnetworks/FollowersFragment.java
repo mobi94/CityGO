@@ -362,10 +362,6 @@ public class FollowersFragment extends Fragment {
 
         String dialogId = parseObject.getJSONObject("chatDialog").optString("dialogID");
         QBDialog dialog = new QBDialog(dialogId);
-        /*dialog.setDialogId(dialogId);
-        dialog.setName(parseObject.getString("title"));
-        dialog.setPhoto(parseObject.getString("category"));
-        dialog.setType(QBDialogType.GROUP);*/
         QBChatService chatService;
         if (!QBChatService.isInitialized()) {
             QBChatService.init(getActivity());

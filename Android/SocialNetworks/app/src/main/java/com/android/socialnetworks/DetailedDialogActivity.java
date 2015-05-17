@@ -2,20 +2,20 @@ package com.android.socialnetworks;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -47,6 +47,7 @@ import java.util.List;
 
 public class DetailedDialogActivity extends ActionBarActivity {
 
+    private MyProgressDialog progressDialog;
     private RecyclerView recyclerView;
     private ListAdapterHolder adapter;
     private EditText chatText;
@@ -70,8 +71,7 @@ public class DetailedDialogActivity extends ActionBarActivity {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setTitle("Chat dialog");
         }
-        /*Parse.initialize(this, "OZYscvQi1cKHCP0vo6hPbbGAPvWs6M6vuMvrMRHi", "CTt2KMlNavNfboR5Tt0f8bA0I0h38ZgCFPtE6I5s");
-        QBSettings.getInstance().fastConfigInit("21742", "OHjwDjYZG58QChy", "7-QuGgDaATdY8fR");*/
+        progressDialog = new MyProgressDialog(this);
 
         userNickName = MainActivity.qbUser.getFullName();
         userId = MainActivity.qbUser.getId();
@@ -79,49 +79,65 @@ public class DetailedDialogActivity extends ActionBarActivity {
         if (extras != null) {
             roomJid = extras.getString("RoomJid");
             dialogId = extras.getString("DialogId");
-            //userNickName = extras.getString("UserNickName");
             userAvatarUrl = extras.getString("UserAvatarUrl");
+            if (extras.getInt("UnreadCount") != 0) ChatFragment.needToUpdateDialogs = true;
         }
-        joinDialog();
 
         recyclerView = (RecyclerView) findViewById(R.id.dialog_messages_list);
-        adapter = new ListAdapterHolder(this);
-        recyclerView.setAdapter(adapter);
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         ImageButton buttonSend = (ImageButton) findViewById(R.id.buttonSend);
         chatText = (EditText) findViewById(R.id.chatText);
+        chatText.setEnabled(false);
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 sendChatMessage();
             }
         });
+
+        joinDialog();
+        prepareMessageList();
+    }
+
+    private void prepareMessageList(){
+        adapter = new ListAdapterHolder(this);
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     private void sendChatMessage() {
         if(SignUpActivity.isNetworkOn(this)) {
             String text = chatText.getText().toString().trim();
             if (!text.equals("")) {
+                long time = System.currentTimeMillis()/1000;
                 QBChatMessage chatMessage = new QBChatMessage();
                 chatMessage.setBody(text);
                 chatMessage.setProperty("nickname", userNickName);
                 chatMessage.setProperty("avatarUrl", userAvatarUrl);
+                chatMessage.setProperty("date_sent", time + "");
                 chatMessage.setProperty("save_to_history", "1");
                 try {
+                    LinearLayout dialogListEmpty = (LinearLayout) findViewById(R.id.dialog_empty);
+                    dialogListEmpty.setVisibility(View.GONE);
+
                     currentChatRoom.sendMessage(chatMessage);
-                    addHeaderIfNeeded(dialogMessages.get(dialogMessages.size() - 1).getTime(),
-                            System.currentTimeMillis() / 1000);
+                    /*if (dialogMessages.size() == 0) {
+                        dialogMessages.add(new DialogMessage(System.currentTimeMillis() / 1000));
+                        dialogMessages.get(0).setIsHeader(true);
+                    }
+                    else addHeaderIfNeeded(dialogMessages.get(dialogMessages.size() - 1).getTime(),
+                                System.currentTimeMillis() / 1000);
                     dialogMessages.add(new DialogMessage(userAvatarUrl, userNickName, text,
                             System.currentTimeMillis() / 1000, userId));
+
                     adapter.notifyDataSetChanged();
+                    recyclerView.scrollToPosition(dialogMessages.size() - 1);
+                    ChatFragment.needToUpdateDialogs = true;*/
                     chatText.setText("");
                     hideKeyboard();
-                    recyclerView.scrollToPosition(dialogMessages.size() - 1);
-                    ChatFragment.isAnyMessageSent = true;
                 } catch (XMPPException | SmackException.NotConnectedException | IllegalStateException e) {
                     Toast.makeText(this, "Send message error:" + e, Toast.LENGTH_LONG).show();
                 }
@@ -138,7 +154,7 @@ public class DetailedDialogActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
+            case android.R.id.home:
                 finish();
                 return true;
         }
@@ -159,7 +175,12 @@ public class DetailedDialogActivity extends ActionBarActivity {
         c1.setTimeInMillis(currentSeconds * 1000);
         Calendar c2 = Calendar.getInstance();
         c2.setTimeInMillis(nextSeconds * 1000);
-        if (c1.get(Calendar.DAY_OF_MONTH) != c2.get(Calendar.DAY_OF_MONTH)) {
+        if (c1.get(Calendar.DAY_OF_MONTH) != c2.get(Calendar.DAY_OF_MONTH) ||
+                (c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH) &&
+                        c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH)) ||
+                (c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH) &&
+                        c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH) &&
+                        c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR))) {
             dialogMessages.add(new DialogMessage(nextSeconds));
             dialogMessages.get(lastIndex + 1).setIsHeader(true);
         }
@@ -169,16 +190,21 @@ public class DetailedDialogActivity extends ActionBarActivity {
         final QBMessageListener<QBGroupChat> groupChatQBMessageListener = new QBMessageListener<QBGroupChat>() {
             @Override
             public void processMessage(final QBGroupChat groupChat, final QBChatMessage chatMessage) {
-                if (chatMessage.getSenderId() != userId) {
-                    addHeaderIfNeeded(dialogMessages.get(dialogMessages.size() - 1).getTime(), chatMessage.getDateSent());
-                    dialogMessages.add(new DialogMessage((String) chatMessage.getProperty("avatarUrl"),
-                            (String) chatMessage.getProperty("nickname"),
-                            chatMessage.getBody(), chatMessage.getDateSent(), chatMessage.getSenderId()));
-                    recyclerView.scrollToPosition(dialogMessages.size() - 1);
-                    LinearLayout dialogListEmpty = (LinearLayout) findViewById(R.id.dialog_empty);
-                    dialogListEmpty.setVisibility(View.GONE);
-                    adapter.notifyDataSetChanged();
+                Log.d("CHAT_NEW_MESSAGE: ", chatMessage.getBody());
+                LinearLayout dialogListEmpty = (LinearLayout) findViewById(R.id.dialog_empty);
+                dialogListEmpty.setVisibility(View.GONE);
+
+                if (dialogMessages.size() == 0) {
+                    dialogMessages.add(new DialogMessage(chatMessage.getDateSent()));
+                    dialogMessages.get(0).setIsHeader(true);
                 }
+                else addHeaderIfNeeded(dialogMessages.get(dialogMessages.size() - 1).getTime(), chatMessage.getDateSent());
+                dialogMessages.add(new DialogMessage((String) chatMessage.getProperty("avatarUrl"),
+                        (String) chatMessage.getProperty("nickname"),
+                        chatMessage.getBody(), chatMessage.getDateSent(), chatMessage.getSenderId()));
+                recyclerView.scrollToPosition(dialogMessages.size() - 1);
+                adapter.notifyDataSetChanged();
+                ChatFragment.needToUpdateDialogs = true;
             }
 
             @Override
@@ -196,6 +222,7 @@ public class DetailedDialogActivity extends ActionBarActivity {
                 // never be called, works only for 1-1 chat
             }
         };
+        progressDialog.showProgress("Loading...");
 
         DiscussionHistory history = new DiscussionHistory();
         history.setMaxStanzas(0);
@@ -213,11 +240,15 @@ public class DetailedDialogActivity extends ActionBarActivity {
             public void onSuccess() {
                 // add listeners
                 currentChatRoom.addMessageListener(groupChatQBMessageListener);
+                progressDialog.hideProgress();
             }
 
             @Override
             public void onError(final List errors) {
-                Toast.makeText(DetailedDialogActivity.this, "Send message error: " + errors.get(0), Toast.LENGTH_LONG).show();
+                Looper.prepare();
+                progressDialog.hideProgress();
+                Toast.makeText(DetailedDialogActivity.this, "Join dialog error: " + errors.get(0), Toast.LENGTH_LONG).show();
+                Looper.loop();
             }
         });
     }
@@ -290,7 +321,7 @@ public class DetailedDialogActivity extends ActionBarActivity {
                 if (holder.getItemViewType() == 1)
                     holder.nickName.setText(dialogMessages.get(position).getNickName());
                 holder.message.setText(dialogMessages.get(position).getMessage());
-                holder.time.setText(getTime(dialogMessages.get(position).getTime()));
+                holder.time.setText(getTime(dialogMessages.get(position).getTime()) + " ");
             }
         }
 
@@ -355,9 +386,10 @@ public class DetailedDialogActivity extends ActionBarActivity {
 
                         recyclerView.scrollToPosition(dialogMessages.size() - 1);
                         adapter.notifyDataSetChanged();
-                        dialogListLoadingProgress.setVisibility(View.GONE);
                     }
                     else dialogListEmpty.setVisibility(View.VISIBLE);
+                    dialogListLoadingProgress.setVisibility(View.GONE);
+                    chatText.setEnabled(true);
                 }
 
                 @Override

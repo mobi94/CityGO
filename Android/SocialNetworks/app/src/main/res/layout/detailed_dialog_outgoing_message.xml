@@ -16,8 +16,7 @@
         android:text="Time"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:textStyle="italic"
-        android:layout_marginRight="2dp" />
+        android:textStyle="italic" />
 
     <TextView
         android:id="@+id/dialog_message"
