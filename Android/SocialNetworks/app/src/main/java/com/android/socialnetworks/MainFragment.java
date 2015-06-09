@@ -29,6 +29,7 @@ import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,6 +114,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         setHasOptionsMenu(true);
 
         isLocationShowed = false;
+
         markersHashMap = new HashMap<>();
         map = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
 
@@ -153,6 +155,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                         MainActivity.enableViewPager((MyViewPager) getActivity().findViewById(R.id.pager),
                                 (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs));
                         map.getMap().getUiSettings().setAllGesturesEnabled(true);
+                        enableAllViews();
                         isLongPressed = false;
                         isInfoWindowPressedToEdit = false;
                         isInfoWindowPressedToShow = false;
@@ -170,7 +173,25 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         return rootView;
     }
 
+    private void disableAllViews(){
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.main_fragment);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setEnabled(false);
+        }
+    }
+
+    private void enableAllViews(){
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.main_fragment);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setEnabled(true);
+        }
+    }
+
     private void signUpQuickBloxUser(final Context context) {
+        final MyProgressDialog qbProgressDialog = new MyProgressDialog(context);
+        qbProgressDialog.showProgress("Session creation...");
         QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
 
             @Override
@@ -179,8 +200,6 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                 final QBUser user = new QBUser(userName, userName + "aFdeCbc550c9");
                 user.setFullName(ParseUser.getCurrentUser().getString("nickname"));
 
-                final MyProgressDialog qbProgressDialog = new MyProgressDialog(context);
-                qbProgressDialog.showProgress("QBUser signup...");
                 QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
 
                     @Override
@@ -233,44 +252,43 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
 
             @Override
             public void onError(List<String> errors) {
+                qbProgressDialog.hideProgress();
                 Log.d("CreateSessionError", errors.get(0));
             }
         });
     }
 
     private void logInToQuickBloxChat(QBUser user, final Context context) {
-        final MyProgressDialog qbProgressDialog = new MyProgressDialog(context);
-        qbProgressDialog.showProgress("Login to chat...");
         final QBChatService chatService;
         if (!QBChatService.isInitialized()) {
             QBChatService.init(context);
         }
         chatService = QBChatService.getInstance();
-        chatService.login(user, new QBEntityCallbackImpl() {
+        if(!chatService.isLoggedIn()) {
+            final MyProgressDialog qbProgressDialog = new MyProgressDialog(context);
+            qbProgressDialog.showProgress("Login to chat...");
+            chatService.login(user, new QBEntityCallbackImpl() {
 
-            @Override
-            public void onSuccess() {
-                Log.d("Chat_login_success", "Chat login success");
-                try {
-                    chatService.startAutoSendPresence(60);
-                } catch (SmackException.NotLoggedInException e) {
-                    e.printStackTrace();
+                @Override
+                public void onSuccess() {
+                    Log.d("Chat_login_success", "Chat login success");
+                    try {
+                        chatService.startAutoSendPresence(60);
+                    } catch (SmackException.NotLoggedInException e) {
+                        e.printStackTrace();
+                    }
+                    qbProgressDialog.hideProgress();
+
                 }
-                qbProgressDialog.hideProgress();
-                Looper.prepare();
-                Toast.makeText(context, "Chat login success", Toast.LENGTH_LONG).show();
-                Looper.loop();
-            }
 
-            @Override
-            public void onError(List errors) {
-                Log.d("Chat_login_error", errors.get(0).toString());
-                qbProgressDialog.hideProgress();
-                Looper.prepare();
-                Toast.makeText(context, "Chat login error: " + errors.get(0), Toast.LENGTH_LONG).show();
-                Looper.loop();
-            }
-        });
+                @Override
+                public void onError(List errors) {
+                    Log.d("Chat_login_error", errors.get(0).toString());
+                    qbProgressDialog.hideProgress();
+
+                }
+            });
+        }
     }
 
     private boolean isMarkerOnArray(List<MyMarker> array, LatLng m) {
@@ -532,6 +550,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                     if (markersHashMap.get(marker).getCreatorName().equals(currentUser)) {
                         if (!isInfoWindowPressedToEdit) {
                             map.getUiSettings().setAllGesturesEnabled(false);
+                            disableAllViews();
 
                             NewEventFragment newEventFragment = new NewEventFragment();
                             Bundle bundle = new Bundle();
@@ -552,6 +571,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                     }
                     else if (!isInfoWindowPressedToShow) {
                         map.getUiSettings().setAllGesturesEnabled(false);
+                        disableAllViews();
 
                         DetailedEventFragment detailedEventFragment = new DetailedEventFragment();
                         Bundle bundle = new Bundle();
@@ -618,8 +638,9 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                if (!isLongPressed) {
+                if (!isLongPressed && !isInfoWindowPressedToEdit && !isInfoWindowPressedToShow) {
                     map.getUiSettings().setAllGesturesEnabled(false);
+                    disableAllViews();
 
                     currentCameraPosition = latLng;
                     NewEventFragment newEventFragment = new NewEventFragment();

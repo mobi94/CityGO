@@ -58,6 +58,8 @@ import com.squareup.picasso.Target;
 import com.twotoasters.jazzylistview.JazzyHelper;
 import com.twotoasters.jazzylistview.JazzyListView;
 
+import org.jivesoftware.smack.SmackException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -762,29 +764,51 @@ public class ProfileFragment extends Fragment {
     }
 
     private void logoutFromQBChatAndParse(){
-        final QBChatService chatService;
+        progressDialog.showProgress("Logging out...");
+        QBChatService chatService;
         if (!QBChatService.isInitialized()) {
-            QBChatService.init(getActivity());
+            logoutFromParse();
         }
-        chatService = QBChatService.getInstance();
-        if(chatService != null) {
-            chatService.logout(new QBEntityCallbackImpl() {
-                @Override
-                public void onSuccess() {
-                    //QBAuth.deleteSession();
+        else {
+            chatService = QBChatService.getInstance();
+            if (chatService != null) {
+                try {
+                    chatService.logout();
                     chatService.destroy();
+                    Toast.makeText(getActivity(), "Chat logout success", Toast.LENGTH_LONG).show();
                     Log.d("Chat_logout_success", "Chat_logout_success");
+                    logoutFromParse();
+                } catch (SmackException.NotConnectedException e) {
+                    e.printStackTrace();
+                    Log.d("Chat_logout_error", e.toString());
+                    Toast.makeText(getActivity(), "Chat logout error: " + e, Toast.LENGTH_LONG).show();
+                    progressDialog.hideProgress();
                 }
-                @Override
-                public void onError(final List errors) {
-                    Log.d("Chat_logout_error", errors.get(0).toString());
-                    Looper.prepare();
-                    Toast.makeText(getActivity(), "Chat logout error: " + errors.get(0), Toast.LENGTH_LONG).show();
-                    Looper.loop();
-                }
-            });
+                /*chatService.logout(new QBEntityCallbackImpl() {
+                    @Override
+                    public void onSuccess() {
+                        try {
+                            QBAuth.deleteSession();
+                        } catch (QBResponseException e) {
+                            e.printStackTrace();
+                        }
+                        chatService.destroy();
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "Chat logout success", Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                        Log.d("Chat_logout_success", "Chat_logout_success");
+                    }
+
+                    @Override
+                    public void onError(final List errors) {
+                        Log.d("Chat_logout_error", errors.get(0).toString());
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "Chat logout error: " + errors.get(0), Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    }
+                });*/
+            }else logoutFromParse();
         }
-        logoutFromParse();
     }
 
     private void logoutFromParse(){

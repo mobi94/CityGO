@@ -8,22 +8,33 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
+import com.daimajia.swipe.SimpleSwipeListener;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.users.model.QBUser;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +49,6 @@ public class ChatFragment extends Fragment {
     private ArrayList<ChatDialog> chatDialogs = new ArrayList<>();
     private ListAdapterHolder adapter;
     static public boolean needToUpdateDialogs = false;
-
 
     public static ChatFragment newInstance(int position) {
         ChatFragment f = new ChatFragment();
@@ -91,7 +101,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void disableAllViews(){
-        LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.chat_fragment);
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.chat_fragment);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
             child.setEnabled(false);
@@ -99,7 +109,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void enableAllViews(){
-        LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.chat_fragment);
+        RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.chat_fragment);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
             child.setEnabled(true);
@@ -121,13 +131,18 @@ public class ChatFragment extends Fragment {
         adapter.getChatDialogs();
     }
 
-    public class ListAdapterHolder extends RecyclerView.Adapter<ListAdapterHolder.ViewHolder> {
+    public class ListAdapterHolder extends RecyclerSwipeAdapter<ListAdapterHolder.ViewHolder> {
 
         private final Context context;
 
         public ListAdapterHolder(Context context) {
             this.context = context;
             getChatDialogs();
+        }
+
+        @Override
+        public int getSwipeLayoutResourceId(int position) {
+            return R.id.swipe;
         }
 
         @Override
@@ -180,7 +195,7 @@ public class ChatFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder , int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.dialog_type.setImageResource(getDialogIcon(Integer.parseInt(chatDialogs.get(position).dialogType)));
             holder.title.setText(chatDialogs.get(position).getTitle());
             if (chatDialogs.get(position).getLastMessage() != null) {
@@ -190,11 +205,120 @@ public class ChatFragment extends Fragment {
                 holder.lastMessage.setText("No messages");
                 holder.pastTime.setText("");
             }
-            if (Integer.parseInt(chatDialogs.get(position).getUnread()) != 0) {
+            if (chatDialogs.get(position).getUnread() != 0) {
                 holder.unread.setVisibility(View.VISIBLE);
-                holder.unread.setText(chatDialogs.get(position).getUnread());
+                holder.unread.setText(Integer.toString(chatDialogs.get(position).getUnread()));
             }
             else holder.unread.setVisibility(View.GONE);
+
+            holder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+                @Override
+                public void onClose(SwipeLayout layout) {
+                    //when the SurfaceView totally cover the BottomView.
+                    MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+                    pager.setPagingEnabled(true);
+                    swipeRefreshLayout.setEnabled(true);
+                }
+
+                @Override
+                public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                    //you are swiping.
+                }
+
+                @Override
+                public void onStartOpen(SwipeLayout layout) {
+                    MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+                    pager.setPagingEnabled(false);
+                    swipeRefreshLayout.setEnabled(false);
+                }
+
+                @Override
+                public void onOpen(SwipeLayout layout) {
+                    //when the BottomView totally show.
+                    MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+                    pager.setPagingEnabled(true);
+                    swipeRefreshLayout.setEnabled(true);
+                }
+
+                @Override
+                public void onStartClose(SwipeLayout layout) {
+                    MyViewPager pager = (MyViewPager) getActivity().findViewById(R.id.pager);
+                    pager.setPagingEnabled(false);
+                    swipeRefreshLayout.setEnabled(false);
+                }
+
+                @Override
+                public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+                }
+            });
+            holder.swipeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.swipeLayout.getOpenStatus() == SwipeLayout.Status.Close) {
+                        if (SignUpActivity.isNetworkOn(context)) {
+                            Intent intent = new Intent(context, DetailedDialogActivity.class);
+                            intent.putExtra("RoomJid", chatDialogs.get(position).getRoomJid());
+                            intent.putExtra("DialogId", chatDialogs.get(position).getDialogId());
+                            intent.putExtra("UserNickName", MainActivity.qbUser.getFullName());
+                            intent.putExtra("UnreadCount", chatDialogs.get(position).getUnread());
+
+                            ParseUser parseUser = ParseUser.getCurrentUser();
+                            String creatorAvatarUrl = parseUser.getString("avatarURL");
+                            if (creatorAvatarUrl == null || creatorAvatarUrl.equals("")) {
+                                ParseFile photo = (ParseFile) parseUser.get("profilePic");
+                                creatorAvatarUrl = photo.getUrl();
+                            }
+                            intent.putExtra("UserAvatarUrl", creatorAvatarUrl);
+                            startActivity(intent);
+                        /*getFragmentManager().beginTransaction()
+                            .setCustomAnimations(
+                                    R.anim.slide_in_right, R.anim.slide_out_right,
+                                    R.anim.slide_in_right, R.anim.slide_out_right)
+                            .add(R.id.container, new DetailedDialogActivity())
+                            .addToBackStack(null)
+                            .commit();*/
+                        } else
+                            Toast.makeText(context, "Please, check your internet connection", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+            holder.buttonDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteChatDialog(holder, position);
+                }
+            });
+            holder.dialogToDelete.setText("Delete dialog \"" + chatDialogs.get(position).getTitle() + "\"?");
+        }
+
+        public void deleteChatDialog(final ViewHolder holder, final int position) {
+            final MyProgressDialog progressDialog = new MyProgressDialog(context);
+            progressDialog.showProgress("Deleting...");
+            QBChatService chatService;
+            if (!QBChatService.isInitialized()) {
+                QBChatService.init(getActivity());
+            }
+            chatService = QBChatService.getInstance();
+            QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
+            groupChatManager.deleteDialog(chatDialogs.get(position).getDialogId(), new QBEntityCallbackImpl<Void>() {
+                @Override
+                public void onSuccess() {
+                    progressDialog.hideProgress();
+                    mItemManger.removeShownLayouts(holder.swipeLayout);
+                    chatDialogs.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, chatDialogs.size());
+                    mItemManger.closeAllItems();
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                    progressDialog.hideProgress();
+                    Log.d("DELETE_DIALOG_ERROR", errors.get(0));
+                    Toast.makeText(getActivity(), "Delete chat dialog error: " + errors, Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
         public String getPastTime(long secondsPast){
@@ -261,7 +385,7 @@ public class ChatFragment extends Fragment {
                                 for(QBDialog qbDialog: dialogs) {
                                     chatDialogs.add(new ChatDialog(qbDialog.getPhoto(), qbDialog.getName(),
                                             qbDialog.getLastMessage(), qbDialog.getLastMessageDateSent(),
-                                            Integer.toString(qbDialog.getUnreadMessageCount()), qbDialog.getRoomJid(),
+                                            qbDialog.getUnreadMessageCount(), qbDialog.getRoomJid(),
                                             qbDialog.getDialogId()));
                                 }
                                 adapter.notifyDataSetChanged();
@@ -282,6 +406,10 @@ public class ChatFragment extends Fragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder{
+            SwipeLayout swipeLayout;
+            Button buttonDelete;
+            TextView dialogToDelete;
+
             ImageView dialog_type;
             TextView title;
             TextView lastMessage;
@@ -289,6 +417,10 @@ public class ChatFragment extends Fragment {
             TextView unread;
             public ViewHolder(View view) {
                 super(view);
+                swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
+                buttonDelete = (Button) itemView.findViewById(R.id.delete);
+                dialogToDelete = (TextView) view.findViewById(R.id.dialog_to_delete);
+
                 dialog_type = (ImageView) view.findViewById(R.id.chat_dialog_type);
                 title = (TextView) view.findViewById(R.id.chat_dialog_title);
                 lastMessage = (TextView) view.findViewById(R.id.chat_dialog_last_messaage);
@@ -303,12 +435,12 @@ public class ChatFragment extends Fragment {
         private String title;
         private String lastMessage;
         private long pastTime;
-        private String unread;
+        private Integer unread;
         private String roomJid;
         private String dialogId;
 
         public ChatDialog(String dialogType, String title, String lastMessage, long pastTime,
-                          String unread, String roomJid, String dialogId) {
+                          Integer unread, String roomJid, String dialogId) {
             super();
             this.dialogType = dialogType;
             this.title = title;
@@ -335,7 +467,7 @@ public class ChatFragment extends Fragment {
             return pastTime;
         }
 
-        public String getUnread() {
+        public Integer getUnread() {
             return unread;
         }
 
@@ -363,7 +495,7 @@ public class ChatFragment extends Fragment {
             this.title = title;
         }
 
-        public void setUnread(String unread) {
+        public void setUnread(Integer unread) {
             this.unread = unread;
         }
 

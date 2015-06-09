@@ -1,6 +1,7 @@
 package com.android.socialnetworks;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
@@ -349,11 +351,20 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
         inflater.inflate(R.menu.menu_event, menu);
     }
 
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 MainActivity.EVENT_FRAGMENT_RESULT = "canceled";
+                hideKeyboard();
                 getActivity().getSupportFragmentManager().popBackStack();
                 return true;
             case R.id.action_done:
@@ -365,7 +376,10 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                             if (isEditFieldsFilled()) updateEvent();
                             else Toast.makeText(getActivity(), "You must fill all necessary fields!", Toast.LENGTH_SHORT).show();
                         }
-                        else getActivity().getSupportFragmentManager().popBackStack();
+                        else {
+                            hideKeyboard();
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
                     }
                     else {
                         if (isEditFieldsFilled()) createGroupChatAndEvent();
@@ -716,7 +730,7 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                         bufStartDate = editStartDate.getText().toString();
                         bufTemporary = editTemporary.getText().toString();
 
-                        userDialogData = parseObject.getJSONObject("chatDialog");
+                        userDialogData = parseObject.getJSONObject("chatDialog") ;
 
                         deleteEventButton.setVisibility(View.VISIBLE);
                         deleteEventButton.setOnClickListener(new View.OnClickListener() {
@@ -726,13 +740,14 @@ public class NewEventFragment extends Fragment implements DateTimePicker.OnDateT
                                 parseObject.deleteInBackground(new DeleteCallback() {
                                     @Override
                                     public void done(ParseException e) {
-                                        if (e==null){
+                                        if (e==null) {
+                                            progressDialog.hideProgress();
                                             MainActivity.setOnEventListToDeleteFlag();
                                             MainActivity.MAP_MARKERS_UPDATE = true;
                                             MainActivity.EVENT_FRAGMENT_RESULT = "done";
                                             MainActivity.markersIdsToDelete.add(parseObject.getObjectId());
                                             MainActivity.markersIdsToDeleteForEventsListFragment.add(parseObject.getObjectId());
-                                            deleteChatDialog();
+                                            getActivity().getSupportFragmentManager().popBackStack();
                                         }
                                         else{
                                             Toast.makeText(getActivity(), "Delete event error: " + e, Toast.LENGTH_LONG).show();

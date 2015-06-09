@@ -101,11 +101,12 @@ public class DetailedDialogActivity extends ActionBarActivity {
 
     private void prepareMessageList(){
         adapter = new ListAdapterHolder(this);
-        recyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
     }
 
     private void sendChatMessage() {
@@ -137,7 +138,7 @@ public class DetailedDialogActivity extends ActionBarActivity {
                     recyclerView.scrollToPosition(dialogMessages.size() - 1);
                     ChatFragment.needToUpdateDialogs = true;*/
                     chatText.setText("");
-                    hideKeyboard();
+                    //hideKeyboard();
                 } catch (XMPPException | SmackException.NotConnectedException | IllegalStateException e) {
                     Toast.makeText(this, "Send message error:" + e, Toast.LENGTH_LONG).show();
                 }
@@ -159,6 +160,11 @@ public class DetailedDialogActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private void hideKeyboard() {
@@ -186,25 +192,30 @@ public class DetailedDialogActivity extends ActionBarActivity {
         }
     }
 
+    private void addItemWithHeader(QBChatMessage chatMessage) {
+        Log.d("CHAT_NEW_MESSAGE: ", chatMessage.getBody());
+        LinearLayout dialogListEmpty = (LinearLayout) findViewById(R.id.dialog_empty);
+        dialogListEmpty.setVisibility(View.GONE);
+
+        if (dialogMessages.size() == 0) {
+            dialogMessages.add(new DialogMessage(chatMessage.getDateSent()));
+            dialogMessages.get(0).setIsHeader(true);
+            //adapter.notifyItemInserted(dialogMessages.size() - 1);
+        }
+        else addHeaderIfNeeded(dialogMessages.get(dialogMessages.size() - 1).getTime(), chatMessage.getDateSent());
+        dialogMessages.add(new DialogMessage((String) chatMessage.getProperty("avatarUrl"),
+                (String) chatMessage.getProperty("nickname"),
+                chatMessage.getBody(), chatMessage.getDateSent(), chatMessage.getSenderId()));
+        adapter.notifyItemRangeChanged(0, dialogMessages.size());
+        recyclerView.scrollToPosition(dialogMessages.size() - 1);
+    }
+
     private void joinDialog(){
         final QBMessageListener<QBGroupChat> groupChatQBMessageListener = new QBMessageListener<QBGroupChat>() {
             @Override
             public void processMessage(final QBGroupChat groupChat, final QBChatMessage chatMessage) {
-                Log.d("CHAT_NEW_MESSAGE: ", chatMessage.getBody());
-                LinearLayout dialogListEmpty = (LinearLayout) findViewById(R.id.dialog_empty);
-                dialogListEmpty.setVisibility(View.GONE);
-
-                if (dialogMessages.size() == 0) {
-                    dialogMessages.add(new DialogMessage(chatMessage.getDateSent()));
-                    dialogMessages.get(0).setIsHeader(true);
-                }
-                else addHeaderIfNeeded(dialogMessages.get(dialogMessages.size() - 1).getTime(), chatMessage.getDateSent());
-                dialogMessages.add(new DialogMessage((String) chatMessage.getProperty("avatarUrl"),
-                        (String) chatMessage.getProperty("nickname"),
-                        chatMessage.getBody(), chatMessage.getDateSent(), chatMessage.getSenderId()));
-                recyclerView.scrollToPosition(dialogMessages.size() - 1);
-                adapter.notifyDataSetChanged();
                 ChatFragment.needToUpdateDialogs = true;
+                addItemWithHeader(chatMessage);
             }
 
             @Override
@@ -245,10 +256,8 @@ public class DetailedDialogActivity extends ActionBarActivity {
 
             @Override
             public void onError(final List errors) {
-                Looper.prepare();
                 progressDialog.hideProgress();
                 Toast.makeText(DetailedDialogActivity.this, "Join dialog error: " + errors.get(0), Toast.LENGTH_LONG).show();
-                Looper.loop();
             }
         });
     }

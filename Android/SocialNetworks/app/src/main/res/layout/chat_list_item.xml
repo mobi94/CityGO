@@ -1,84 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardBackgroundColor="@color/niagara"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp" >
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:id="@+id/chat_dialog_type"
-                android:background="@drawable/background_avatar" />
-
-            <TextView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:id="@+id/chat_dialog_unread"
-                android:text="1000"
-                android:background="@drawable/background_dialog_counter"
-                android:layout_alignBottom="@+id/chat_dialog_type"
-                android:layout_alignRight="@+id/chat_dialog_type"
-                android:textSize="10sp"
-                android:gravity="center" />
-
-        </RelativeLayout>
-
-        <LinearLayout
+        <com.daimajia.swipe.SwipeLayout xmlns:swipe="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/swipe"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="3dp">
+            android:layout_height="wrap_content"
+            swipe:leftEdgeSwipeOffset="0dp"
+            swipe:rightEdgeSwipeOffset="0dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#FF5534"
+                android:gravity="center"
+                android:tag="Bottom3"
+                android:weightSum="10">
+
+                <ImageView
+                    android:id="@+id/trash"
+                    android:layout_width="27dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/trash" />
+
+                <TextView
+                    android:id="@+id/dialog_to_delete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:text="Delete dialog?"
+                    android:textColor="#fff"
+                    android:textSize="15sp"
+                    android:singleLine="true"
+                    android:layout_marginRight="3dp" />
+
+                <Button
+                    android:id="@+id/delete"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="4"
+                    android:background="#ffffff"
+                    android:text="Yes, Delete"
+                    android:textColor="#FF5534" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Title"
-                android:id="@+id/chat_dialog_title"
-                android:textColor="#FFF"
-                android:textStyle="bold"
-                android:layout_marginBottom="5dp"
-                android:singleLine="true" />
+                android:background="@color/niagara">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Last message"
-                android:id="@+id/chat_dialog_last_messaage"
-                android:textColor="#FFF"
-                android:layout_marginBottom="5dp"
-                android:singleLine="true" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Past time"
-                android:id="@+id/chat_dialog_past_time"
-                android:textColor="#FFF" />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="3dp" >
 
-        </LinearLayout>
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:id="@+id/chat_dialog_type"
+                            android:background="@drawable/background_avatar" />
 
-    </LinearLayout>
+                        <TextView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:id="@+id/chat_dialog_unread"
+                            android:text="1000"
+                            android:background="@drawable/background_dialog_counter"
+                            android:layout_alignBottom="@+id/chat_dialog_type"
+                            android:layout_alignRight="@+id/chat_dialog_type"
+                            android:textSize="10sp"
+                            android:gravity="center"
+                            android:textColor="@color/niagara" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
-        android:background="#FFF" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="3dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Title"
+                            android:id="@+id/chat_dialog_title"
+                            android:textColor="#FFF"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="5dp"
+                            android:singleLine="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Last message"
+                            android:id="@+id/chat_dialog_last_messaage"
+                            android:textColor="#FFF"
+                            android:layout_marginBottom="5dp"
+                            android:singleLine="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Past time"
+                            android:id="@+id/chat_dialog_past_time"
+                            android:textColor="#FFF" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.daimajia.swipe.SwipeLayout>
+
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>
