@@ -194,7 +194,7 @@ public class ProfileFragment extends Fragment {
             ParseUser currentUser = ParseUser.getCurrentUser();
             if (currentUser != null) {
                 ParseRelation<ParseObject> relation = currentUser.getRelation("goEvent");
-                relation.getQuery().whereExists("creatorName").addDescendingOrder("startDate").findInBackground(new FindCallback<ParseObject>() {
+                relation.getQuery().addDescendingOrder("startDate").findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {
                         if (e == null) {
@@ -775,7 +775,6 @@ public class ProfileFragment extends Fragment {
                 try {
                     chatService.logout();
                     chatService.destroy();
-                    Toast.makeText(getActivity(), "Chat logout success", Toast.LENGTH_LONG).show();
                     Log.d("Chat_logout_success", "Chat_logout_success");
                     logoutFromParse();
                 } catch (SmackException.NotConnectedException e) {

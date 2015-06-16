@@ -254,9 +254,10 @@ public class ChatFragment extends Fragment {
             holder.swipeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (holder.swipeLayout.getOpenStatus() == SwipeLayout.Status.Close) {
+                    if (holder.swipeLayout.getOpenStatus() == SwipeLayout.Status.Close && !swipeRefreshLayout.isRefreshing()) {
                         if (SignUpActivity.isNetworkOn(context)) {
                             Intent intent = new Intent(context, DetailedDialogActivity.class);
+                            intent.putExtra("DialogName", chatDialogs.get(position).getTitle());
                             intent.putExtra("RoomJid", chatDialogs.get(position).getRoomJid());
                             intent.putExtra("DialogId", chatDialogs.get(position).getDialogId());
                             intent.putExtra("UserNickName", MainActivity.qbUser.getFullName());
@@ -328,13 +329,12 @@ public class ChatFragment extends Fragment {
             long diffMinutes = millisPast / (60 * 1000) % 60;
             long diffHours = millisPast / (60 * 60 * 1000) % 24;
             long diffDays = millisPast / (24 * 60 * 60 * 1000);
-            if (diffDays == 0 && diffHours != 0 && diffMinutes != 0) pastTime = Long.toString(diffHours) +
-                    "h " + Long.toString(diffMinutes) + "m " + Long.toString(diffSeconds) + "s";
-            else if (diffDays == 0 && diffHours == 0 && diffMinutes != 0) pastTime = Long.toString(diffMinutes) + "m "
+            if (diffDays == 0 && diffHours != 0) pastTime = Long.toString(diffHours) +
+                    "h " + Long.toString(diffMinutes) + "m";
+            else if (diffDays == 0) pastTime = Long.toString(diffMinutes) + "m "
                     + Long.toString(diffSeconds) + "s";
-            else if (diffDays == 0 && diffHours == 0) pastTime = Long.toString(diffSeconds) + "s";
-            else pastTime = Long.toString(diffDays) + "d " + Long.toString(diffHours) +
-                        "h " + Long.toString(diffMinutes) + "m " + Long.toString(diffSeconds) + "s";
+            else if (diffMinutes == 0) pastTime = Long.toString(diffSeconds) + "s";
+            else pastTime = Long.toString(diffDays) + "d " + Long.toString(diffHours) + "h";
             return pastTime;
         }
 
@@ -365,7 +365,7 @@ public class ChatFragment extends Fragment {
                 else {
                     dialogListEmpty.setVisibility(View.GONE);
                     dialogListNoNetwork.setVisibility(View.GONE);
-                    dialogListLoadingProgress.setVisibility(View.VISIBLE);
+                    if (!swipeRefreshLayout.isRefreshing()) dialogListLoadingProgress.setVisibility(View.VISIBLE);
 
                     QBRequestGetBuilder requestBuilder = new QBRequestGetBuilder();
 

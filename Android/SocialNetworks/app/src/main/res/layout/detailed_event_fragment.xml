@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/niagara"
-    android:id="@+id/detailed_fragment">
+    android:id="@+id/detailed_fragment"
+    android:animateLayoutChanges="true">
 
     <ImageView
         android:layout_width="@dimen/avatar_radius"
@@ -84,7 +85,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/detailed_available_seats"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="7dp"
         android:textColor="#FFF"
         android:textSize="@dimen/text_size"
         android:layout_below="@+id/detailed_description"
@@ -102,10 +103,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:scrollbarStyle="insideOverlay"
-            android:minHeight="75dp"
-            android:minWidth="75dp" />
+            android:layout_height="92dp"
+            android:scrollbarStyle="insideOverlay" />
 
     </LinearLayout>
 

@@ -7,6 +7,7 @@
     <color name="red">#ffff0055</color>
     <color name="error">#64e60056</color>
     <color name="niagara">#009A90</color>
+    <color name="niagara_light">#ff00d7cb</color>
     <color name="niagara_alpha">#96009a90</color>
     <color name="red_orange">#FA3C34</color>
     <color name="success">#00B957</color>
@@ -73,7 +74,7 @@
     <color name="pocket_color_4">#fcb74d</color>
 
     <color name="gplus_color_1">#ffffffff</color>
-    <color name="gplus_color_2">#fff4b400</color>
+    <color name="gplus_color_2">#ff009A90</color>
     <color name="gplus_color_3">#ffe6c2ed</color>
     <color name="gplus_color_4">#ffb24ea2</color>
 

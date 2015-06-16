@@ -28,26 +28,6 @@
         android:inputType="textCapSentences|textMultiLine"
         android:singleLine="false"
         android:scrollHorizontally="false"
-        android:maxWidth="190dp" />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/dialog_opponent_avatar"
-            android:background="@drawable/background_avatar" />
-
-        <com.pnikosis.materialishprogress.ProgressWheel
-            android:id="@+id/dialog_avatar_progress"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            wheel:matProg_barColor="#FFF"
-            wheel:matProg_progressIndeterminate="true"
-            android:layout_centerInParent="true" />
-
-    </RelativeLayout>
+        android:maxWidth="250dp" />
 
 </LinearLayout>

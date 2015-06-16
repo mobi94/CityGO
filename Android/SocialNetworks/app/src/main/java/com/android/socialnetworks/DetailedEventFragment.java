@@ -35,9 +35,13 @@ import com.parse.GetCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.PushService;
+import com.parse.SendCallback;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
@@ -226,12 +230,39 @@ public class DetailedEventFragment extends Fragment {
                                     availableSeats.setText("Available seats: " + seats);
                                 goToChatButton.setText("On pending...");
                                 goToChatButton.setEnabled(false);
-                            } else
-                                Toast.makeText(getActivity(), "FOLLOW_REQUEST_ERROR" + e, Toast.LENGTH_SHORT).show();
+                            } else Toast.makeText(getActivity(), "FOLLOW_REQUEST_ERROR" + e, Toast.LENGTH_LONG).show();
                             progressDialog.hideProgress();
                         }
                     });
+                    sendPushNotification();
                 }
+            }
+        });
+    }
+
+    private void sendPushNotification(){
+        String userName = ParseUser.getCurrentUser().getString("nickname");
+        String message = "Follower " + userName + " added to your \"" + title.getText().toString() + "\" event!";
+
+        ParseQuery query = ParseInstallation.getQuery();
+        query.whereEqualTo("channels", objectId);
+        //query.whereEqualTo("user", ParseUser.getCurrentUser());
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("action", getActivity().getApplicationContext().getPackageName() + ".MainActivity");
+            data.put("alert", message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ParsePush push = new ParsePush();
+        push.setData(data);
+        push.setQuery(query);
+        push.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e!=null) Toast.makeText(getActivity(), "PUSH_SEND_ERROR" + e, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -347,32 +378,35 @@ public class DetailedEventFragment extends Fragment {
     }
 
     private void getEventData(){
-        progressDialog.showProgress("Loading...");
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
-        query.getInBackground(getArguments().getString("MARKER_ID", ""), new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                if (e == null) {
-                    final ProgressWheel wheel = (ProgressWheel) getActivity().findViewById(R.id.progress_wheel_detailed);
-                    wheel.spin();
+        objectId = getArguments().getString("MARKER_ID", "");
+        if (!objectId.equals("")) {
+            progressDialog.showProgress("Loading...");
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
+            query.getInBackground(objectId, new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    if (e == null) {
+                        final ProgressWheel wheel = (ProgressWheel) getActivity().findViewById(R.id.progress_wheel_detailed);
+                        wheel.spin();
 
-                    String category = parseObject.getString("category");
-                    if (actionBar != null) {
-                        actionBar.setBackgroundDrawable(new ColorDrawable(getEventColor(category)));
-                    }
-                    RelativeLayout currentLayout = (RelativeLayout) getActivity().findViewById(R.id.detailed_fragment);
-                    currentLayout.setBackgroundResource(getMarkerIcon(parseObject.getString("category")));
+                        String category = parseObject.getString("category");
+                        if (actionBar != null) {
+                            actionBar.setBackgroundDrawable(new ColorDrawable(getEventColor(category)));
+                        }
+                        RelativeLayout currentLayout = (RelativeLayout) getActivity().findViewById(R.id.detailed_fragment);
+                        currentLayout.setBackgroundResource(getMarkerIcon(parseObject.getString("category")));
 
-                    goToChatButton.setBackgroundResource(getEventDrawable(category));
-                    goToDirectButton.setBackgroundResource(getEventDrawable(category));
+                        goToChatButton.setBackgroundResource(getEventDrawable(category));
+                        goToDirectButton.setBackgroundResource(getEventDrawable(category));
 
-                    objectId = parseObject.getObjectId();
-                    userDialogData = parseObject.getJSONObject("chatDialog");
-                    usersRequest = parseObject.getJSONArray("usersRequest");
-                    usersAccept = parseObject.getJSONArray("usersAccept");
-                    if (isInJSONArray(usersAccept, ParseUser.getCurrentUser())) goToChatButton.setText("Go to chat");
-                    if (isInJSONArray(usersRequest, ParseUser.getCurrentUser())) goToChatButton.setText("On pending...");
-                    //if (usersAccept.length() > 0){
+                        userDialogData = parseObject.getJSONObject("chatDialog");
+                        usersRequest = parseObject.getJSONArray("usersRequest");
+                        usersAccept = parseObject.getJSONArray("usersAccept");
+                        if (isInJSONArray(usersAccept, ParseUser.getCurrentUser()))
+                            goToChatButton.setText("Go to chat");
+                        if (isInJSONArray(usersRequest, ParseUser.getCurrentUser()))
+                            goToChatButton.setText("On pending...");
+                        //if (usersAccept.length() > 0){
                         ListAdapterHolder adapter = new ListAdapterHolder(getActivity());
                         recyclerView.setAdapter(adapter);
                         recyclerView.setHasFixedSize(true);
@@ -380,75 +414,76 @@ public class DetailedEventFragment extends Fragment {
                                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
                         recyclerView.setLayoutManager(layoutManager);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    //}
+                        //}
 
-                    eventLocation = new LatLng(parseObject.getParseGeoPoint("location").getLatitude(),
-                            parseObject.getParseGeoPoint("location").getLongitude());
+                        eventLocation = new LatLng(parseObject.getParseGeoPoint("location").getLatitude(),
+                                parseObject.getParseGeoPoint("location").getLongitude());
 
-                    String creatorAvatarUrl = parseObject.getString("creatorAvatarUrl");
-                    if (creatorAvatarUrl != null && !creatorAvatarUrl.equals("")) {
-                        Picasso.with(getActivity())
-                                .load(creatorAvatarUrl)
-                                .transform(MainActivity.transformation())
-                                .resize(400, 400)
-                                .centerCrop()
-                                .into(avatar, new com.squareup.picasso.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        wheel.stopSpinning();
-                                    }
-                                    @Override
-                                    public void onError() {
-                                        wheel.stopSpinning();
-                                    }
-                                });
-                    } else wheel.stopSpinning();
-                    title.setText(parseObject.getString("title"));
-                    creatorName.setText(parseObject.getString("creatorNickName"));
-                    creatorAge.setText(", " + parseObject.getString("creatorAge"));
-                    description.setText(parseObject.getString("description"));
+                        String creatorAvatarUrl = parseObject.getString("creatorAvatarUrl");
+                        if (creatorAvatarUrl != null && !creatorAvatarUrl.equals("")) {
+                            Picasso.with(getActivity())
+                                    .load(creatorAvatarUrl)
+                                    .transform(MainActivity.transformation())
+                                    .resize(400, 400)
+                                    .centerCrop()
+                                    .into(avatar, new com.squareup.picasso.Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            wheel.stopSpinning();
+                                        }
 
-                    seats = Integer.parseInt(parseObject.getString("avaibleSeats"));
-                    if (seats <= 0) availableSeats.setText("No available seats");
-                    else availableSeats.setText("Available seats: " + seats);
+                                        @Override
+                                        public void onError() {
+                                            wheel.stopSpinning();
+                                        }
+                                    });
+                        } else wheel.stopSpinning();
+                        title.setText(parseObject.getString("title"));
+                        creatorName.setText(parseObject.getString("creatorNickName"));
+                        creatorAge.setText(", " + parseObject.getString("creatorAge"));
+                        description.setText(parseObject.getString("description"));
 
-                    Date now = new Date();
-                    String diffString;
-                    if (parseObject.getDate("startDate").getTime() > now.getTime()) {
-                        long remainingTime = parseObject.getDate("startDate").getTime() - now.getTime();
-                        long diffSeconds = remainingTime / 1000 % 60;
-                        long diffMinutes = remainingTime / (60 * 1000) % 60;
-                        long diffHours = remainingTime / (60 * 60 * 1000) % 24;
-                        long diffDays = remainingTime / (24 * 60 * 60 * 1000);
+                        seats = Integer.parseInt(parseObject.getString("avaibleSeats"));
+                        if (seats <= 0) availableSeats.setText("No available seats");
+                        else availableSeats.setText("Available seats: " + seats);
 
-                        if (diffDays == 0 && diffHours != 0 && diffMinutes != 0)
-                            diffString = Long.toString(diffHours) +
-                                    "h " + Long.toString(diffMinutes) + "m " + Long.toString(diffSeconds) + "s";
-                        else if (diffDays == 0 && diffHours == 0 && diffMinutes != 0)
-                            diffString = Long.toString(diffMinutes) + "m "
-                                    + Long.toString(diffSeconds) + "s";
-                        else if (diffDays == 0 && diffHours == 0)
-                            diffString = Long.toString(diffSeconds) + "s";
-                        else
-                            diffString = Long.toString(diffDays) + "d " + Long.toString(diffHours) +
-                                    "h " + Long.toString(diffMinutes) + "m " + Long.toString(diffSeconds) + "s";
+                        Date now = new Date();
+                        String diffString;
+                        if (parseObject.getDate("startDate").getTime() > now.getTime()) {
+                            long remainingTime = parseObject.getDate("startDate").getTime() - now.getTime();
+                            long diffSeconds = remainingTime / 1000 % 60;
+                            long diffMinutes = remainingTime / (60 * 1000) % 60;
+                            long diffHours = remainingTime / (60 * 60 * 1000) % 24;
+                            long diffDays = remainingTime / (24 * 60 * 60 * 1000);
 
-                        MyCountDownTimer countDownTimer = new MyCountDownTimer(remainingTime, 1000);
-                        countDownTimer.start();
-                    } else diffString = "Event completed";
-                    startDate.setText(diffString);
-                    progressDialog.hideProgress();
-                    isFragmentShown = true;
+                            if (diffDays == 0 && diffHours != 0 && diffMinutes != 0)
+                                diffString = Long.toString(diffHours) +
+                                        "h " + Long.toString(diffMinutes) + "m " + Long.toString(diffSeconds) + "s";
+                            else if (diffDays == 0 && diffHours == 0 && diffMinutes != 0)
+                                diffString = Long.toString(diffMinutes) + "m "
+                                        + Long.toString(diffSeconds) + "s";
+                            else if (diffDays == 0 && diffHours == 0)
+                                diffString = Long.toString(diffSeconds) + "s";
+                            else
+                                diffString = Long.toString(diffDays) + "d " + Long.toString(diffHours) +
+                                        "h " + Long.toString(diffMinutes) + "m " + Long.toString(diffSeconds) + "s";
+
+                            MyCountDownTimer countDownTimer = new MyCountDownTimer(remainingTime, 1000);
+                            countDownTimer.start();
+                        } else diffString = "Event completed";
+                        startDate.setText(diffString);
+                        progressDialog.hideProgress();
+                        isFragmentShown = true;
+                    } else progressDialog.hideProgress();
                 }
-                else progressDialog.hideProgress();
-            }
-        });
+            });
+        }
     }
 
     public class ListAdapterHolder extends RecyclerView.Adapter<ListAdapterHolder.ViewHolder> {
 
         private final Context context;
-        private ArrayList<String> followersAvatars = new ArrayList<>();
+        private ArrayList<FollowersAvatars> followersAvatars = new ArrayList<>();
 
         public ListAdapterHolder(Context context) {
             this.context = context;
@@ -463,15 +498,25 @@ public class DetailedEventFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder , int position) {
-            String avatarUrl = followersAvatars.get(position);
+        public void onBindViewHolder(final ViewHolder holder , int position) {
+            String avatarUrl = followersAvatars.get(position).getFollowerAvatar();
             if (avatarUrl != null && !avatarUrl.equals(""))
                 Picasso.with(context)
                         .load(avatarUrl)
                         .transform(MainActivity.transformation())
                         .resize(400, 400)
                         .centerCrop()
-                        .into(holder.avatar);
+                        .into(holder.avatar, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                holder.progressWheel.stopSpinning();
+                            }
+                            @Override
+                            public void onError() {
+                                holder.progressWheel.stopSpinning();
+                            }
+                        });
+            holder.nick.setText(followersAvatars.get(position).getFollowerNick());
         }
 
         @Override
@@ -482,19 +527,52 @@ public class DetailedEventFragment extends Fragment {
         private void getFollowersAvatars(){
             for(int i=0; i<usersAccept.length(); i++) {
                 try {
-                    followersAvatars.add(usersAccept.getJSONObject(i).optString("userAvatar"));
+                    followersAvatars.add(new FollowersAvatars(usersAccept.getJSONObject(i).optString("userAvatar"),
+                            usersAccept.getJSONObject(i).optString("nickname")));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder{
+        public class ViewHolder extends RecyclerView.ViewHolder {
             ImageView avatar;
+            ProgressWheel progressWheel;
+            TextView nick;
             public ViewHolder(View view) {
                 super(view);
                 avatar = (ImageView) view.findViewById(R.id.detailed_followers_avatar);
+                progressWheel = (ProgressWheel) view.findViewById(R.id.progress_wheel_detailed_follower);
+                nick = (TextView) view.findViewById(R.id.detailed_follower_name);
             }
+        }
+    }
+
+    public class FollowersAvatars {
+
+        private String followerAvatar;
+        private String followerNick;
+
+        public FollowersAvatars(String followerAvatar, String followerNick) {
+            super();
+            this.followerAvatar = followerAvatar;
+            this.followerNick = followerNick;
+        }
+
+        public String getFollowerAvatar() {
+            return followerAvatar;
+        }
+
+        public String getFollowerNick() {
+            return followerNick;
+        }
+
+        public void setFollowerAvatar(String followerAvatar) {
+            this.followerAvatar = followerAvatar;
+        }
+
+        public void setFollowerNick(String followerNick) {
+            this.followerNick = followerNick;
         }
     }
 }

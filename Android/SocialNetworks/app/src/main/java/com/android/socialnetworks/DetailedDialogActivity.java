@@ -2,7 +2,6 @@ package com.android.socialnetworks;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -33,6 +32,7 @@ import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.jivesoftware.smack.SmackException;
@@ -69,7 +69,7 @@ public class DetailedDialogActivity extends ActionBarActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setTitle("Chat dialog");
+            actionBar.setTitle(getIntent().getExtras().getString("DialogName"));
         }
         progressDialog = new MyProgressDialog(this);
 
@@ -152,11 +152,35 @@ public class DetailedDialogActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void resetDialogUnreadMessagesCount(){
+        QBRequestUpdateBuilder requestBuilder = new QBRequestUpdateBuilder();
+        requestBuilder.push("unread_message_count", 0);
+
+        QBDialog dialog = new QBDialog(dialogId);
+        QBChatService chatService;
+        if (!QBChatService.isInitialized()) {
+            QBChatService.init(this);
+        }
+        chatService = QBChatService.getInstance();
+        QBGroupChatManager groupChatManager = chatService.getGroupChatManager();
+        groupChatManager.updateDialog(dialog, requestBuilder, new QBEntityCallbackImpl<QBDialog>() {
+            @Override
+            public void onSuccess(QBDialog dialog, Bundle args) {
+                finish();
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                Log.d("RESET_UNREAD_ERROR", errors.get(0));
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                resetDialogUnreadMessagesCount();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -206,6 +230,7 @@ public class DetailedDialogActivity extends ActionBarActivity {
         dialogMessages.add(new DialogMessage((String) chatMessage.getProperty("avatarUrl"),
                 (String) chatMessage.getProperty("nickname"),
                 chatMessage.getBody(), chatMessage.getDateSent(), chatMessage.getSenderId()));
+        adapter.notifyDataSetChanged();
         adapter.notifyItemRangeChanged(0, dialogMessages.size());
         recyclerView.scrollToPosition(dialogMessages.size() - 1);
     }
@@ -307,28 +332,28 @@ public class DetailedDialogActivity extends ActionBarActivity {
                 holder.separator.setText(getDate(dialogMessages.get(position).getTime()));
             }
             else {
-                holder.wheel.spin();
-                String avatarUrl = dialogMessages.get(position).getAvatar();
-                if (avatarUrl != null && !avatarUrl.equals("")) {
-                    Picasso.with(context)
-                            .load(avatarUrl)
-                            .transform(MainActivity.transformation())
-                            .resize(400, 400)
-                            .centerCrop()
-                            .into(holder.avatar, new com.squareup.picasso.Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    holder.wheel.stopSpinning();
-                                }
-
-                                @Override
-                                public void onError() {
-                                    holder.wheel.stopSpinning();
-                                }
-                            });
-                }else holder.wheel.stopSpinning();
-                if (holder.getItemViewType() == 1)
+                if (holder.getItemViewType() == 1) {
+                    holder.wheel.spin();
+                    String avatarUrl = dialogMessages.get(position).getAvatar();
+                    if (avatarUrl != null && !avatarUrl.equals("")) {
+                        Picasso.with(context)
+                                .load(avatarUrl)
+                                .transform(MainActivity.transformation())
+                                .resize(400, 400)
+                                .centerCrop()
+                                .into(holder.avatar, new com.squareup.picasso.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        holder.wheel.stopSpinning();
+                                    }
+                                    @Override
+                                    public void onError() {
+                                        holder.wheel.stopSpinning();
+                                    }
+                                });
+                    } else holder.wheel.stopSpinning();
                     holder.nickName.setText(dialogMessages.get(position).getNickName());
+                }
                 holder.message.setText(dialogMessages.get(position).getMessage());
                 holder.time.setText(getTime(dialogMessages.get(position).getTime()) + " ");
             }

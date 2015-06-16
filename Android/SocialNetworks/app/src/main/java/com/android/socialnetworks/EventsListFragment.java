@@ -158,8 +158,8 @@ public class EventsListFragment extends Fragment {
                         newEventFragment.setArguments(bundle);
                         getFragmentManager().beginTransaction()
                                 .setCustomAnimations(
-                                        R.anim.slide_in_bottom, R.anim.slide_out_bottom,
-                                        R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                                        R.anim.slide_in_right, R.anim.slide_out_right,
+                                        R.anim.slide_in_right, R.anim.slide_out_right)
                                 .add(R.id.container, newEventFragment)
                                 .addToBackStack(null)
                                 .commit();
@@ -170,8 +170,8 @@ public class EventsListFragment extends Fragment {
                         detailedEventFragment.setArguments(bundle);
                         getFragmentManager().beginTransaction()
                                 .setCustomAnimations(
-                                        R.anim.slide_in_bottom, R.anim.slide_out_bottom,
-                                        R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                                        R.anim.slide_in_right, R.anim.slide_out_right,
+                                        R.anim.slide_in_right, R.anim.slide_out_right)
                                 .add(R.id.container, detailedEventFragment)
                                 .addToBackStack(null)
                                 .commit();

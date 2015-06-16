@@ -50,4 +50,5 @@ dependencies {
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.appyvet:materialrangebar:1.0'
     compile 'com.daimajia.swipelayout:library:1.2.0'
+    compile 'com.daimajia.slider:library:1.1.5@aar'
 }
