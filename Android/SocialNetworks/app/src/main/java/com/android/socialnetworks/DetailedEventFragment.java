@@ -132,12 +132,14 @@ public class DetailedEventFragment extends Fragment {
         else {
             Intent intent = new Intent(getActivity(), DetailedDialogActivity.class);
             try {
+                intent.putExtra("DialogName", title.getText().toString());
                 intent.putExtra("RoomJid", (String)userDialogData.get("roomJID"));
                 intent.putExtra("DialogId",(String)userDialogData.get("dialogID"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             intent.putExtra("UserNickName", user.getFullName());
+            //intent.putExtra("UnreadCount", chatDialogs.get(position).getUnread());
 
             ParseUser parseUser = ParseUser.getCurrentUser();
             String creatorAvatarUrl = parseUser.getString("avatarURL");

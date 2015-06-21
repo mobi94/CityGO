@@ -124,6 +124,7 @@ public class ListAdapter extends ArrayAdapter<ListItem> {
                     FollowersFragment followersFragment = new FollowersFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("MARKER_ID", listItem.getObjectId());
+                    bundle.putString("EVENT_TITLE", listItem.getTitle());
                     followersFragment.setArguments(bundle);
 
                     fragment.getFragmentManager().beginTransaction()

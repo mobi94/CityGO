@@ -1,14 +1,14 @@
 package com.android.socialnetworks;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,19 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.leocardz.aelv.library.AelvListItem;
-import com.leocardz.aelv.library.AelvListViewHolder;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -38,16 +32,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBDialogType;
 import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
 import com.squareup.picasso.Picasso;
-import com.twotoasters.jazzylistview.JazzyHelper;
-import com.twotoasters.jazzylistview.JazzyListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,9 +50,12 @@ import java.util.List;
 public class FollowersFragment extends Fragment {
 
     private ArrayList<FollowersItem> followersItems;
+    private RecyclerView recyclerView;
     private FollowersAdapter followersAdapter;
     private boolean isFragmentShown = false;
     private MyProgressDialog progressDialog;
+    private int acceptedFollowersCount = 0;
+    private int onPendingFollowersCount = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,9 +66,12 @@ public class FollowersFragment extends Fragment {
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Followers on pending");
+            String eventTitle = getArguments().getString("EVENT_TITLE", "");
+            if (!eventTitle.equals("")) actionBar.setTitle("Followers of the event \"" + eventTitle + "\"");
+            else actionBar.setTitle("Followers of the event");
         }
         progressDialog = new MyProgressDialog(getActivity());
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.followers_list);
         return rootView;
     }
 
@@ -111,22 +108,45 @@ public class FollowersFragment extends Fragment {
                 eventListNoNetwork.setVisibility(View.GONE);
             eventListLoadingProgress.setVisibility(View.VISIBLE);
 
-            followersItems = new ArrayList<>();
             ParseQuery<ParseObject> query = ParseQuery.getQuery("GoEvents");
             query.getInBackground(getArguments().getString("MARKER_ID", ""), new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
                     if (e == null) {
                         JSONArray usersRequest = parseObject.getJSONArray("usersRequest");
-                        for (int i = 0; i < usersRequest.length(); i++) {
-                            try {
-                                String userName = usersRequest.getJSONObject(i).optString("username");
-                                String nickName = usersRequest.getJSONObject(i).optString("nickname");
-                                String avatarUrl = usersRequest.getJSONObject(i).optString("userAvatar");
-                                String userChatID = usersRequest.getJSONObject(i).optString("userChatID");
-                                followersItems.add(new FollowersItem(avatarUrl, nickName, userName, userChatID));
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
+                        if (usersRequest.length() != 0) {
+                            followersItems.add(new FollowersItem(true));
+                            followersItems.get(followersItems.size() - 1).setIsAccepted(false);
+                            onPendingFollowersCount = usersRequest.length();
+                            for (int i = 0; i < usersRequest.length(); i++) {
+                                try {
+                                    String userName = usersRequest.getJSONObject(i).optString("username");
+                                    String nickName = usersRequest.getJSONObject(i).optString("nickname");
+                                    String avatarUrl = usersRequest.getJSONObject(i).optString("userAvatar");
+                                    String userChatID = usersRequest.getJSONObject(i).optString("userChatID");
+                                    followersItems.add(new FollowersItem(avatarUrl, nickName, userName, userChatID));
+                                    followersItems.get(followersItems.size() - 1).setIsAccepted(false);
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                        JSONArray usersAccept = parseObject.getJSONArray("usersAccept");
+                        if (usersAccept.length() != 0) {
+                            followersItems.add(new FollowersItem(true));
+                            followersItems.get(followersItems.size() - 1).setIsAccepted(true);
+                            acceptedFollowersCount = usersAccept.length();
+                            for (int i = 0; i < usersAccept.length(); i++) {
+                                try {
+                                    String userName = usersAccept.getJSONObject(i).optString("username");
+                                    String nickName = usersAccept.getJSONObject(i).optString("nickname");
+                                    String avatarUrl = usersAccept.getJSONObject(i).optString("userAvatar");
+                                    String userChatID = usersAccept.getJSONObject(i).optString("userChatID");
+                                    followersItems.add(new FollowersItem(avatarUrl, nickName, userName, userChatID));
+                                    followersItems.get(followersItems.size() - 1).setIsAccepted(true);
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
                             }
                         }
                         if(followersItems.size() == 0) {
@@ -146,12 +166,16 @@ public class FollowersFragment extends Fragment {
     }
 
     private void generateFollowersList(){
-        JazzyListView listView = (JazzyListView) getActivity().findViewById(R.id.followers_list);
-        listView.setTransitionEffect(JazzyHelper.TILT);
-
+        followersItems = new ArrayList<>();
         setItems();
-        followersAdapter = new FollowersAdapter(getActivity(), R.layout.followers_list_item, followersItems);
-        listView.setAdapter(followersAdapter);
+        followersAdapter = new FollowersAdapter(getActivity());
+        recyclerView.setAdapter(followersAdapter);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(ContextCompat.getDrawable(getActivity(), R.drawable.divider)));
     }
 
     @Override
@@ -177,6 +201,8 @@ public class FollowersFragment extends Fragment {
         private String nickName;
         private String userName;
         private String userChatID;
+        private boolean isHeader = false;
+        private boolean isAccepted = false;
 
         public FollowersItem(String avatarUrl, String nickName, String userName, String userChatID) {
             super();
@@ -184,6 +210,10 @@ public class FollowersFragment extends Fragment {
             this.nickName = nickName;
             this.userName = userName;
             this.userChatID = userChatID;
+        }
+
+        public FollowersItem(boolean isHeader) {
+            this.isHeader = isHeader;
         }
 
         public String getAvatarUrl() {
@@ -217,68 +247,127 @@ public class FollowersFragment extends Fragment {
         public void setUserChatID(String userChatID) {
             this.userChatID = userChatID;
         }
-    }
 
-    public class ViewHolder {
-        private ImageView avatar;
-        private TextView nickName;
-        private ImageButton accept;
-        private ImageButton decline;
+        public boolean isHeader() {
+            return isHeader;
+        }
 
-        public ViewHolder(ImageView avatar, TextView nickName, ImageButton accept, ImageButton decline) {
-            super();
-            this.avatar = avatar;
-            this.nickName = nickName;
-            this.accept = accept;
-            this.decline = decline;
+        public void setIsHeader(boolean isHeader) {
+            this.isHeader = isHeader;
+        }
+
+        public boolean isAccepted() {
+            return isAccepted;
+        }
+
+        public void setIsAccepted(boolean isAccepted) {
+            this.isAccepted = isAccepted;
         }
     }
 
-    public class FollowersAdapter extends ArrayAdapter<FollowersItem> {
+    public class ViewHolder extends RecyclerView.ViewHolder{
+        ImageView avatar;
+        TextView nickName;
+        ImageButton accept;
+        ImageButton decline;
+        TextView separator;
+        ProgressWheel progressWheel;
+
+        public ViewHolder(View view, boolean isSeparator) {
+            super(view);
+            if (!isSeparator) {
+                avatar = (ImageView) view.findViewById(R.id.followers_list_avatar);
+                nickName = (TextView) view.findViewById(R.id.followers_list_name);
+                accept = (ImageButton) view.findViewById(R.id.followers_list_accept);
+                decline = (ImageButton) view.findViewById(R.id.followers_list_decline);
+                progressWheel = (ProgressWheel) view.findViewById(R.id.progress_wheel_followers_list);
+            }
+            else separator = (TextView) view.findViewById(R.id.separator_title);
+        }
+    }
+
+    public class FollowersAdapter extends RecyclerView.Adapter<ViewHolder> {
         private Activity context;
 
-        public FollowersAdapter(Activity context, int id, ArrayList<FollowersItem> followersItems) {
-            super(context, id, followersItems);
+        public FollowersAdapter(Activity context) {
             this.context = context;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewHolder holder;
-            final FollowersItem followersItem = followersItems.get(position);
-            if (convertView == null) {
-                LayoutInflater inflater = context.getLayoutInflater();
-                convertView = inflater.inflate(R.layout.followers_list_item, null);
+        public int getItemViewType(int position) {
+            int vewType;
+            if (followersItems.get(position).isHeader()) vewType = 0;
+            else if (!followersItems.get(position).isAccepted()) vewType = 1;
+            else vewType = 2;
+            return vewType;
+        }
 
-                ImageView avatar = (ImageView) convertView.findViewById(R.id.followers_list_avatar);
-                TextView nickName = (TextView) convertView.findViewById(R.id.followers_list_name);
-                ImageButton accept = (ImageButton) convertView.findViewById(R.id.followers_list_accept);
-                ImageButton decline = (ImageButton) convertView.findViewById(R.id.followers_list_decline);
-                holder = new ViewHolder(avatar, nickName, accept, decline);
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent , int viewType) {
+            LayoutInflater mInflater = LayoutInflater.from(parent.getContext());
+            View view;
+            boolean isSeparator = false;
+            switch (viewType) {
+                case 0:
+                    view = mInflater.inflate(R.layout.list_separator, parent, false);
+                    isSeparator = true;
+                    break;
+                case 1:
+                    view = mInflater.inflate(R.layout.followers_list_item, parent, false);
+                    break;
+                default:
+                    view = mInflater.inflate(R.layout.followers_list_item, parent, false);
             }
-            else holder = (ViewHolder) convertView.getTag();
+            return new ViewHolder(view, isSeparator);
+        }
 
-            Picasso.with(context)
-                    .load(followersItem.getAvatarUrl())
-                    .transform(MainActivity.transformation())
-                    .resize(400, 400)
-                    .centerCrop()
-                    .into(holder.avatar);
-            holder.nickName.setText(followersItem.getNickName());
-            holder.accept.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    actionWithFollower(followersItem, true);
+        @Override
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
+            if (holder.getItemViewType() == 0){
+                if (!followersItems.get(position).isAccepted()) holder.separator.setText("On pending");
+                else holder.separator.setText("Accepted");
+            }
+            else {
+                Picasso.with(context)
+                        .load(followersItems.get(position).getAvatarUrl())
+                        .transform(MainActivity.transformation())
+                        .resize(400, 400)
+                        .centerCrop()
+                        .into(holder.avatar, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                holder.progressWheel.stopSpinning();
+                            }
+                            @Override
+                            public void onError() {
+                                holder.progressWheel.stopSpinning();
+                            }
+                        });
+                holder.nickName.setText(followersItems.get(position).getNickName());
+                if (holder.getItemViewType() == 1) {
+                    holder.accept.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            actionWithFollower(followersItems.get(position), true);
+                        }
+                    });
+                    holder.decline.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            actionWithFollower(followersItems.get(position), false);
+                        }
+                    });
                 }
-            });
-            holder.decline.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    actionWithFollower(followersItem, false);
+                else{
+                    holder.accept.setVisibility(View.GONE);
+                    holder.decline.setVisibility(View.GONE);
                 }
-            });
-            convertView.setTag(holder);
-            return convertView;
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return followersItems.size();
         }
     }
 
@@ -316,15 +405,41 @@ public class FollowersFragment extends Fragment {
                             try {
                                 String userName = requestedFollowers.getJSONObject(i).optString("username");
                                 if (userName.equals(followersItem.getUserName())) {
+                                    if (onPendingFollowersCount == 1) followersItems.remove(0);
                                     followersItems.remove(followersItem);
+                                    onPendingFollowersCount--;
                                 }
                                 else updatedRequestedFollowers.put(requestedFollowers.getJSONObject(i));
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
                         }
-                        parseObject.put("usersRequest", updatedRequestedFollowers);
+
+                        if (accept) {
+                            int acceptedFollowersHeaderIndex = onPendingFollowersCount + 1;
+                            if (acceptedFollowersCount == 0) {
+                                followersItems.add(acceptedFollowersHeaderIndex, new FollowersItem(true));
+                                followersItems.get(acceptedFollowersHeaderIndex).setIsAccepted(true);
+                                followersItems.add(acceptedFollowersHeaderIndex + 1, followersItem);
+                                followersItems.get(acceptedFollowersHeaderIndex + 1).setIsAccepted(true);
+                            } else {
+                                followersItems.add(acceptedFollowersHeaderIndex, followersItem);
+                                followersItems.get(acceptedFollowersHeaderIndex).setIsAccepted(true);
+                            }
+                            acceptedFollowersCount++;
+                        }
                         followersAdapter.notifyDataSetChanged();
+                        followersAdapter.notifyItemRangeChanged(0, followersItems.size());
+                        if (followersItems.size() == 0) {
+                            LinearLayout eventListEmpty = (LinearLayout) getActivity().findViewById(R.id.followers_fragment_empty);
+                            LinearLayout eventListLoadingProgress = (LinearLayout) getActivity().findViewById(R.id.followers_fragment_loading_progress);
+                            LinearLayout eventListNoNetwork = (LinearLayout) getActivity().findViewById(R.id.followers_fragment_no_network);
+                            eventListNoNetwork.setVisibility(View.GONE);
+                            eventListLoadingProgress.setVisibility(View.GONE);
+                            eventListEmpty.setVisibility(View.VISIBLE);
+                        }
+
+                        parseObject.put("usersRequest", updatedRequestedFollowers);
 
                         parseObject.saveInBackground(new SaveCallback() {
                             @Override
