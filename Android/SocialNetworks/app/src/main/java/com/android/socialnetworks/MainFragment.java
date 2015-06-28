@@ -28,6 +28,7 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -126,7 +127,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         if (checkGooglePlayServices())
             map.getMapAsync(this);
 
-        Button loadMarkers = (Button) rootView.findViewById(R.id.load_markers_button);
+        ImageButton loadMarkers = (ImageButton) rootView.findViewById(R.id.load_markers_button);
         loadMarkers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +151,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
                             actionBar.setBackgroundDrawable(new ColorDrawable(0xff009A90));
                         }
                         if (isLongPressed) addNewMarker();
-                        else if(MainActivity.EVENT_FRAGMENT_RESULT.equals("done") && MainActivity.MAP_MARKERS_UPDATE)
+                        else if (MainActivity.EVENT_FRAGMENT_RESULT.equals("done") && MainActivity.MAP_MARKERS_UPDATE)
                             updateMarkers();
                         MainActivity.enableViewPager((MyViewPager) getActivity().findViewById(R.id.pager),
                                 (PagerSlidingTabStrip) getActivity().findViewById(R.id.tabs));
@@ -173,7 +174,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         return rootView;
     }
 
-    private void disableAllViews(){
+    private void disableAllViews() {
         RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.main_fragment);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
@@ -181,7 +182,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    private void enableAllViews(){
+    private void enableAllViews() {
         RelativeLayout layout = (RelativeLayout) getActivity().findViewById(R.id.main_fragment);
         for (int i = 0; i < layout.getChildCount(); i++) {
             View child = layout.getChildAt(i);
@@ -189,7 +190,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         }
     }
 
-    private void signUpQuickBloxUser(final Context context) {
+    static public void signUpQuickBloxUser(final Context context) {
         final MyProgressDialog qbProgressDialog = new MyProgressDialog(context);
         qbProgressDialog.showProgress("Session creation...");
         QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
@@ -258,7 +259,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         });
     }
 
-    private void logInToQuickBloxChat(QBUser user, final Context context) {
+    static public void logInToQuickBloxChat(QBUser user, final Context context) {
         final QBChatService chatService;
         if (!QBChatService.isInitialized()) {
             QBChatService.init(context);
@@ -385,65 +386,67 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Locati
         if(!SignUpActivity.isNetworkOn(getActivity())) {
             Toast.makeText(getActivity(), "Please, check your internet connection", Toast.LENGTH_SHORT).show();
         } else {
-            progressDialog.showProgress("Loading...");
-            float [] distance = new float[1];
-            Location.distanceBetween(
-                    map.getMap().getProjection().getVisibleRegion().farLeft.latitude,
-                    map.getMap().getProjection().getVisibleRegion().farLeft.longitude,
-                    map.getMap().getProjection().getVisibleRegion().farRight.latitude,
-                    map.getMap().getProjection().getVisibleRegion().farRight.longitude,
-                    distance);
-            HashMap<String, Object> params = new HashMap<>();
-            ArrayList<String> categories = new ArrayList<>();
-            String[] sex = new String[2];
-            int minAge = 1, maxAge = 70;
-            if (isFilterDialogUsed) {
-                for (int i = 0; i < filterCategories.length; i++) {
-                    if (filterCategories[i])
-                        categories.add(Integer.toString(i));
-                }
-                if (filterSex[0]) sex[0] = "male";
-                if (filterSex[1]) sex[1] = "female";
-                minAge = filterAge[0];
-                maxAge = filterAge[1];
-            }
-            else{
-                for (int i = 0; i < 6; i++)
-                    categories.add(Integer.toString(i));
-                sex[0] = "male";
-                sex[1] = "female";
-            }
-            params.put("category", categories);
-            params.put("gender", Arrays.asList(sex));
-            params.put("minAge", Integer.toString(minAge));
-            params.put("maxAge", Integer.toString(maxAge));
-            params.put("location", new ParseGeoPoint(map.getMap().getCameraPosition().target.latitude,
-                    map.getMap().getCameraPosition().target.longitude));
-            params.put("radius", distance[0] / 1000);
-            ParseCloud.callFunctionInBackground("getFilteredEvents", params, new FunctionCallback<List<ParseObject>>() {
-                @Override
-                public void done(List<ParseObject> parseObjects, ParseException e) {
-                    if (e != null) {
-                        Toast.makeText(getActivity(), "UPDATE_EVENT_DATA_ERROR" + e, Toast.LENGTH_SHORT).show();
-                    } else {
-                        MainActivity.MAP_MARKERS_UPDATE = false;
-                        map.getMap().clear();
-                        if (markersArray != null) markersArray.clear();
-                        else markersArray = new ArrayList<>();
-                        if (markersHashMap != null) markersHashMap.clear();
-                        else markersHashMap = new HashMap<>();
-                        for (ParseObject po : parseObjects) {
-                            LatLng markerLocation = new LatLng(po.getParseGeoPoint("location").getLatitude(),
-                                    po.getParseGeoPoint("location").getLongitude());
-                            markersArray.add(new MyMarker(po.getObjectId(), po.getString("category"), markerLocation,
-                                    po.getString("title"), po.getString("creatorName"), po.getString("creatorGender"),
-                                    po.getString("avaibleSeats"), po.getString("temporary"), po.getDate("startDate")));
-                        }
-                        plotMarkers(markersArray);
+            if (map.getMap().getCameraPosition().zoom > 13) {
+                progressDialog.showProgress("Loading...");
+                float[] distance = new float[1];
+                Location.distanceBetween(
+                        map.getMap().getProjection().getVisibleRegion().farLeft.latitude,
+                        map.getMap().getProjection().getVisibleRegion().farLeft.longitude,
+                        map.getMap().getProjection().getVisibleRegion().farRight.latitude,
+                        map.getMap().getProjection().getVisibleRegion().farRight.longitude,
+                        distance);
+                HashMap<String, Object> params = new HashMap<>();
+                ArrayList<String> categories = new ArrayList<>();
+                String[] sex = new String[2];
+                int minAge = 1, maxAge = 70;
+                if (isFilterDialogUsed) {
+                    for (int i = 0; i < filterCategories.length; i++) {
+                        if (filterCategories[i])
+                            categories.add(Integer.toString(i));
                     }
-                    progressDialog.hideProgress();
+                    if (filterSex[0]) sex[0] = "male";
+                    if (filterSex[1]) sex[1] = "female";
+                    minAge = filterAge[0];
+                    maxAge = filterAge[1];
+                } else {
+                    for (int i = 0; i < 6; i++)
+                        categories.add(Integer.toString(i));
+                    sex[0] = "male";
+                    sex[1] = "female";
                 }
-            });
+                params.put("category", categories);
+                params.put("gender", Arrays.asList(sex));
+                params.put("minAge", Integer.toString(minAge));
+                params.put("maxAge", Integer.toString(maxAge));
+                params.put("location", new ParseGeoPoint(map.getMap().getCameraPosition().target.latitude,
+                        map.getMap().getCameraPosition().target.longitude));
+                params.put("radius", distance[0] / 1000);
+                ParseCloud.callFunctionInBackground("getFilteredEvents", params, new FunctionCallback<List<ParseObject>>() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
+                        if (e != null) {
+                            Toast.makeText(getActivity(), "UPDATE_EVENT_DATA_ERROR" + e, Toast.LENGTH_SHORT).show();
+                        } else {
+                            MainActivity.MAP_MARKERS_UPDATE = false;
+                            map.getMap().clear();
+                            if (markersArray != null) markersArray.clear();
+                            else markersArray = new ArrayList<>();
+                            if (markersHashMap != null) markersHashMap.clear();
+                            else markersHashMap = new HashMap<>();
+                            for (ParseObject po : parseObjects) {
+                                LatLng markerLocation = new LatLng(po.getParseGeoPoint("location").getLatitude(),
+                                        po.getParseGeoPoint("location").getLongitude());
+                                markersArray.add(new MyMarker(po.getObjectId(), po.getString("category"), markerLocation,
+                                        po.getString("title"), po.getString("creatorName"), po.getString("creatorGender"),
+                                        po.getString("avaibleSeats"), po.getString("temporary"), po.getDate("startDate")));
+                            }
+                            plotMarkers(markersArray);
+                        }
+                        progressDialog.hideProgress();
+                    }
+                });
+            }
+            else Toast.makeText(getActivity(), "Current zoom level is too low. You should increase it", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
@@ -60,6 +61,7 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 public class RegistrationFragment extends Fragment {
 
     private ImageView avatar;
+    private ImageButton avatarCamera;
     private MaterialEditText editUserName;
     private MaterialEditText editPassword;
     private MaterialEditText editConfirmPassword;
@@ -78,21 +80,12 @@ public class RegistrationFragment extends Fragment {
     private Uri generalUri;
     private int incrementUserPhoto = 0;
 
-    public RegistrationFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.registration_fragment, container, false);
 
         avatar = (ImageView)rootView.findViewById(R.id.avatar_signup);
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
         Transformation transformation = new RoundedTransformationBuilder()
                 .borderColor(Color.WHITE)
                 .borderWidthDp(1)
@@ -105,6 +98,14 @@ public class RegistrationFragment extends Fragment {
                 .resize(400, 400)
                 .centerCrop()
                 .into(avatar);
+
+        avatarCamera = (ImageButton)rootView.findViewById(R.id.avatar_camera);
+        avatarCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
 
         editUserName = (MaterialEditText)rootView.findViewById(R.id.username_signup);
         editUserName.setBackgroundResource(R.drawable.background_niagara);

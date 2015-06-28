@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/ic_action_filter_for_events_list"
-        android:title="Filter"
-        android:icon="@drawable/ic_filter_list"
+        android:id="@+id/ic_login_chat"
+        android:title="Login to chat"
+        android:icon="@drawable/ic_login_chat"
         app:showAsAction="ifRoom"/>
 </menu>

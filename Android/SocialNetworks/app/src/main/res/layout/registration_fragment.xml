@@ -28,15 +28,35 @@
         android:background="@drawable/background_avatar"
         android:layout_marginTop="25dp" />
 
-    <ImageView
-        android:layout_width="@dimen/avatar_radius"
-        android:layout_height="@dimen/avatar_radius"
-        android:id="@+id/avatar_signup"
+    <LinearLayout
+        android:id="@+id/avatar_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/background_avatar"
-        android:adjustViewBounds="true"
+        android:layout_marginBottom="20dp"
         android:layout_above="@+id/username_signup"
-        android:layout_marginBottom="20dp" />
+        android:gravity="bottom">
+
+        <ImageView
+            android:layout_width="@dimen/avatar_radius"
+            android:layout_height="@dimen/avatar_radius"
+            android:id="@+id/avatar_signup"
+            android:background="@drawable/background_avatar"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="40dp" />
+
+        <ImageButton
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/avatar_camera"
+            android:src="@drawable/ic_camera"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:background="@android:color/transparent"
+            android:layout_marginLeft="10dp" />
+
+    </LinearLayout>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="@dimen/layout_width"

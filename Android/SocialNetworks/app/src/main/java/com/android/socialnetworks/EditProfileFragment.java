@@ -155,7 +155,6 @@ public class EditProfileFragment extends Fragment {
     private View.OnClickListener buttonsClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            setTransparentBackground();
             switch (view.getId()){
                 case R.id.ok_button:
                     if(!SignUpActivity.isNetworkOn(getActivity().getBaseContext())) {
@@ -166,11 +165,13 @@ public class EditProfileFragment extends Fragment {
                             updateUserData(currentUser);
                         }
                         MainActivity.EDIT_PROFILE_FRAGMENT_RESULT = "done";
+                        setTransparentBackground();
                         getFragmentManager().popBackStackImmediate();
                     }
                     break;
                 case R.id.cancel_button:
                     MainActivity.EDIT_PROFILE_FRAGMENT_RESULT = "cancel";
+                    setTransparentBackground();
                     getFragmentManager().popBackStackImmediate();
                     break;
             }

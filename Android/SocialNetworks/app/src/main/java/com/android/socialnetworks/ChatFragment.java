@@ -10,6 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +65,7 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.chat_fragment, container, false);
+        setHasOptionsMenu(true);
         isFirstTime = true;
         recyclerView = (RecyclerView) rootView.findViewById(R.id.chat_fragment_list);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.chat_swipeRefreshLayout);
@@ -73,6 +77,25 @@ public class ChatFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_dialogs, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ic_login_chat:
+                if(!SignUpActivity.isNetworkOn(getActivity())) {
+                    Toast.makeText(getActivity(), "Please, check your internet connection and press \"login to chat\" button", Toast.LENGTH_LONG).show();
+                } else MainFragment.signUpQuickBloxUser(getActivity());
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -355,6 +378,7 @@ public class ChatFragment extends Fragment {
                 }
                 else Toast.makeText(context, "Please, check your internet connection", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setEnabled(true);
+                swipeRefreshLayout.setRefreshing(false);
             } else {
                 QBUser user = MainActivity.qbUser;
                 if (user == null) {
