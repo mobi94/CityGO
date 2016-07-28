@@ -42,12 +42,12 @@ public final class R {
 		public static final int md_thumb = 0x7f020008;
 	}
 	public static final class string {
-		public static final int app_name = 0x7f030000;
+		public static final int app_name = 0x7f040000;
 	}
 	public static final class style {
-		public static final int AppBaseTheme = 0x7f040000;
-		public static final int AppTheme = 0x7f040001;
-		public static final int MD = 0x7f040002;
+		public static final int AppBaseTheme = 0x7f030000;
+		public static final int AppTheme = 0x7f030001;
+		public static final int MD = 0x7f030002;
 	}
 	public static final class styleable {
 		public static final int[] SwitchButton = { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d, 0x7f01000e, 0x7f01000f, 0x7f010010, 0x7f010011, 0x7f010012, 0x7f010013, 0x7f010014 };

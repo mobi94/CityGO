@@ -25,6 +25,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Swipe down to refresh"
+        android:id="@+id/chat_fragment_swipe_advice"
+        android:textColor="#FFF"
+        android:textSize="@dimen/profile_text_size"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
+
     <LinearLayout
         android:id="@+id/chat_fragment_empty"
         android:layout_width="match_parent"

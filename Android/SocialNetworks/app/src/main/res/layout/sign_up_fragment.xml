@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ripple="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/sign_up_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    android:focusableInTouchMode="true">
+
 
     <ImageView
         android:layout_width="@dimen/layout_width"
-        android:layout_height="120dp"
-        android:id="@+id/avatar"
-        android:layout_marginTop="50dp"
-        android:layout_alignParentTop="true"
-        android:background="#ff41a8ff"
-        android:layout_centerHorizontal="true" />
+        android:layout_height="170dp"
+        android:id="@+id/logo"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo_bg"
+        android:layout_above="@+id/username_edit"
+        android:layout_marginBottom="30dp" />
+
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:id="@+id/username_edit"
         android:inputType="textPersonName"
-        android:ems="10"
         android:singleLine="true"
         app:floatingLabel="highlight"
         app:baseColor="#fff"
@@ -45,7 +47,6 @@
         android:layout_width="@dimen/layout_width"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:ems="10"
         android:singleLine="true"
         app:floatingLabel="highlight"
         app:baseColor="#fff"
@@ -144,5 +145,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:textColor="#ffffffff" />
+        android:textColor="#ffffffff"
+        android:visibility="invisible" />
 </RelativeLayout>

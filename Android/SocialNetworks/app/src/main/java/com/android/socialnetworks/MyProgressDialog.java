@@ -9,11 +9,11 @@ public class MyProgressDialog {
     private boolean isShowing = false;
     Context context;
 
-    MyProgressDialog(Context context){
+    public MyProgressDialog(Context context){
         this.context = context;
     }
 
-    protected void showProgress(String message) {
+    public void showProgress(String message) {
         //if (!isShowing) {
             pd = new android.app.ProgressDialog(context);
             pd.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
@@ -25,7 +25,7 @@ public class MyProgressDialog {
         //}
     }
 
-    protected void hideProgress() {
+    public void hideProgress() {
         //if (isShowing) {
             pd.dismiss();
             isShowing = false;

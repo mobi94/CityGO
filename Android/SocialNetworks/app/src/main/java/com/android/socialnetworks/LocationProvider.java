@@ -3,8 +3,11 @@ package com.android.socialnetworks;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,8 +21,8 @@ public class LocationProvider implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    public abstract interface LocationCallback {
-        public void handleNewLocation(Location location);
+    public interface LocationCallback {
+        void handleNewLocation(Location location);
     }
 
     public static final String TAG = LocationProvider.class.getSimpleName();
@@ -67,13 +70,14 @@ public class LocationProvider implements
     @Override
     public void onConnected(Bundle bundle) {
         Log.i(TAG, "Location services connected.");
+        if ( ContextCompat.checkSelfPermission( mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        else {
-            mLocationCallback.handleNewLocation(location);
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            } else {
+                mLocationCallback.handleNewLocation(location);
+            }
         }
     }
 
@@ -83,7 +87,7 @@ public class LocationProvider implements
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         /*
          * Google Play services can resolve some errors it detects.
          * If the error has a resolution, try sending an Intent to
@@ -114,6 +118,6 @@ public class LocationProvider implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mLocationCallback.handleNewLocation(location);
+        //mLocationCallback.handleNewLocation(location);
     }
 }

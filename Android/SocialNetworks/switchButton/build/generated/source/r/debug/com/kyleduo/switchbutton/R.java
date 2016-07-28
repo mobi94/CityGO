@@ -159,7 +159,7 @@ in (inches), mm (millimeters).
         public static int md_thumb=0x7f020008;
     }
     public static final class string {
-        public static int app_name=0x7f030000;
+        public static int app_name=0x7f040000;
     }
     public static final class style {
         /** 
@@ -168,11 +168,11 @@ in (inches), mm (millimeters).
             backward-compatibility can go here.
         
          */
-        public static int AppBaseTheme=0x7f040000;
+        public static int AppBaseTheme=0x7f030000;
         /**  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static int AppTheme=0x7f040001;
-        public static int MD=0x7f040002;
+        public static int AppTheme=0x7f030001;
+        public static int MD=0x7f030002;
     }
     public static final class styleable {
         /** Attributes that can be used with a SwitchButton.
@@ -246,7 +246,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.kyleduo.switchbutton:animationVelocity
         */
-        public static final int SwitchButton_animationVelocity = 14;
+        public static int SwitchButton_animationVelocity = 14;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#insetBottom}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -259,7 +259,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:insetBottom
         */
-        public static final int SwitchButton_insetBottom = 20;
+        public static int SwitchButton_insetBottom = 20;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#insetLeft}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -272,7 +272,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:insetLeft
         */
-        public static final int SwitchButton_insetLeft = 17;
+        public static int SwitchButton_insetLeft = 17;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#insetRight}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -285,7 +285,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:insetRight
         */
-        public static final int SwitchButton_insetRight = 18;
+        public static int SwitchButton_insetRight = 18;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#insetTop}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -298,7 +298,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:insetTop
         */
-        public static final int SwitchButton_insetTop = 19;
+        public static int SwitchButton_insetTop = 19;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#measureFactor}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -312,7 +312,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.kyleduo.switchbutton:measureFactor
         */
-        public static final int SwitchButton_measureFactor = 16;
+        public static int SwitchButton_measureFactor = 16;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#offColor}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -324,7 +324,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
           @attr name com.kyleduo.switchbutton:offColor
         */
-        public static final int SwitchButton_offColor = 11;
+        public static int SwitchButton_offColor = 11;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#offDrawable}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -334,7 +334,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           @attr name com.kyleduo.switchbutton:offDrawable
         */
-        public static final int SwitchButton_offDrawable = 1;
+        public static int SwitchButton_offDrawable = 1;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#onColor}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -346,7 +346,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
           @attr name com.kyleduo.switchbutton:onColor
         */
-        public static final int SwitchButton_onColor = 10;
+        public static int SwitchButton_onColor = 10;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#onDrawable}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -356,7 +356,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           @attr name com.kyleduo.switchbutton:onDrawable
         */
-        public static final int SwitchButton_onDrawable = 0;
+        public static int SwitchButton_onDrawable = 0;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#radius}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -370,7 +370,7 @@ theme attribute (in the form
 containing a value of this type.
           @attr name com.kyleduo.switchbutton:radius
         */
-        public static final int SwitchButton_radius = 15;
+        public static int SwitchButton_radius = 15;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumbColor}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -382,7 +382,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
           @attr name com.kyleduo.switchbutton:thumbColor
         */
-        public static final int SwitchButton_thumbColor = 12;
+        public static int SwitchButton_thumbColor = 12;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumbDrawable}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -392,7 +392,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           @attr name com.kyleduo.switchbutton:thumbDrawable
         */
-        public static final int SwitchButton_thumbDrawable = 2;
+        public static int SwitchButton_thumbDrawable = 2;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumbPressedColor}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -404,7 +404,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
           @attr name com.kyleduo.switchbutton:thumbPressedColor
         */
-        public static final int SwitchButton_thumbPressedColor = 13;
+        public static int SwitchButton_thumbPressedColor = 13;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumb_height}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -417,7 +417,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:thumb_height
         */
-        public static final int SwitchButton_thumb_height = 9;
+        public static int SwitchButton_thumb_height = 9;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumb_margin}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -430,7 +430,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:thumb_margin
         */
-        public static final int SwitchButton_thumb_margin = 3;
+        public static int SwitchButton_thumb_margin = 3;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumb_marginBottom}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -443,7 +443,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:thumb_marginBottom
         */
-        public static final int SwitchButton_thumb_marginBottom = 5;
+        public static int SwitchButton_thumb_marginBottom = 5;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumb_marginLeft}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -456,7 +456,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:thumb_marginLeft
         */
-        public static final int SwitchButton_thumb_marginLeft = 6;
+        public static int SwitchButton_thumb_marginLeft = 6;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumb_marginRight}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -469,7 +469,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:thumb_marginRight
         */
-        public static final int SwitchButton_thumb_marginRight = 7;
+        public static int SwitchButton_thumb_marginRight = 7;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumb_marginTop}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -482,7 +482,7 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:thumb_marginTop
         */
-        public static final int SwitchButton_thumb_marginTop = 4;
+        public static int SwitchButton_thumb_marginTop = 4;
         /**
           <p>This symbol is the offset where the {@link com.kyleduo.switchbutton.R.attr#thumb_width}
           attribute's value can be found in the {@link #SwitchButton} array.
@@ -495,6 +495,6 @@ Available units are: px (pixels), dp (density-independent pixels), sp (scaled pi
 in (inches), mm (millimeters).
           @attr name com.kyleduo.switchbutton:thumb_width
         */
-        public static final int SwitchButton_thumb_width = 8;
+        public static int SwitchButton_thumb_width = 8;
     };
 }

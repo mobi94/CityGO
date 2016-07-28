@@ -159,7 +159,7 @@ in (inches), mm (millimeters).
         public static final int md_thumb=0x7f020008;
     }
     public static final class string {
-        public static final int app_name=0x7f030000;
+        public static final int app_name=0x7f040000;
     }
     public static final class style {
         /** 
@@ -168,11 +168,11 @@ in (inches), mm (millimeters).
             backward-compatibility can go here.
         
          */
-        public static final int AppBaseTheme=0x7f040000;
+        public static final int AppBaseTheme=0x7f030000;
         /**  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f040001;
-        public static final int MD=0x7f040002;
+        public static final int AppTheme=0x7f030001;
+        public static final int MD=0x7f030002;
     }
     public static final class styleable {
         /** Attributes that can be used with a SwitchButton.

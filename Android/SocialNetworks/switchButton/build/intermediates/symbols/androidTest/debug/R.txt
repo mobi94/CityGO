@@ -28,10 +28,10 @@ int drawable md_switch_thumb_off_pressed 0x7f020005
 int drawable md_switch_thumb_on_normal 0x7f020006
 int drawable md_switch_thumb_on_pressed 0x7f020007
 int drawable md_thumb 0x7f020008
-int string app_name 0x7f030000
-int style AppBaseTheme 0x7f040000
-int style AppTheme 0x7f040001
-int style MD 0x7f040002
+int string app_name 0x7f040000
+int style AppBaseTheme 0x7f030000
+int style AppTheme 0x7f030001
+int style MD 0x7f030002
 int[] styleable SwitchButton { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d, 0x7f01000e, 0x7f01000f, 0x7f010010, 0x7f010011, 0x7f010012, 0x7f010013, 0x7f010014 }
 int styleable SwitchButton_animationVelocity 14
 int styleable SwitchButton_insetBottom 20
