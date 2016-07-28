@@ -107,11 +107,10 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.castorflex.smoothprogressbar/library/1.0.1-SNAPSHOT/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.markushi/circlebutton/1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.navasmdc/MaterialDesign/1.4/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/9.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/9.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.2.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/8.4.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/8.4.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/8.4.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/8.4.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.leocardz/aelv/1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.makeramen/roundedimageview/1.5.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.pnikosis/materialish-progress/1.4/jars" />
@@ -138,17 +137,19 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 24 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="play-services-location-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="facebook-android-sdk-3.19.1" level="project" />
     <orderEntry type="library" exported="" name="asne-vk-0.3.3" level="project" />
-    <orderEntry type="library" exported="" name="play-services-base-9.2.1" level="project" />
     <orderEntry type="library" exported="" name="quickblox-android-sdk-core-2.2.6" level="project" />
     <orderEntry type="library" exported="" name="asne-twitter-0.3.3" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="roundedimageview-1.5.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-base-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="library-1.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="materialrangebar-1.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-24.0.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-maps-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="Parse-1.9.1" level="project" />
     <orderEntry type="library" exported="" name="library-1.8.2" level="project" />
     <orderEntry type="library" exported="" name="aelv-1.1" level="project" />
@@ -159,7 +160,6 @@
     <orderEntry type="library" exported="" name="library-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="library-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-24.0.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-maps-9.2.1" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.1.2" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-24.0.0" level="project" />
@@ -168,14 +168,12 @@
     <orderEntry type="library" exported="" name="com.amulyakhare.textdrawable-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="materialish-progress-1.4" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-24.0.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-basement-9.2.1" level="project" />
-    <orderEntry type="library" exported="" name="play-services-tasks-9.2.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="pagerslidingtabstrip-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="quickblox-android-sdk-chat-2.2.6" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
-    <orderEntry type="library" exported="" name="play-services-location-9.2.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-basement-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="asne-core-0.3.3" level="project" />
     <orderEntry type="library" exported="" name="twitter4j-core-4.0.2" level="project" />
     <orderEntry type="library" exported="" name="MaterialDesign-1.4" level="project" />
