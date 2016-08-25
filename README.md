@@ -6,6 +6,12 @@ The application performs user authentication through social networks, provides a
 meetings on the map, creates a profile with the user's personal information and allows to communicate with other meeting participants 
 via group chat.
 
+Parse and QuickBlox services have been using for data storage and processing, as well as for the organization of chat.
+
+Parse Platform offers a complete back-end solution for mobile applications. The purpose of such a service - to completely eliminate the need to write server-side code and server configuration. Parse SDK is ready for use immediately after the integration of the project and requires minimal configuration on the part of the programmer.
+
+QuickBlox - is a cloud service with functionality similar to the Parse. The reason for using this service is conditioned by the fact that QuickBlox, among other things, provides a convenient implementation of the SDK for building a messaging system based on XMPP protocol.
+
 ## Screenshots
 
 * Login and SignUp screens:
